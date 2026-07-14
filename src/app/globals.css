@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #0a0f0a;
+  --color-surface: #1a2e1a;
+  --color-border: #2a3a22;
+  --color-text: #e8e0d0;
+  --color-accent: #f0d890;
+  --color-green: #4a8a3a;
+  --color-warm: #c44a2a;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-green);
+}
+
+/* Score bar animation */
+@keyframes fill-bar {
+  from { width: 0%; }
+}
+.score-bar {
+  animation: fill-bar 0.8s ease-out forwards;
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 20px rgba(240, 216, 144, 0.15);
+}
+
+/* Card hover */
+.game-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
