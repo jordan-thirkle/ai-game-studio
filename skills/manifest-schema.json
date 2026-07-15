@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill Manifest",
+  "description": "Tracks skills through their lifecycle: Draft → Trial → Promoted → Retired",
+  "type": "object",
+  "required": ["version", "last_updated", "concurrency_ceiling", "resource_lanes", "skills"],
+  "properties": {
+    "version": { "type": "integer", "description": "Manifest version number, incremented on every merge" },
+    "last_updated": { "type": "string", "format": "date-time" },
+    "concurrency_ceiling": { "type": "integer", "description": "Max simultaneous active tracks" },
+    "resource_lanes": {
+      "type": "object",
+      "properties": {
+        "skill_write": { "$ref": "#/definitions/resourceLane" },
+        "api_budget": { "$ref": "#/definitions/apiBudgetLane" },
+        "human_review": { "$ref": "#/definitions/resourceLane" }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/skill" }
+    }
+  },
+  "definitions": {
+    "resourceLane": {
+      "type": "object",
+      "properties": {
+        "queue": { "type": "array", "items": { "type": "string" } },
+        "current": { "type": ["string", "null"] }
+      }
+    },
+    "apiBudgetLane": {
+      "type": "object",
+      "properties": {
+        "daily_limit": { "type": "integer" },
+        "used_today": { "type": "integer" },
+        "by_track": { "type": "object", "additionalProperties": { "type": "integer" } }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "required": ["id", "title", "domain", "status", "source_game", "source_iteration", "evidence"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": "string" },
+        "domain": { "type": "string", "enum": ["game", "web", "mobile", "resilience"] },
+        "status": { "type": "string", "enum": ["draft", "trial", "promoted", "retired"] },
+        "source_game": { "type": "string" },
+        "source_iteration": { "type": "string" },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Evidence references (screenshot diffs, score deltas, logs)"
+        },
+        "trial_applied_to": { "type": ["string", "null"] },
+        "trial_result": { "type": ["string", "null"], "enum": [null, "positive", "negative", "neutral"] },
+        "trial_evidence": { "type": "array", "items": { "type": "string" } },
+        "promoted_date": { "type": ["string", "null"] },
+        "retired_date": { "type": ["string", "null"] },
+        "retirement_reason": { "type": ["string", "null"] },
+        "genre_scope": { "type": "array", "items": { "type": "string" } },
+        "context_scope": { "type": "array", "items": { "type": "string" } },
+        "cross_domain_candidate": { "type": "boolean", "default": false },
+        "security_review_required": { "type": "boolean", "default": false },
+        "security_review_passed": { "type": "boolean", "default": false },
+        "verification_passed": { "type": "boolean", "default": false, "description": "Must be true before status can be 'promoted'" },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "promoted" } } },
+          "then": { "required": ["verification_passed", "trial_result", "promoted_date"] }
+        },
+        {
+          "if": { "properties": { "status": { "const": "trial" } } },
+          "then": { "required": ["trial_applied_to"] }
+        },
+        {
+          "if": { "properties": { "status": { "const": "retired" } } },
+          "then": { "required": ["retired_date", "retirement_reason"] }
+        }
+      ]
+    }
+  }
+}

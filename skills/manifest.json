@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "last_updated": "2026-07-15T02:45:00Z",
+  "concurrency_ceiling": 4,
+  "resource_lanes": {
+    "skill_write": { "queue": [], "current": null },
+    "api_budget": { "daily_limit": 100, "used_today": 0, "by_track": {} },
+    "human_review": { "queue": [], "current": null }
+  },
+  "skills": [
+    {
+      "id": "screenshot-evidence",
+      "title": "Automated screenshot evidence capture at pipeline checkpoints",
+      "domain": "game",
+      "status": "draft",
+      "source_game": "whisperwood-v2",
+      "source_iteration": "v1",
+      "evidence": [
+        "screenshot-diff: whisperwood-v2-iter1-screenshot.png",
+        "file-size: 543KB (real game content, not blank)",
+        "diff-percentage: 1.28% between two same-scene captures (animation frame differences)",
+        "verification: eyeballed screenshot, confirmed HUD visible, camera position correct"
+      ],
+      "trial_applied_to": null,
+      "trial_result": null,
+      "trial_evidence": [],
+      "promoted_date": null,
+      "retired_date": null,
+      "retirement_reason": null,
+      "genre_scope": ["cozy", "exploration", "general"],
+      "context_scope": ["threejs-game"],
+      "cross_domain_candidate": true,
+      "security_review_required": false,
+      "security_review_passed": false,
+      "verification_passed": false,
+      "notes": "First skill in the pipeline. Created with verification principle built in. Needs trial on next game before promotion."
+    },
+    {
+      "id": "golden-hour-lighting-cozy",
+      "title": "Golden hour lighting for cozy/exploration games",
+      "domain": "game",
+      "status": "draft",
+      "source_game": "whisperwood-v1",
+      "source_iteration": "v0",
+      "evidence": [
+        "score-delta: +7 (60 -> 67), lighting category +1, art direction +1, vfx +2",
+        "screenshot-comparison: warm palette + bloom adds depth without feeling neon"
+      ],
+      "trial_applied_to": null,
+      "trial_result": null,
+      "trial_evidence": [],
+      "promoted_date": null,
+      "retired_date": null,
+      "retirement_reason": null,
+      "genre_scope": ["cozy", "exploration"],
+      "context_scope": ["threejs-game"],
+      "cross_domain_candidate": false,
+      "security_review_required": false,
+      "security_review_passed": false,
+      "verification_passed": false,
+      "notes": "Highest-ROI visual upgrade identified. Warm palette (amber/gold) works for cozy genre. Needs trial before promotion."
+    },
+    {
+      "id": "collect-feedback-juice",
+      "title": "Collect feedback: particle burst + screen shake",
+      "domain": "game",
+      "status": "draft",
+      "source_game": "whisperwood-v1",
+      "source_iteration": "v1",
+      "evidence": [
+        "score-delta: +2 (vfx category), +1 (rewards category)",
+        "agent-note: screen shake on collect is the biggest single improvement to game feel"
+      ],
+      "trial_applied_to": null,
+      "trial_result": null,
+      "trial_evidence": [],
+      "promoted_date": null,
+      "retired_date": null,
+      "retirement_reason": null,
+      "genre_scope": ["general"],
+      "context_scope": ["threejs-game"],
+      "cross_domain_candidate": true,
+      "security_review_required": false,
+      "security_review_passed": false,
+      "verification_passed": false,
+      "notes": "Particle burst + screen shake on collect. Simple but effective. Likely generalizes across genres."
+    }
+  ]
+}
