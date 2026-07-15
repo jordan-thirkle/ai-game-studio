@@ -110,7 +110,7 @@ A cozy forest exploration game. Collect mushrooms, flowers, crystals, and firefl
 |-----------|-----------|
 | AI Agent | [Hermes Agent](https://nousresearch.com) by Nous Research |
 | Model | mimo-v2.5 (free tier — proving model-agnostic capability) |
-| Skills | 118 specialized instruction sets |
+| Skills | 4 specialized instruction sets (all draft — none promoted yet) |
 | Brain | GBrain for knowledge management |
 
 ### Web App

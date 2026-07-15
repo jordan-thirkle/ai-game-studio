@@ -81,6 +81,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/docs/score-methodology" className="hover:text-[#f0d890] transition-colors">
                 Scoring
               </a>
+              <a href="/stats" className="hover:text-[#f0d890] transition-colors">
+                Stats
+              </a>
               <a href="/skills/graveyard" className="hover:text-[#f0d890] transition-colors">
                 Graveyard
               </a>

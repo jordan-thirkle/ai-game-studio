@@ -85,3 +85,34 @@ jobs:
 
       - name: Validate manifest schemas
         run: python scripts/validate-manifest.py
+
+  dependency-check:
+    name: Dependency Gate (PR only)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Get added packages from PR diff
+        id: diff
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "package.json" && echo "packages_changed=true" >> $GITHUB_OUTPUT || echo "packages_changed=false" >> $GITHUB_OUTPUT
+
+      - name: Run dependency gate on changed packages
+        if: steps.diff.outputs.packages_changed == 'true'
+        run: |
+          # Extract packages added in package.json diff
+          ADDED=$(git diff origin/${{ github.base_ref }}...HEAD -- package.json | grep '^+' | grep -v '+++' | grep -oP '"[^"]+":\s*"[^"]*"' | cut -d'"' -f2 | tr '\n' ' ')
+          if [ -n "$ADDED" ]; then
+            python scripts/dependency-gate.py $ADDED
+          else
+            echo "No new packages detected."
+          fi
