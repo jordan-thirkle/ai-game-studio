@@ -63,23 +63,23 @@ Helper functions:
 
 ```
 RootLayout (layout.tsx)
-├── Nav (inline) — fixed, backdrop-blur
-└── Home (page.tsx)
-    ├── StatsBar — games, iterations, avg score, LOC
-    ├── GameCard[] — grid of game previews
-    │   ├── Score bar (color-coded)
-    │   ├── Tech stack tags
-    │   └── ShareButton (X.com intent)
-    └── Flywheel section (Build → Reflect → Improve)
+ Nav (inline) — fixed, backdrop-blur
+ Home (page.tsx)
+     StatsBar — games, iterations, avg score, LOC
+     GameCard[] — grid of game previews
+        Score bar (color-coded)
+        Tech stack tags
+        ShareButton (X.com intent)
+     Flywheel section (Build → Reflect → Improve)
 
 GamePage (games/[slug]/page.tsx)
-├── Game header with breadcrumbs
-├── Playable iframe embed (aspect-video)
-├── ScoreBreakdown — 10 bars with color coding
-├── IterationTimeline — version dots + changes
-├── CaseStudy — markdown rendered as prose
-├── Tech stack tags
-└── Comments — localStorage-backed discussion
+ Game header with breadcrumbs
+ Playable iframe embed (aspect-video)
+ ScoreBreakdown — 10 bars with color coding
+ IterationTimeline — version dots + changes
+ CaseStudy — markdown rendered as prose
+ Tech stack tags
+ Comments — localStorage-backed discussion
 ```
 
 ### Styling
@@ -101,29 +101,29 @@ Tailwind CSS v4 with custom color tokens:
 
 ```
 src/
-├── core/
-│   ├── Renderer.ts      # WebGLRenderer factory + resize logic
-│   ├── Loop.ts          # requestAnimationFrame loop with delta time
-│   └── InputController.ts  # Keyboard + touch joystick + dash button
-├── entities/
-│   ├── Player.ts        # Forest spirit: movement, animation, glow ring
-│   └── Pickup.ts        # 4 types: mushroom, flower, crystal, firefly_cluster
-├── systems/
-│   ├── AudioSystem.ts   # Web Audio oscillator sounds (no files)
-│   ├── CameraRig.ts     # Smooth follow with configurable lag
-│   ├── CollisionSystem.ts  # Distance-based pickup collection
-│   ├── CollectEffect.ts # Pooled particle bursts (24 particles, 0.6s lifetime)
-│   ├── PostProcessing.ts # Bloom + vignette + chromatic aberration
-│   ├── Hud.ts           # DOM-based score/timer/status
-│   └── DebugTools.ts    # lil-gui tuning panel
-├── game/
-│   └── Game.ts          # Orchestrator: owns scene, wires systems, runs loop
-├── utils/
-│   ├── random.ts        # Seeded PRNG for reproducible scenes
-│   └── dispose.ts       # Three.js disposal helpers
-├── main.ts              # Entry: creates Game, starts loop
-├── styles.css           # HUD + touch control styles
-└── vite-env.d.ts        # Vite client types
+ core/
+    Renderer.ts      # WebGLRenderer factory + resize logic
+    Loop.ts          # requestAnimationFrame loop with delta time
+    InputController.ts  # Keyboard + touch joystick + dash button
+ entities/
+    Player.ts        # Forest spirit: movement, animation, glow ring
+    Pickup.ts        # 4 types: mushroom, flower, crystal, firefly_cluster
+ systems/
+    AudioSystem.ts   # Web Audio oscillator sounds (no files)
+    CameraRig.ts     # Smooth follow with configurable lag
+    CollisionSystem.ts  # Distance-based pickup collection
+    CollectEffect.ts # Pooled particle bursts (24 particles, 0.6s lifetime)
+    PostProcessing.ts # Bloom + vignette + chromatic aberration
+    Hud.ts           # DOM-based score/timer/status
+    DebugTools.ts    # lil-gui tuning panel
+ game/
+    Game.ts          # Orchestrator: owns scene, wires systems, runs loop
+ utils/
+    random.ts        # Seeded PRNG for reproducible scenes
+    dispose.ts       # Three.js disposal helpers
+ main.ts              # Entry: creates Game, starts loop
+ styles.css           # HUD + touch control styles
+ vite-env.d.ts        # Vite client types
 ```
 
 ### Game.ts — The Orchestrator
@@ -208,8 +208,8 @@ git push origin main
 GitHub detects push
     ↓
 Vercel auto-builds
-    ├── ai-game-studio: next build → static export → CDN
-    └── whisperwood-v2: vite build → dist/ → Vercel
+     ai-game-studio: next build → static export → CDN
+     whisperwood-v2: vite build → dist/ → Vercel
     ↓
 Live at *.vercel.app
 ```

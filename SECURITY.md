@@ -38,8 +38,8 @@ This applies to:
 
 | Version | Supported |
 |---------|-----------|
-| Latest main | ✅ |
-| Previous releases | ❌ |
+| Latest main |  |
+| Previous releases |  |
 
 ## Security Best Practices for Contributors
 

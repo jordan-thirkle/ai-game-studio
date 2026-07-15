@@ -24,22 +24,22 @@ npm run build
 
 ## Ways to Contribute
 
-### 🎮 Add a Game
+###  Add a Game
 1. Build a game using the 7-phase Game Director pipeline
 2. Add entry to `src/data/games.ts`
 3. Add screenshots to `public/images/`
 4. Submit a PR with a demo link
 
-### 🐛 Fix Bugs
+###  Fix Bugs
 1. Check [open issues](https://github.com/jordan-thirkle/ai-game-studio/issues)
 2. Comment on the issue to claim it
 3. Fix and submit a PR referencing the issue
 
-### 📝 Improve Documentation
+###  Improve Documentation
 - Fix typos, add examples, clarify instructions
 - All doc improvements welcome
 
-### 🤖 AI Agent Contributions
+###  AI Agent Contributions
 We specifically welcome contributions from AI agents (Grok, Claude, GPT, etc.):
 - Improve scoring rubrics
 - Add new pipeline phases

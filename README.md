@@ -2,7 +2,7 @@
   <img src="public/images/og-image.png" alt="AI Game Studio" width="600">
 </p>
 
-<h1 align="center">🎮 AI Game Studio</h1>
+<h1 align="center"> AI Game Studio</h1>
 
 <p align="center">
   <strong>Building games with self-improving AI agents.</strong><br>
@@ -19,18 +19,18 @@
 
 ---
 
-## 🔗 Links
+## Links
 
 | Resource | URL |
 |----------|-----|
-| 🌐 Live Site | [ai-game-studio-one.vercel.app](https://ai-game-studio-one.vercel.app) |
-| 📊 Uptime | [Upptime Dashboard](https://upptime.js.org/repos/jordan-thirkle/ai-game-studio) |
-| 🐛 Issues | [GitHub Issues](https://github.com/jordan-thirkle/ai-game-studio/issues) |
-| 💬 Discussions | [GitHub Discussions](https://github.com/jordan-thirkle/ai-game-studio/discussions) |
+|  Live Site | [ai-game-studio-one.vercel.app](https://ai-game-studio-one.vercel.app) |
+|  Uptime | [Upptime Dashboard](https://upptime.js.org/repos/jordan-thirkle/ai-game-studio) |
+|  Issues | [GitHub Issues](https://github.com/jordan-thirkle/ai-game-studio/issues) |
+|  Discussions | [GitHub Discussions](https://github.com/jordan-thirkle/ai-game-studio/discussions) |
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [The Flywheel](#-the-flywheel)
 - [How It Works](#-how-it-works)
@@ -47,7 +47,7 @@
 
 ---
 
-## 🔄 The Flywheel
+## The Flywheel
 
 ```
 Build → Reflect → Learn → Share → Improve → Repeat
@@ -57,7 +57,7 @@ Each game makes the next one better. Each skill saved makes the agent smarter. E
 
 ---
 
-## ⚙️ How It Works
+## How It Works
 
 ### 7-Phase Game Director Pipeline
 
@@ -88,9 +88,9 @@ Each game makes the next one better. Each skill saved makes the agent smarter. E
 
 ---
 
-## 🎮 Games
+## Games
 
-### Whisperwood (v0 — In Progress)
+### Whisperwood (v1 — Deployed)
 
 A cozy forest exploration game. Collect mushrooms, flowers, crystals, and fireflies in a magical golden-hour forest.
 
@@ -103,7 +103,7 @@ A cozy forest exploration game. Collect mushrooms, flowers, crystals, and firefl
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Platform
 | Component | Technology |
@@ -138,7 +138,7 @@ A cozy forest exploration game. Collect mushrooms, flowers, crystals, and firefl
 
 ---
 
-## 🧠 Self-Improvement System
+## Self-Improvement System
 
 Every session the agent:
 
@@ -152,7 +152,7 @@ This compounds. The 10th game will be dramatically better than the 1st.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -187,52 +187,52 @@ open http://localhost:3000
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ai-game-studio/
-├── .github/              # GitHub config
-│   ├── CODEOWNERS        # Code ownership
-│   ├── dependabot.yml    # Dependency updates
-│   ├── FUNDING.yml       # Sponsorship config
-│   ├── ISSUE_TEMPLATE/   # Issue templates
-│   ├── PULL_REQUEST_TEMPLATE.md
-│   └── workflows/        # CI/CD
-│       ├── ci.yml        # Lint + Build + Security
-│       └── upptime.yml   # Uptime monitoring
-├── content/              # Game content & data
-├── docs/                 # Architecture docs
-├── metrics/              # Runtime metrics (gitignored)
-├── references/           # Best practices from top repos
-├── public/               # Static assets
-├── scripts/              # Python tooling
-│   ├── context-budget.py
-│   ├── dependency-gate.py
-│   ├── snapshot-manifest.py
-│   └── validate-manifest.py
-├── skills/               # Agent skill schemas
-│   ├── manifest.json
-│   ├── manifest-schema.json
-│   └── handoff-schema.json
-├── src/
-│   ├── app/              # Next.js app router
-│   ├── components/       # React components
-│   └── data/             # Game data
-├── ARCHITECTURE.md       # Technical architecture
-├── BUILD-LOG.md          # Build history
-├── CODE_OF_CONDUCT.md    # Community standards
-├── CONTRIBUTING.md       # Contribution guide
-├── IMPROVEMENT-PLAN.md   # Iteration roadmap
-├── LICENSE               # MIT License
-├── PROMPT-HISTORY.md     # AI prompt log
-├── README.md             # This file
-├── SECURITY.md           # Security policy
-└── package.json          # Dependencies
+ .github/              # GitHub config
+    CODEOWNERS        # Code ownership
+    dependabot.yml    # Dependency updates
+    FUNDING.yml       # Sponsorship config
+    ISSUE_TEMPLATE/   # Issue templates
+    PULL_REQUEST_TEMPLATE.md
+    workflows/        # CI/CD
+        ci.yml        # Lint + Build + Security
+        upptime.yml   # Uptime monitoring
+ content/              # Game content & data
+ docs/                 # Architecture docs
+ metrics/              # Runtime metrics (gitignored)
+ references/           # Best practices from top repos
+ public/               # Static assets
+ scripts/              # Python tooling
+    context-budget.py
+    dependency-gate.py
+    snapshot-manifest.py
+    validate-manifest.py
+ skills/               # Agent skill schemas
+    manifest.json
+    manifest-schema.json
+    handoff-schema.json
+ src/
+    app/              # Next.js app router
+    components/       # React components
+    data/             # Game data
+ ARCHITECTURE.md       # Technical architecture
+ BUILD-LOG.md          # Build history
+ CODE_OF_CONDUCT.md    # Community standards
+ CONTRIBUTING.md       # Contribution guide
+ IMPROVEMENT-PLAN.md   # Iteration roadmap
+ LICENSE               # MIT License
+ PROMPT-HISTORY.md     # AI prompt log
+ README.md             # This file
+ SECURITY.md           # Security policy
+ package.json          # Dependencies
 ```
 
 ---
 
-## 🤖 AI Agent Review Guide
+## AI Agent Review Guide
 
 This section is specifically for AI agents (Grok, Claude, GPT, etc.) reviewing this repository.
 
@@ -249,12 +249,12 @@ This section is specifically for AI agents (Grok, Claude, GPT, etc.) reviewing t
 
 ### Code Quality Signals
 
-- ✅ TypeScript strict mode
-- ✅ ESLint configured
-- ✅ CI pipeline (lint + build + security)
-- ✅ Dependabot for dependency updates
-- ✅ Issue/PR templates for structured contributions
-- ✅ MIT License (permissive)
+-  TypeScript strict mode
+-  ESLint configured
+-  CI pipeline (lint + build + security)
+-  Dependabot for dependency updates
+-  Issue/PR templates for structured contributions
+-  MIT License (permissive)
 
 ### Architecture Patterns
 
@@ -275,7 +275,7 @@ This section is specifically for AI agents (Grok, Claude, GPT, etc.) reviewing t
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 | Document | Description |
 |----------|-------------|
@@ -290,7 +290,7 @@ This section is specifically for AI agents (Grok, Claude, GPT, etc.) reviewing t
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from humans and AI agents alike! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
@@ -304,7 +304,7 @@ We welcome contributions from humans and AI agents alike! See [CONTRIBUTING.md](
 
 ---
 
-## 📄 License
+## License
 
 MIT License — see [LICENSE](LICENSE) for details.
 
@@ -313,5 +313,5 @@ Fork it, improve it, share what you learn.
 ---
 
 <p align="center">
-  Built with 🧠 by <a href="https://github.com/jordan-thirkle">Jordan Thirkle</a> + <a href="https://nousresearch.com">Hermes Agent</a>
+  Built with  by <a href="https://github.com/jordan-thirkle">Jordan Thirkle</a> + <a href="https://nousresearch.com">Hermes Agent</a>
 </p>
