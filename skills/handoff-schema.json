@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Hand-off Artifact",
+  "description": "Structured data passed between agents at phase transitions. No freeform summaries.",
+  "type": "object",
+  "required": ["from_agent", "to_agent", "phase", "timestamp", "commit_hash", "status", "evidence"],
+  "properties": {
+    "from_agent": { "type": "string", "description": "Agent role that produced this artifact" },
+    "to_agent": { "type": "string", "description": "Agent role that receives this artifact" },
+    "phase": { "type": "string", "description": "Pipeline phase this hand-off occurs at" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "commit_hash": { "type": "string", "description": "Git commit at time of hand-off" },
+    "status": { "type": "string", "enum": ["success", "partial", "blocked", "failed"] },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "path"],
+        "properties": {
+          "type": { "type": "string", "enum": ["screenshot", "metrics", "log", "diff", "test-result", "score"] },
+          "path": { "type": "string", "description": "Path to evidence file" },
+          "summary": { "type": "string", "description": "One-line summary of what this evidence shows" }
+        }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "properties": {
+        "tier_a": { "type": "object" },
+        "tier_b": { "type": "object" },
+        "combined": { "type": "number" },
+        "grade": { "type": "string" }
+      }
+    },
+    "issues": { "type": "array", "items": { "type": "string" } },
+    "next_steps": { "type": "array", "items": { "type": "string" } },
+    "blocking_issues": { "type": "array", "items": { "type": "string" } },
+    "manifest_version": { "type": "integer", "description": "Skill manifest version at time of hand-off" }
+  }
+}
