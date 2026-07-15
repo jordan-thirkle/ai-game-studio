@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "last_updated": "2026-07-15T03:30:00Z",
+  "assets": {
+    "models": {
+      "description": "3D models (GLTF/GLB format)",
+      "items": []
+    },
+    "textures": {
+      "description": "Texture maps (PNG, JPG, HDR)",
+      "items": []
+    },
+    "audio": {
+      "description": "Sound effects and music",
+      "items": []
+    },
+    "scripts": {
+      "description": "Reusable code patterns and utilities",
+      "items": []
+    }
+  },
+  "stats": {
+    "total_assets": 0,
+    "total_size_kb": 0,
+    "last_generated": null,
+    "generation_cost_usd": 0
+  }
+}

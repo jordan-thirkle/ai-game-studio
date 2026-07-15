@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "assets": "python scripts/asset-tracker.py"
   },
   "dependencies": {
     "@vercel/og": "^0.11.1",
