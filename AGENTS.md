@@ -53,3 +53,20 @@ Log near-misses even when nothing goes wrong. Especially then.
 - Log what almost happened and what prevented it.
 - Log self-modifications (changes to the pipeline itself) as their own evidence.
 - The resilience log is the most important artifact in the repo — it's what proves the system learns.
+
+## Reference Sources
+
+| Category | Source | Purpose |
+|----------|--------|---------|
+| Hermes | `0xNyk/awesome-hermes-agent` | Curated skills, tools, best practices |
+| Hermes | `SamurAIGPT/awesome-hermes-agent` | Community skills discovery |
+| Hermes | Hermes official docs | AGENTS.md, SOUL.md, memory, skill patterns |
+| Three.js | `mrdoob/three.js` | Official manual + examples |
+| Three.js | `katopz/best-practices` | Tips, tricks, gotchas |
+| Web Dev | `microsoft/TypeScript` | Type safety standards |
+| Web Dev | `tailwindlabs/tailwindcss` | Documentation style |
+| Web Dev | `vercel/next.js` | Modern web app patterns |
+| Design | Apple HIG | iOS + general design principles |
+| Design | Google Material Design 3 | Android + component thinking |
+
+Full reference material: `references/` directory.

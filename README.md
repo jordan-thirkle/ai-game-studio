@@ -203,6 +203,7 @@ ai-game-studio/
 ├── content/              # Game content & data
 ├── docs/                 # Architecture docs
 ├── metrics/              # Runtime metrics (gitignored)
+├── references/           # Best practices from top repos
 ├── public/               # Static assets
 ├── scripts/              # Python tooling
 │   ├── context-budget.py
