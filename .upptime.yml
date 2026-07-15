@@ -1,0 +1,77 @@
+repo: jordan-thirkle/ai-game-studio
+branch: master
+
+# Uptime monitoring configuration
+uptime:
+  - name: AI Game Studio Home
+    url: https://ai-game-studio-one.vercel.app
+    method: GET
+    expectedStatus: 200
+    timeout: 10000
+    keywords:
+      - "AI Game Studio"
+      - "Building Games"
+
+  - name: Whisperwood Game
+    url: https://whisperwood-v2.vercel.app
+    method: GET
+    expectedStatus: 200
+    timeout: 10000
+    keywords:
+      - "Whisperwood"
+
+  - name: Whisperwood Game Embed
+    url: https://ai-game-studio-one.vercel.app/games/whisperwood
+    method: GET
+    expectedStatus: 200
+    timeout: 10000
+    keywords:
+      - "Play the Game"
+
+  - name: Games Listing Page
+    url: https://ai-game-studio-one.vercel.app/games
+    method: GET
+    expectedStatus: 200
+    timeout: 10000
+    keywords:
+      - "All Games"
+
+  - name: About Page
+    url: https://ai-game-studio-one.vercel.app/about
+    method: GET
+    expectedStatus: 200
+    timeout: 10000
+    keywords:
+      - "About"
+
+# Response time monitoring
+response-time:
+  - name: AI Game Studio Home
+    url: https://ai-game-studio-one.vercel.app
+    method: GET
+    timeout: 10000
+
+  - name: Whisperwood Game
+    url: https://whisperwood-v2.vercel.app
+    method: GET
+    timeout: 10000
+
+# SSL certificate monitoring
+ssl:
+  - name: AI Game Studio
+    hostname: ai-game-studio-one.vercel.app
+    port: 443
+
+  - name: Whisperwood
+    hostname: whisperwood-v2.vercel.app
+    port: 443
+
+# Notification configuration
+notifications:
+  - type: github-issue
+    on: [down, ssl-expiring, slow]
+
+  - type: telegram
+    on: [down]
+    chat-id: ${TELEGRAM_CHAT_ID}
+    bot-token: ${TELEGRAM_BOT_TOKEN}

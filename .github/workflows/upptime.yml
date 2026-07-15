@@ -1,0 +1,63 @@
+name: Upptime Uptime Monitor
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check Uptime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Upptime
+        uses: upptime/uptime-monitor@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Issue on Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('results.json', 'utf8'));
+            const failed = results.filter(r => r.status === 'down');
+            
+            if (failed.length > 0) {
+              const body = `## 🔴 Uptime Alert
+
+              **Failed endpoints:**
+              ${failed.map(f => `- ${f.name}: ${f.url} (${f.statusCode || 'timeout'})`).join('\n')}
+
+              **Detected:** ${new Date().toISOString()}
+
+              **Action required:** Investigate and fix the issue.
+
+              ---
+              *This issue was auto-created by Upptime monitoring.*`;
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🔴 Uptime Alert: ${failed.length} endpoint(s) down`,
+                body: body,
+                labels: ['critical', 'monitoring', 'auto-generated']
+              });
+            }
+
+      - name: Notify Telegram on Failure
+        if: failure()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🔴 Uptime Alert
+
+            ${{ github.repository }} has downtime detected.
+
+            Check: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

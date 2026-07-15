@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { StatusBanner } from '@/components/StatusBanner';
 import './globals.css';
 
 const SITE_URL = 'https://ai-game-studio.vercel.app';
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="bg-[#0a0f0a] text-[#e8e0d0] min-h-screen">
+        <StatusBanner />
         <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0f0a]/80 backdrop-blur-md border-b border-[#2a3a22]">
           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <a href="/" className="flex items-center gap-3">

@@ -5,6 +5,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { ScoreBreakdown } from '@/components/ScoreBreakdown';
 import { IterationTimeline } from '@/components/IterationTimeline';
 import { Comments } from '@/components/Comments';
+import { GameEmbed } from '@/components/GameEmbed';
 
 export function generateStaticParams() {
   return games.map((g) => ({ slug: g.slug }));
@@ -134,33 +135,11 @@ export default async function GamePage({ params }: GamePageProps) {
         {/* Playable embed */}
         <section className="mb-12">
           <h2 className="text-xl font-bold mb-4">Play the Game</h2>
-          <div className="relative w-full aspect-video bg-[#0a0f0a] rounded-xl border border-[#2a3a22] overflow-hidden">
-            <iframe
-              src={game.playUrl}
-              className="absolute inset-0 w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-              allowFullScreen
-              title={`Play ${game.title}`}
-            />
-          </div>
-          <div className="flex items-center gap-4 mt-3 text-sm">
-            <a
-              href={game.playUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#4a8a3a] hover:text-[#5a9a4a] transition-colors"
-            >
-              Open in new tab ↗
-            </a>
-            <a
-              href={game.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#4a8a3a] hover:text-[#5a9a4a] transition-colors"
-            >
-              View Source Code ↗
-            </a>
-          </div>
+          <GameEmbed 
+            url={game.playUrl} 
+            title={game.title}
+            githubUrl={game.githubUrl}
+          />
         </section>
 
         {/* Score breakdown */}
