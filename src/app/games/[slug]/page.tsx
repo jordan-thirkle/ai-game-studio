@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { games, getGame, getLatestScore } from '@/data/games';
+import { games, getGame, getLatestScore, getGradeColor } from '@/data/games';
 import { ShareButton } from '@/components/ShareButton';
 import { ScoreBreakdown } from '@/components/ScoreBreakdown';
 import { IterationTimeline } from '@/components/IterationTimeline';
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
   if (!game) return { title: 'Game Not Found' };
 
   const latestScore = getLatestScore(game);
-  const scoreText = latestScore ? ` Score: ${latestScore.avg.toFixed(1)}/3.0` : '';
+  const scoreText = latestScore ? ` Score: ${latestScore.total}/100 (${latestScore.grade})` : '';
   const desc = `${game.subtitle}. Built entirely by AI. ${game.description.slice(0, 150)}...`;
 
   return {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
       url: `https://ai-game-studio.vercel.app/games/${game.slug}`,
       images: [
         {
-          url: `/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.avg.toFixed(1) || ''}&status=${game.status}`,
+          url: `/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.total || ''}&status=${game.status}`,
           width: 1200,
           height: 630,
           alt: `${game.title} — ${game.subtitle}`,
@@ -43,11 +43,11 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
       card: 'summary_large_image',
       title: `${game.title} | AI Game Studio`,
       description: desc,
-      images: [`/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.avg.toFixed(1) || ''}&status=${game.status}`],
+      images: [`/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.total || ''}&status=${game.status}`],
     },
     other: {
       'game:status': game.status,
-      'game:score': latestScore?.avg.toFixed(1) || '',
+      'game:score': latestScore?.total.toString() || '',
     },
   };
 }
@@ -99,7 +99,7 @@ export default async function GamePage({ params }: GamePageProps) {
               <p className="text-lg text-[#a0a090]">{game.subtitle}</p>
             </div>
             <ShareButton
-              text={`🎮 ${game.title} — ${game.subtitle}. Built entirely by AI. Score: ${latestScore?.avg.toFixed(1) || '?'}/3.0`}
+              text={`🎮 ${game.title} — ${game.subtitle}. Built entirely by AI. Score: ${latestScore?.total || '?'}/100 (${latestScore?.grade || '?'})`}
               url={`https://ai-game-studio.vercel.app/games/${game.slug}`}
             />
           </div>
@@ -110,8 +110,8 @@ export default async function GamePage({ params }: GamePageProps) {
             <span className="text-[#606060]">{game.iterations.length} iterations</span>
             <span className="text-[#606060]">Updated {game.updatedAt}</span>
             {latestScore && (
-              <span className="font-mono text-[#f0d890]">
-                {latestScore.avg.toFixed(1)}/3.0
+              <span className="font-mono" style={{ color: getGradeColor(latestScore.grade) }}>
+                {latestScore.total}/100 ({latestScore.grade})
               </span>
             )}
           </div>
@@ -167,7 +167,7 @@ export default async function GamePage({ params }: GamePageProps) {
         {latestScore && (
           <section className="mb-12">
             <h2 className="text-xl font-bold mb-4">Quality Score</h2>
-            <ScoreBreakdown scores={latestScore.scores} avg={latestScore.avg} />
+            <ScoreBreakdown scores={latestScore.scores} total={latestScore.total} grade={latestScore.grade} />
           </section>
         )}
 

@@ -1,8 +1,10 @@
-export function StatsBar({ stats }: { stats: { totalGames: number; totalIterations: number; totalLines: number; avgScore: number } }) {
+import { getTotalStats } from '@/data/games';
+
+export function StatsBar({ stats }: { stats: ReturnType<typeof getTotalStats> }) {
   const items = [
     { label: 'Games', value: stats.totalGames, icon: '🎮' },
     { label: 'Iterations', value: stats.totalIterations, icon: '🔄' },
-    { label: 'Avg Score', value: stats.avgScore.toFixed(1) + '/3.0', icon: '📊' },
+    { label: 'Avg Score', value: `${Math.round(stats.avgScore)}/100`, icon: '📊' },
     { label: 'Lines of Code', value: stats.totalLines.toLocaleString(), icon: '💻' },
   ];
 

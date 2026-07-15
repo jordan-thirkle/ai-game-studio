@@ -105,7 +105,7 @@ export default function Home() {
               {
                 phase: '07',
                 title: 'Score & Iterate',
-                desc: '10-category rubric, 0–3 scale, target ≥2.3. Document what changed and why.',
+                desc: '10-category rubric, 0–10 per category (100 total). Target ≥70/100. Document everything.',
                 icon: '📊',
               },
               {
@@ -151,8 +151,8 @@ export default function Home() {
                 View all →
               </a>
               <ShareButton
-                text={`🎮 AI Game Studio — Building games with self-improving agents. ${stats.totalGames} games, ${stats.totalIterations} iterations, avg score ${stats.avgScore.toFixed(1)}/3.0`}
-                url="https://ai-game-studio.vercel.app"
+                text={`🎮 AI Game Studio — Building games with self-improving agents. ${stats.totalGames} games, ${stats.totalIterations} iterations, avg score ${Math.round(stats.avgScore)}/100`}
+                url="https://ai-game-studio-one.vercel.app"
               />
             </div>
           </div>
