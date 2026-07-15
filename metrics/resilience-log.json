@@ -3,7 +3,7 @@
     "id": "near-miss-001",
     "date": "2026-07-15",
     "category": "self-certification",
-    "description": "Screenshot-evidence skill created without version history — skill modifying evidence system needs its own evidence trail",
+    "description": "Screenshot-evidence skill created without version history \u2014 skill modifying evidence system needs its own evidence trail",
     "what_prevented_failure": "Jordan flagged it explicitly before execution started",
     "severity": "medium",
     "pipeline_phase": "phase-02",
@@ -14,7 +14,7 @@
     "id": "failure-mode-001",
     "date": "2026-07-15",
     "class": "reporting-error",
-    "description": "Status report incorrectly listed commit 5cc3ecf as containing Task 1.4 — it only contained camera-config.json",
+    "description": "Status report incorrectly listed commit 5cc3ecf as containing Task 1.4 \u2014 it only contained camera-config.json",
     "root_cause": "Manual status report without verifying commit contents",
     "prevention": "Always run git show --stat before reporting commit contents",
     "status": "fixed"
@@ -23,7 +23,7 @@
     "id": "near-miss-002",
     "date": "2026-07-15",
     "category": "dependency-risk",
-    "description": "Playwright installed without running dependency gate first — the gate script existed but wasn't used for this install",
+    "description": "Playwright installed without running dependency gate first \u2014 the gate script existed but wasn't used for this install",
     "what_prevented_failure": "Package was well-known (Playwright, millions of downloads), but process was skipped",
     "severity": "low",
     "pipeline_phase": "phase-01",
@@ -34,11 +34,22 @@
     "id": "near-miss-003",
     "date": "2026-07-15",
     "class": "verification-gap",
-    "description": "Phase 3 Tier A/B scoring was built but explicitly noted as 'needs verification' — good, but could have been grandfathered in if timeline compressed",
+    "description": "Phase 3 Tier A/B scoring was built but explicitly noted as 'needs verification' \u2014 good, but could have been grandfathered in if timeline compressed",
     "what_prevented_failure": "Jordan explicitly required verification before proceeding",
     "severity": "medium",
     "pipeline_phase": "phase-03",
     "action_taken": "Verification gate run against Phase 3 output before continuing",
+    "status": "fixed"
+  },
+  {
+    "id": "near-miss-004",
+    "date": "2026-07-15",
+    "category": "fabricated-data",
+    "description": "Skill Graveyard contained fabricated entry (neon-glow-outline-cozy) \u2014 a template example presented as a real retired skill with fake trial evidence",
+    "what_prevented_failure": "Jordan caught it: no skill has reached promoted status, so none could have been retired. Count math did not include it.",
+    "severity": "high",
+    "pipeline_phase": "phase-06",
+    "action_taken": "Removed fabricated entry, graveyard now empty until real retirement occurs",
     "status": "fixed"
   }
 ]

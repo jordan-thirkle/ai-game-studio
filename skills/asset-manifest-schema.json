@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Asset Manifest",
+  "description": "Tracks AI-generated assets through their lifecycle with full evidence trail",
+  "type": "object",
+  "required": ["version", "last_updated", "assets"],
+  "properties": {
+    "version": { "type": "integer" },
+    "last_updated": { "type": "string", "format": "date-time" },
+    "assets": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/asset" }
+    }
+  },
+  "definitions": {
+    "asset": {
+      "type": "object",
+      "required": ["id", "title", "type", "domain", "generation", "tier_a", "tier_b", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["3d-model", "texture", "audio", "image", "shader"] },
+        "domain": { "type": "string", "enum": ["game", "web", "mobile"] },
+        "generation": {
+          "type": "object",
+          "required": ["prompt", "model"],
+          "properties": {
+            "prompt": { "type": "string" },
+            "model": { "type": "string" },
+            "model_version": { "type": "string" },
+            "texture_quality": { "type": "string" },
+            "generation_time_ms": { "type": "integer" },
+            "api_cost": { "type": "string" },
+            "api_call_timestamp": { "type": "string", "format": "date-time" },
+            "iteration_count": { "type": "integer" },
+            "iteration_history": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "iteration": { "type": "integer" },
+                  "prompt": { "type": "string" },
+                  "result": { "type": "string" },
+                  "file": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "tier_a": {
+          "type": "object",
+          "properties": {
+            "poly_count": { "type": "integer" },
+            "file_size_kb": { "type": "number" },
+            "texture_resolution": { "type": "string" },
+            "load_time_ms": { "type": "number" },
+            "lod_levels": { "type": "integer" },
+            "measured_timestamp": { "type": "string", "format": "date-time" }
+          }
+        },
+        "tier_b": {
+          "type": "object",
+          "properties": {
+            "aesthetic_notes": { "type": "string" },
+            "genre_fit": { "type": "string" },
+            "assessed_by": { "type": "string" },
+            "labeled_as": { "type": "string" }
+          }
+        },
+        "visual_evidence": {
+          "type": "object",
+          "properties": {
+            "turntable_screenshot": { "type": "string" },
+            "diff_from_previous": { "type": "string" },
+            "in_scene_screenshot": { "type": "string" }
+          }
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "size_bytes": { "type": "integer" },
+            "hash": { "type": "string" }
+          }
+        },
+        "improvement_notes": {
+          "type": "object",
+          "properties": {
+            "what_could_improve": { "type": "string" },
+            "draft_skill_candidate": { "type": "boolean" },
+            "related_skill": { "type": "string" },
+            "trial_status": { "type": "string", "enum": ["draft", "trial", "promoted", "retired"] }
+          }
+        },
+        "status": { "type": "string", "enum": ["draft", "trial", "promoted", "retired"] },
+        "created_date": { "type": "string" },
+        "retired_date": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

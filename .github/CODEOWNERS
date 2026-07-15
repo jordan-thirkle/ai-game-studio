@@ -1,0 +1,17 @@
+# CODEOWNERS
+# These owners will be automatically requested for review
+# when a pull request modifies matching files.
+
+# Default owner
+* @jordan-thirkle
+
+# Core app
+/src/ @jordan-thirkle
+
+# AI pipeline & skills
+/skills/ @jordan-thirkle
+/scripts/ @jordan-thirkle
+/docs/ @jordan-thirkle
+
+# CI/CD
+/.github/ @jordan-thirkle

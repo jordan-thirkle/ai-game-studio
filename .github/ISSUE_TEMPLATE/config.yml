@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/jordan-thirkle/ai-game-studio/discussions
+    about: Ask questions, share ideas, discuss strategy
+  - name: 🎮 Game Submissions
+    url: https://github.com/jordan-thirkle/ai-game-studio/issues/new?template=feature_request.md&title=[GAME]+
+    about: Submit a game built with the 7-phase pipeline
