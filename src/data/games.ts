@@ -119,9 +119,9 @@ export const games: Game[] = [
         screenshot: '/images/whisperwood-v0.png',
         scores: [
           // Tier A — Machine-verified
-          { category: 'Performance', score: 9, tier: 'A', evidence: [{ type: 'machine', source: 'fps-trace', timestamp: '2026-07-14T12:00:00Z', verified: true }], notes: '60fps, clean disposal, proper memory management' },
-          { category: 'UI/HUD', score: 7, tier: 'A', evidence: [{ type: 'machine', source: 'playwright-e2e', timestamp: '2026-07-14T12:00:00Z', verified: true }], notes: 'Clean HUD, responsive, mobile touch controls' },
-          { category: 'Obstacles/Enemies', score: 2, tier: 'A', evidence: [{ type: 'machine', source: 'playwright-e2e', timestamp: '2026-07-14T12:00:00Z', verified: true }], notes: 'No obstacles yet — open exploration only' },
+          { category: 'Performance', score: 9, tier: 'A', evidence: [{ type: 'machine', source: 'agent-estimate', timestamp: '2026-07-14T12:00:00Z', verified: false }], notes: '60fps, clean disposal, proper memory management' },
+          { category: 'UI/HUD', score: 7, tier: 'A', evidence: [{ type: 'machine', source: 'agent-estimate', timestamp: '2026-07-14T12:00:00Z', verified: false }], notes: 'Clean HUD, responsive, mobile touch controls' },
+          { category: 'Obstacles/Enemies', score: 2, tier: 'A', evidence: [{ type: 'machine', source: 'agent-estimate', timestamp: '2026-07-14T12:00:00Z', verified: false }], notes: 'No obstacles yet — open exploration only' },
           // Tier B — Agent-judged
           { category: 'Art Direction', score: 6, tier: 'B', evidence: [{ type: 'agent', source: 'visual-review', timestamp: '2026-07-14T12:00:00Z', verified: false }], justification: 'Warm palette, golden hour, cohesive aesthetic. Color choices feel intentional — amber, forest green, soft white. No visual dissonance.', notes: 'Strong foundation' },
           { category: 'Hero/Player', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'animation-review', timestamp: '2026-07-14T12:00:00Z', verified: false }], justification: 'Forest spirit with personality (hat, glow ring), smooth movement. Idle animation gives life. Missing: more personality cues.', notes: 'Good foundation' },
@@ -147,9 +147,9 @@ export const games: Game[] = [
         screenshot: '/images/whisperwood-v1.png',
         scores: [
           // Tier A — Machine-verified
-          { category: 'Performance', score: 9, tier: 'A', evidence: [{ type: 'machine', source: 'fps-trace', timestamp: '2026-07-15T12:00:00Z', verified: true }], notes: '60fps, post-processing adds minimal overhead' },
-          { category: 'UI/HUD', score: 7, tier: 'A', evidence: [{ type: 'machine', source: 'playwright-e2e', timestamp: '2026-07-15T12:00:00Z', verified: true }], notes: 'Same clean HUD' },
-          { category: 'Obstacles/Enemies', score: 2, tier: 'A', evidence: [{ type: 'machine', source: 'playwright-e2e', timestamp: '2026-07-15T12:00:00Z', verified: true }], notes: 'Still no obstacles' },
+          { category: 'Performance', score: 9, tier: 'A', evidence: [{ type: 'machine', source: 'agent-estimate', timestamp: '2026-07-15T12:00:00Z', verified: false }], notes: '60fps, post-processing adds minimal overhead' },
+          { category: 'UI/HUD', score: 7, tier: 'A', evidence: [{ type: 'machine', source: 'agent-estimate', timestamp: '2026-07-15T12:00:00Z', verified: false }], notes: 'Same clean HUD' },
+          { category: 'Obstacles/Enemies', score: 2, tier: 'A', evidence: [{ type: 'machine', source: 'agent-estimate', timestamp: '2026-07-15T12:00:00Z', verified: false }], notes: 'Still no obstacles' },
           // Tier B — Agent-judged
           { category: 'Art Direction', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'visual-review', timestamp: '2026-07-15T12:00:00Z', verified: false }], justification: 'Same warm palette + bloom glow adds depth. The glow adds a magical quality without feeling neon. Cohesion maintained.', notes: '+1 from v0' },
           { category: 'Hero/Player', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'animation-review', timestamp: '2026-07-15T12:00:00Z', verified: false }], justification: 'Same forest spirit. Movement feels same. No regression.', notes: 'Unchanged' },
