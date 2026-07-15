@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@vercel/og": "^0.11.1",
@@ -22,6 +22,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "eslint": "^10.7.0",
+    "eslint-config-next": "^16.2.10",
     "postcss": "^8.5.19",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.7.0"
