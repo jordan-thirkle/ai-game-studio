@@ -146,7 +146,7 @@ export default async function GamePage({ params }: GamePageProps) {
         {latestScore && (
           <section className="mb-12">
             <h2 className="text-xl font-bold mb-4">Quality Score</h2>
-            <ScoreBreakdown scores={latestScore.scores} total={latestScore.total} grade={latestScore.grade} />
+            <ScoreBreakdown scores={latestScore.scores} totalScoreA={latestScore.totalA} totalScoreB={latestScore.totalB} total={latestScore.total} grade={latestScore.grade} />
           </section>
         )}
 
