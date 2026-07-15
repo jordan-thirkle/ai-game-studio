@@ -1,11 +1,21 @@
 {
-  "version": 1,
-  "last_updated": "2026-07-15T02:45:00Z",
+  "version": 2,
+  "last_updated": "2026-07-15T03:01:32.553737",
   "concurrency_ceiling": 4,
   "resource_lanes": {
-    "skill_write": { "queue": [], "current": null },
-    "api_budget": { "daily_limit": 100, "used_today": 0, "by_track": {} },
-    "human_review": { "queue": [], "current": null }
+    "skill_write": {
+      "queue": [],
+      "current": null
+    },
+    "api_budget": {
+      "daily_limit": 100,
+      "used_today": 0,
+      "by_track": {}
+    },
+    "human_review": {
+      "queue": [],
+      "current": null
+    }
   },
   "skills": [
     {
@@ -27,8 +37,14 @@
       "promoted_date": null,
       "retired_date": null,
       "retirement_reason": null,
-      "genre_scope": ["cozy", "exploration", "general"],
-      "context_scope": ["threejs-game"],
+      "genre_scope": [
+        "cozy",
+        "exploration",
+        "general"
+      ],
+      "context_scope": [
+        "threejs-game"
+      ],
       "cross_domain_candidate": true,
       "security_review_required": false,
       "security_review_passed": false,
@@ -52,8 +68,13 @@
       "promoted_date": null,
       "retired_date": null,
       "retirement_reason": null,
-      "genre_scope": ["cozy", "exploration"],
-      "context_scope": ["threejs-game"],
+      "genre_scope": [
+        "cozy",
+        "exploration"
+      ],
+      "context_scope": [
+        "threejs-game"
+      ],
       "cross_domain_candidate": false,
       "security_review_required": false,
       "security_review_passed": false,
@@ -77,13 +98,49 @@
       "promoted_date": null,
       "retired_date": null,
       "retirement_reason": null,
-      "genre_scope": ["general"],
-      "context_scope": ["threejs-game"],
+      "genre_scope": [
+        "general"
+      ],
+      "context_scope": [
+        "threejs-game"
+      ],
       "cross_domain_candidate": true,
       "security_review_required": false,
       "security_review_passed": false,
       "verification_passed": false,
       "notes": "Particle burst + screen shake on collect. Simple but effective. Likely generalizes across genres."
+    },
+    {
+      "id": "resilience-logging",
+      "title": "Near-miss logging and failure mode tracking",
+      "domain": "resilience",
+      "status": "draft",
+      "source_game": "pipeline",
+      "source_iteration": "v1",
+      "evidence": [
+        "resilience-log: 4 entries logged on first day",
+        "near-miss-001: SKILL.md without version history",
+        "failure-mode-001: incorrect commit report",
+        "near-miss-002: dependency gate skipped",
+        "near-miss-003: verification gap"
+      ],
+      "trial_applied_to": null,
+      "trial_result": null,
+      "trial_evidence": [],
+      "promoted_date": null,
+      "retired_date": null,
+      "retirement_reason": null,
+      "genre_scope": [
+        "all"
+      ],
+      "context_scope": [
+        "all"
+      ],
+      "cross_domain_candidate": true,
+      "security_review_required": false,
+      "security_review_passed": false,
+      "verification_passed": false,
+      "notes": "Meta-skill: tracks pipeline reliability. First resilience domain skill."
     }
   ]
 }
