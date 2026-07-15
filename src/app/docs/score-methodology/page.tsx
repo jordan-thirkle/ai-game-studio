@@ -194,6 +194,52 @@ export default function ScoreMethodologyPage() {
             ))}
           </div>
 
+          {/* Tier A/B Explanation */}
+          <div className="mt-12 p-6 bg-[#1a2e1a]/50 rounded-xl border border-[#2a3a22]">
+            <h2 className="text-xl font-bold mb-4">Two-Tier Scoring System</h2>
+            <p className="text-[#a0a090] mb-6">
+              Every score is either <strong className="text-[#4a8a3a]">Tier A (Machine-Verified)</strong> or{' '}
+              <strong className="text-[#f0d890]">Tier B (Agent-Assessed)</strong>. This ensures transparency
+              and prevents self-certification.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-4 bg-[#0a0f0a]/50 rounded-lg">
+                <h3 className="font-bold text-[#4a8a3a] mb-2">Tier A — Machine-Verified</h3>
+                <p className="text-sm text-[#a0a090] mb-3">
+                  Scores generated from automated test output, performance traces, or tool reports.
+                  These are objective and reproducible.
+                </p>
+                <ul className="text-xs text-[#606060] space-y-1">
+                  <li>• Performance: FPS trace from headless browser</li>
+                  <li>• UI/HUD: Playwright e2e verification</li>
+                  <li>• Obstacles: Automated collision detection tests</li>
+                  <li>• Console errors: Captured log, zero tolerance</li>
+                  <li>• Visual regression: Automated screenshot diff</li>
+                </ul>
+              </div>
+
+              <div className="p-4 bg-[#0a0f0a]/50 rounded-lg">
+                <h3 className="font-bold text-[#f0d890] mb-2">Tier B — Agent-Assessed</h3>
+                <p className="text-sm text-[#a0a090] mb-3">
+                  Scores judged by the AI agent, with mandatory justification.
+                  Labeled as &quot;(agent-assessed)&quot; everywhere displayed.
+                </p>
+                <ul className="text-xs text-[#606060] space-y-1">
+                  <li>• Art Direction: Color palette, theme cohesion</li>
+                  <li>• Hero/Player: Character design, personality</li>
+                  <li>• World/Environment: Atmosphere, storytelling</li>
+                  <li>• Materials/Textures: Surface quality, variation</li>
+                  <li>• VFX/Motion: Game feel, juice, satisfaction</li>
+                </ul>
+                <p className="text-xs text-[#606060] mt-2">
+                  <strong>Requirement:</strong> 2-3 sentences of specific justification referencing
+                  concrete details. No justification = &quot;not yet assessed.&quot;
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Evidence Requirements */}
           <div className="mt-12 p-6 bg-[#1a2e1a]/50 rounded-xl border border-[#2a3a22]">
             <h2 className="text-xl font-bold mb-4">Evidence Requirements</h2>
