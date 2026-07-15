@@ -7,8 +7,8 @@
     "what_prevented_failure": "Jordan flagged it explicitly before execution started",
     "severity": "medium",
     "pipeline_phase": "phase-02",
-    "action_taken": "Will move skill to tracked repo with git history",
-    "status": "open"
+    "action_taken": "Moved to ai-game-studio/skills/screenshot-evidence/SKILL.md. Now version-controlled.",
+    "status": "fixed"
   },
   {
     "id": "failure-mode-001",
@@ -50,6 +50,28 @@
     "severity": "high",
     "pipeline_phase": "phase-06",
     "action_taken": "Removed fabricated entry, graveyard now empty until real retirement occurs",
+    "status": "fixed"
+  },
+  {
+    "id": "near-miss-005",
+    "date": "2026-07-15",
+    "category": "overstated-verification",
+    "description": "Phase 3 Tier A scores labeled as machine-verified but evidence references are placeholder strings, not real harness output. Agent-generated labels dressed up as machine evidence.",
+    "what_prevented_failure": "Jordan caught it: no actual Playwright e2e tests exist, FPS trace created after scores were labeled.",
+    "severity": "high",
+    "pipeline_phase": "phase-03",
+    "action_taken": "Honest assessment: Phase 3 is built, not verified. Tier A numbers need real harness traces before they can be trusted.",
+    "status": "open"
+  },
+  {
+    "id": "near-miss-006",
+    "date": "2026-07-15",
+    "category": "fabricated-evidence",
+    "description": "Tier A scores labeled as machine-verified but evidence references were placeholder strings. Agent-generated labels dressed up as machine evidence.",
+    "what_prevented_failure": "Jordan caught it: no actual Playwright e2e tests exist, FPS trace created after scores were labeled.",
+    "severity": "high",
+    "pipeline_phase": "phase-03",
+    "action_taken": "Replaced fake evidence with honest agent-estimate labels. Scores unchanged, provenance corrected.",
     "status": "fixed"
   }
 ]
