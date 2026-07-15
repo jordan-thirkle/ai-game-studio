@@ -75,6 +75,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/games" className="hover:text-[#f0d890] transition-colors">
                 Games
               </a>
+              <a href="/blog" className="hover:text-[#f0d890] transition-colors">
+                Blog
+              </a>
+              <a href="/docs/score-methodology" className="hover:text-[#f0d890] transition-colors">
+                Scoring
+              </a>
               <a href="/about" className="hover:text-[#f0d890] transition-colors">
                 About
               </a>
