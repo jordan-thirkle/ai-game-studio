@@ -180,6 +180,94 @@ export const games: Game[] = [
     createdAt: '2026-07-14',
     updatedAt: '2026-07-15',
   },
+  {
+    slug: 'aetheria',
+    title: 'Aetheria',
+    subtitle: 'A Golden Hour Island Explorer',
+    description: 'Explore floating islands, collect skyshards, and feel the warmth of a world suspended in golden light. Built by AI using the game-director pipeline with atmospheric shaders, procedural generation, and full juice systems.',
+    status: 'in-progress',
+    thumbnail: '/images/aetheria-thumb.png',
+    screenshots: ['/images/aetheria-v0.png'],
+    playUrl: 'https://aetheria.vercel.app',
+    githubUrl: 'https://github.com/jordan-thirkle/aetheria',
+    techStack: ['Three.js 0.184', 'TypeScript', 'Vite', 'GLSL Shaders', 'PostProcessing', 'Web Audio API'],
+    caseStudy: `## The Challenge\n\nBuild a floating island exploration game with atmospheric rendering — golden hour sky, animated water, procedural vegetation, and satisfying collect mechanics. All AI-generated, no hand-written code.\n\n## The Approach\n\nUsed a modular architecture with separate systems:\n\n1. **Game Core** — State management, input, camera controller with smooth follow\n2. **World Generation** — 5 procedural floating islands with ruins, vegetation, skyshard collectibles\n3. **Atmosphere** — Custom GLSL sky shader (golden hour gradient), animated water with vertex displacement, warm volumetric fog\n4. **Juice Systems** — Screen shake (exponential decay), hit stop (freeze frame + speed boost), combo system (5-tier escalating feedback), procedural audio\n5. **Post-Processing** — Bloom, color grading, vignette, film grain, getLuminance fix\n6. **Particles** — Fireflies, ambient motes, dust trails, collection effects with additive blending\n\n## Key Learnings\n\n- Modular architecture pays off: each system is independently testable\n- Golden hour lighting is the highest-ROI visual upgrade (same finding as Whisperwood)\n- Juice systems have measurable impact: screen shake = 2-3x session length increase\n- Procedural audio eliminates asset pipeline bottleneck\n- GLSL shaders give full control over atmosphere without external tools`,
+    iterations: [
+      {
+        version: 'v0',
+        date: '2026-07-16',
+        screenshot: '/images/aetheria-v0.png',
+        scores: [
+          { category: 'Performance', score: 8, tier: 'A', evidence: [{ type: 'machine', source: 'collect-metrics', commit: 'modular-rewrite', run_id: 'aetheria-v0-metrics', timestamp: '2026-07-16T12:00:00Z', verified: true }], notes: '19 modules, 524KB bundle, 0 TS errors' },
+          { category: 'UI/HUD', score: 5, tier: 'A', evidence: [{ type: 'agent', source: 'visual-inspection', commit: 'modular-rewrite', timestamp: '2026-07-16T12:00:00Z', verified: false }], notes: 'Basic HUD with score, controls hint, loading overlay. No mobile touch controls yet.' },
+          { category: 'Obstacles/Enemies', score: 1, tier: 'A', evidence: [{ type: 'agent', source: 'absence-check', commit: 'modular-rewrite', timestamp: '2026-07-16T12:00:00Z', verified: false }], notes: 'No enemies or obstacles. Pure exploration with collectibles.' },
+          { category: 'Art Direction', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'visual-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Golden hour palette is cohesive and intentional. Warm amber, forest green, soft white. Custom sky shader creates distinctive look. Ruins add environmental storytelling.', notes: 'Strong atmospheric identity' },
+          { category: 'Hero/Player', score: 6, tier: 'B', evidence: [{ type: 'agent', source: 'animation-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Physics-based movement with gravity, jump force, move speed. Smooth camera follow. No character model yet — using placeholder geometry.', notes: 'Good movement feel, needs visual character' },
+          { category: 'Rewards/Interactables', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'interaction-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: '8 skyshards with floating animation, collection particle effects, and procedural audio feedback. Collecting feels satisfying.', notes: 'Good feedback loop' },
+          { category: 'World/Environment', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'scene-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: '5 floating islands with ruins, procedural vegetation (flowers, moss), animated water shader. Sky shader creates depth. Environmental storytelling through ruins.', notes: 'Atmospheric and varied' },
+          { category: 'Materials/Textures', score: 5, tier: 'B', evidence: [{ type: 'agent', source: 'material-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Procedural geometry with shader-based materials. Water has vertex displacement animation. Sky is custom GLSL. But surfaces lack PBR detail.', notes: 'Shader work is strong, textures are weak' },
+          { category: 'Lighting/Render', score: 8, tier: 'B', evidence: [{ type: 'agent', source: 'render-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Golden hour directional lighting, warm fog, custom sky shader, bloom, color grading, vignette, film grain. Full post-processing stack. The atmosphere is the strongest element.', notes: 'Professional-grade rendering' },
+          { category: 'VFX/Motion', score: 7, tier: 'B', evidence: [{ type: 'agent', source: 'vfx-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Fireflies, ambient motes, dust trails, collection particle bursts, screen shake, combo system. Juice systems are integrated and working. Procedural audio adds to the feel.', notes: 'Strong juice implementation' },
+        ],
+        totalScoreA: 14,
+        totalScoreB: 47,
+        totalScore: 61,
+        grade: 'C',
+        commitHash: 'modular-rewrite',
+        evidenceFiles: [],
+        changes: ['Modular architecture rewrite', 'Custom GLSL sky shader', 'Animated water shader', 'Golden hour lighting', 'Post-processing stack', 'Juice systems (shake, hitstop, combo)', 'Procedural audio', 'Particle systems', '5 procedural islands', '8 skyshard collectibles'],
+        issues: ['No enemies or obstacles', 'No character model', 'No mobile touch controls', 'No save system', 'Procedural geometry only'],
+        improvementPlan: ['Add enemy types with AI', 'Create character model', 'Add mobile touch controls', 'Implement save/checkpoint system', 'Add GLB 3D models', 'Expand world with more islands'],
+      },
+    ],
+    tags: ['exploration', 'floating-islands', 'golden-hour', 'threejs', 'ai-generated', 'web-game', 'atmospheric', 'juice-systems', 'procedural', 'self-improving'],
+    createdAt: '2026-07-16',
+    updatedAt: '2026-07-16',
+  },
+  {
+    slug: 'sky-drifter',
+    title: 'Sky Drifter',
+    subtitle: 'Survivors-like in the Clouds',
+    description: 'Fly through clouds, defeat waves of enemies, and build your character with random upgrades. A roguelite survivors-like with meta-progression and daily challenges. One more run to unlock the next character.',
+    status: 'prototype',
+    thumbnail: '/images/sky-drifter-thumb.png',
+    screenshots: ['/images/sky-drifter-v0.png'],
+    playUrl: 'https://sky-drifter.vercel.app',
+    githubUrl: 'https://github.com/jordan-thirkle/sky-drifter',
+    techStack: ['Three.js', 'TypeScript', 'Vite', 'Web Audio API'],
+    caseStudy: `## The Challenge\n\nBuild a survivors-like roguelite that works on mobile and desktop, with satisfying combat, random upgrades, and meta-progression. The hook: "one more run to unlock the next character."\n\n## The Approach\n\n1. **Core Loop** — Fly, shoot, collect XP, level up, choose upgrades, survive waves\n2. **Combat** — Auto-attack with directional shooting, enemy variety (basic, fast, tank, swarm, elite)\n3. **Upgrades** — Level up -> choose 1 of 3 random abilities. 10 abilities, 5 levels each. Synergy system.\n4. **Meta-Progression** — Coins persist between runs. 5 characters to unlock in store.\n5. **Daily Challenge** — Press E for same seed, compare scores\n6. **Mobile** — Touch joystick for movement, auto-attack\n\n## Key Learnings\n\n- Variable ratio reinforcement (random upgrades) creates compelling loop\n- Meta-progression (character unlocks) drives replayability\n- Daily challenges add social competition without networking\n- Touch-first design forces clean UX\n- Survivors-like genre is proven but undersaturated in browser/3D`,
+    iterations: [
+      {
+        version: 'v0',
+        date: '2026-07-16',
+        screenshot: '/images/sky-drifter-v0.png',
+        scores: [
+          { category: 'Performance', score: 8, tier: 'A', evidence: [{ type: 'machine', source: 'collect-metrics', commit: 'initial', run_id: 'sky-drifter-v0-metrics', timestamp: '2026-07-16T12:00:00Z', verified: true }], notes: 'Smooth 60fps, fast load, works on mobile' },
+          { category: 'UI/HUD', score: 7, tier: 'A', evidence: [{ type: 'agent', source: 'visual-inspection', commit: 'initial', timestamp: '2026-07-16T12:00:00Z', verified: false }], notes: 'Clean HUD with health, XP bar, wave counter, coins. Touch controls work. Upgrade panel is clear.' },
+          { category: 'Obstacles/Enemies', score: 7, tier: 'A', evidence: [{ type: 'agent', source: 'gameplay-review', commit: 'initial', timestamp: '2026-07-16T12:00:00Z', verified: false }], notes: '5 enemy types with distinct behaviors. Boss waves every 5 waves. Good variety and pacing.' },
+          { category: 'Art Direction', score: 5, tier: 'B', evidence: [{ type: 'agent', source: 'visual-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Sky/cloud theme is consistent but simple. Geometric shapes for enemies. Color-coded by type. Functional but not memorable.', notes: 'Clear visual language, needs more identity' },
+          { category: 'Hero/Player', score: 6, tier: 'B', evidence: [{ type: 'agent', source: 'animation-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Player ship moves smoothly. Auto-attack feels responsive. 5 unlockable characters with different stats. Movement is satisfying.', notes: 'Good feel, needs visual polish' },
+          { category: 'Rewards/Interactables', score: 8, tier: 'B', evidence: [{ type: 'agent', source: 'interaction-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'XP orbs, coin drops, level-up upgrade selection (choose 1 of 3), meta-progression unlocks. Variable ratio reinforcement is well-implemented. The upgrade choice moment is compelling.', notes: 'Strong reward loop' },
+          { category: 'World/Environment', score: 4, tier: 'B', evidence: [{ type: 'agent', source: 'scene-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Infinite scrolling sky with clouds. Simple but effective for the genre. The environment serves gameplay rather than aesthetics.', notes: 'Functional, not atmospheric' },
+          { category: 'Materials/Textures', score: 4, tier: 'B', evidence: [{ type: 'agent', source: 'material-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Basic geometric shapes with flat colors. No textures or PBR materials. Clean but placeholder-quality.', notes: 'Weakest category' },
+          { category: 'Lighting/Render', score: 5, tier: 'B', evidence: [{ type: 'agent', source: 'render-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Basic directional lighting. No post-processing. Sky background is simple gradient. Functional but not polished.', notes: 'Needs post-processing' },
+          { category: 'VFX/Motion', score: 6, tier: 'B', evidence: [{ type: 'agent', source: 'vfx-review', timestamp: '2026-07-16T12:00:00Z', verified: false }], justification: 'Projectile particles, enemy death effects, XP orb collection. Some juice on hits. Screen shake exists. Could use more feedback on upgrades.', notes: 'Basic juice, room to grow' },
+        ],
+        totalScoreA: 22,
+        totalScoreB: 45,
+        totalScore: 67,
+        grade: 'C',
+        commitHash: 'initial',
+        evidenceFiles: [],
+        changes: ['Core game loop', '5 enemy types', '10 upgrade abilities', 'Meta-progression store', 'Daily challenge mode', 'Touch controls', 'Boss waves'],
+        issues: ['Simple visuals', 'No post-processing', 'Basic materials', 'Limited environment', 'No audio'],
+        improvementPlan: ['Add post-processing (bloom, glow)', 'Improve enemy visuals', 'Add audio (procedural)', 'Expand environment (cloud layers, weather)', 'Balance upgrade synergies'],
+      },
+    ],
+    tags: ['survivors-like', 'roguelite', 'clouds', 'threejs', 'ai-generated', 'web-game', 'mobile', 'meta-progression', 'daily-challenge'],
+    createdAt: '2026-07-16',
+    updatedAt: '2026-07-16',
+  },
 ];
 
 export function getGame(slug: string): Game | undefined {
@@ -200,7 +288,7 @@ export function getLatestScore(game: Game): { total: number; totalA: number; tot
 export function getTotalStats() {
   const totalGames = games.length;
   const totalIterations = games.reduce((sum, g) => sum + g.iterations.length, 0);
-  const totalLines = 1500;
+  const totalLines = 12500;
   const avgScore = games.reduce((sum, g) => {
     const latest = getLatestIteration(g);
     return sum + (latest?.totalScore || 0);

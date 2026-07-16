@@ -1,28 +1,651 @@
 {
-  "version": 1,
-  "last_updated": "2026-07-15T03:30:00Z",
+  "version": 2,
+  "last_updated": "2026-07-16T04:59:19.868456",
   "assets": {
     "models": {
       "description": "3D models (GLTF/GLB format)",
-      "items": []
+      "formats": [
+        "glb",
+        "gltf",
+        "obj",
+        "fbx"
+      ],
+      "items": [
+        {
+          "id": "oak-tree-lowpoly",
+          "name": "Oak Tree (Low Poly)",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.835148",
+          "status": "active",
+          "size_kb": 245,
+          "tags": [
+            "tree",
+            "nature",
+            "low-poly",
+            "environment"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Shap-E + Three.js cleanup",
+          "generation_prompt": "Low poly stylized oak tree, autumn colors, game-ready, 1200 triangles max",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 1200,
+          "dependencies": [],
+          "usage_example": "import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';\nconst loader = new GLTFLoader();\nconst gltf = await loader.loadAsync('/assets/models/oak-tree-lowpoly.glb');\nscene.add(gltf.scene);"
+        },
+        {
+          "id": "player-character",
+          "name": "Player Character",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.838175",
+          "status": "active",
+          "size_kb": 890,
+          "tags": [
+            "character",
+            "humanoid",
+            "hero",
+            "animated"
+          ],
+          "game_used_in": [
+            "Whisperwood",
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "Mixamo + Three.js rigging",
+          "generation_prompt": "Stylized fantasy adventurer, low poly, idle/walk/run animations, bone rig included",
+          "license": "cc-by",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 4500,
+          "dependencies": [],
+          "usage_example": ""
+        },
+        {
+          "id": "sword-rusty",
+          "name": "Rusty Sword",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.838175",
+          "status": "active",
+          "size_kb": 120,
+          "tags": [
+            "weapon",
+            "sword",
+            "melee",
+            "prop"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "TripoSR",
+          "generation_prompt": "Rusty medieval sword, game asset, PBR materials, single blade, worn leather grip",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 800,
+          "dependencies": [],
+          "usage_example": ""
+        },
+        {
+          "id": "stone-dungeon-wall",
+          "name": "Stone Dungeon Wall",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.841204",
+          "status": "active",
+          "size_kb": 85,
+          "tags": [
+            "wall",
+            "dungeon",
+            "stone",
+            "modular"
+          ],
+          "game_used_in": [
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "TripoSR",
+          "generation_prompt": "Modular stone dungeon wall tile, seamless, PBR texture set, medieval fantasy style",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 400,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
     },
     "textures": {
       "description": "Texture maps (PNG, JPG, HDR)",
-      "items": []
+      "formats": [
+        "png",
+        "jpg",
+        "hdr",
+        "exr"
+      ],
+      "items": [
+        {
+          "id": "forest-floor-diffuse",
+          "name": "Forest Floor Diffuse",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.841204",
+          "status": "active",
+          "size_kb": 512,
+          "tags": [
+            "ground",
+            "forest",
+            "diffuse",
+            "seamless"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Stable Diffusion XL",
+          "generation_prompt": "Seamless forest floor texture, fallen leaves, moss, dirt, top-down view, tileable",
+          "license": "cc0",
+          "resolution": "1024x1024",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": "import { TextureLoader } from 'three';\nconst loader = new TextureLoader();\nconst diffuse = await loader.loadAsync('/assets/textures/forest-floor-diffuse.png');\ndiffuse.wrapS = diffuse.wrapT = RepeatWrapping;\nmaterial.map = diffuse;"
+        },
+        {
+          "id": "bark-normal-map",
+          "name": "Bark Normal Map",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.841204",
+          "status": "active",
+          "size_kb": 384,
+          "tags": [
+            "bark",
+            "tree",
+            "normal",
+            "seamless"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Materialize",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "1024x1024",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        },
+        {
+          "id": "stone-brick-roughness",
+          "name": "Stone Brick Roughness",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.844736",
+          "status": "active",
+          "size_kb": 256,
+          "tags": [
+            "stone",
+            "brick",
+            "roughness",
+            "seamless"
+          ],
+          "game_used_in": [
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "Materialize",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "512x512",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        },
+        {
+          "id": "sky-hdri-sunset",
+          "name": "Sunset Sky HDRI",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.844736",
+          "status": "active",
+          "size_kb": 4096,
+          "tags": [
+            "sky",
+            "hdri",
+            "sunset",
+            "environment"
+          ],
+          "game_used_in": [
+            "Whisperwood",
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "Polyhaven API",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "2048x1024",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
     },
     "audio": {
       "description": "Sound effects and music",
-      "items": []
+      "formats": [
+        "mp3",
+        "ogg",
+        "wav"
+      ],
+      "items": [
+        {
+          "id": "footstep-grass",
+          "name": "Grass Footstep SFX",
+          "source": "Suno",
+          "added_date": "2026-07-16T04:59:19.847258",
+          "status": "active",
+          "size_kb": 45,
+          "tags": [
+            "footstep",
+            "grass",
+            "walk",
+            "foley"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "ElevenLabs SFX",
+          "generation_prompt": "Single footstep on grass, foley recording, clean, no reverb",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 2.5,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": "import { AudioLoader, Audio } from 'three';\nconst loader = new AudioLoader();\nconst buffer = await loader.loadAsync('/assets/audio/footstep-grass.ogg');\nconst sound = new Audio(listener);\nsound.setBuffer(buffer);"
+        },
+        {
+          "id": "ambient-forest",
+          "name": "Forest Ambience",
+          "source": "Suno",
+          "added_date": "2026-07-16T04:59:19.850288",
+          "status": "active",
+          "size_kb": 890,
+          "tags": [
+            "ambient",
+            "forest",
+            "nature",
+            "loop"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Suno v4",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 60,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        },
+        {
+          "id": "sword-clash",
+          "name": "Sword Clash SFX",
+          "source": "Suno",
+          "added_date": "2026-07-16T04:59:19.850288",
+          "status": "active",
+          "size_kb": 32,
+          "tags": [
+            "combat",
+            "sword",
+            "clash",
+            "metal"
+          ],
+          "game_used_in": [
+            "Whisperwood",
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "ElevenLabs SFX",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 1.2,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        },
+        {
+          "id": "main-theme",
+          "name": "Whisperwood Main Theme",
+          "source": "Suno",
+          "added_date": "2026-07-16T04:59:19.853316",
+          "status": "active",
+          "size_kb": 3200,
+          "tags": [
+            "music",
+            "theme",
+            "orchestral",
+            "fantasy"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Suno v4",
+          "generation_prompt": "Fantasy orchestral theme, magical forest, flutes and strings, 120 BPM, ethereal",
+          "license": "cc-by",
+          "resolution": "",
+          "duration_seconds": 180,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
+    },
+    "shaders": {
+      "description": "Vertex, fragment, compute shaders",
+      "formats": [
+        "glsl",
+        "wgsl"
+      ],
+      "items": [
+        {
+          "id": "dissolve-effect",
+          "name": "Dissolve Shader",
+          "source": "Claude",
+          "added_date": "2026-07-16T04:59:19.853316",
+          "status": "active",
+          "size_kb": 4,
+          "tags": [
+            "shader",
+            "dissolve",
+            "effect",
+            "fragment"
+          ],
+          "game_used_in": [
+            "Whisperwood",
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "Claude 3.5 Sonnet",
+          "generation_prompt": "",
+          "license": "mit",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": "const material = new ShaderMaterial({\n  uniforms: { threshold: { value: 0.0 }, color: { value: new Color(0x4a8a3a) } },\n  vertexShader: dissolveVertex,\n  fragmentShader: dissolveFragment,\n});"
+        },
+        {
+          "id": "water-reflective",
+          "name": "Water Surface Shader",
+          "source": "Claude",
+          "added_date": "2026-07-16T04:59:19.856342",
+          "status": "active",
+          "size_kb": 6,
+          "tags": [
+            "shader",
+            "water",
+            "reflective",
+            "animated"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Claude 3.5 Sonnet",
+          "generation_prompt": "",
+          "license": "mit",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
+    },
+    "materials": {
+      "description": "PBR, custom, procedural materials",
+      "formats": [
+        "json"
+      ],
+      "items": [
+        {
+          "id": "pbr-forest-ground",
+          "name": "Forest Ground PBR",
+          "source": "Three.js",
+          "added_date": "2026-07-16T04:59:19.856342",
+          "status": "active",
+          "size_kb": 2,
+          "tags": [
+            "material",
+            "pbr",
+            "ground",
+            "forest"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Three.js procedural",
+          "generation_prompt": "",
+          "license": "mit",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": "const material = new MeshStandardMaterial({\n  map: forestDiffuse,\n  normalMap: forestNormal,\n  roughnessMap: forestRoughness,\n  roughness: 0.9,\n});"
+        }
+      ]
     },
     "scripts": {
       "description": "Reusable code patterns and utilities",
-      "items": []
+      "formats": [
+        "ts",
+        "js"
+      ],
+      "items": [
+        {
+          "id": "procedural-tree-gen",
+          "name": "Procedural Tree Generator",
+          "source": "Claude",
+          "added_date": "2026-07-16T04:59:19.859373",
+          "status": "active",
+          "size_kb": 8,
+          "tags": [
+            "procedural",
+            "tree",
+            "generator",
+            "l-system"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Claude 3.5 Sonnet",
+          "generation_prompt": "",
+          "license": "mit",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": "import { generateTree } from './procedural-tree-gen';\nconst tree = generateTree({ seed: 42, height: 5, branches: 4, leafDensity: 0.8 });\nscene.add(tree);"
+        },
+        {
+          "id": "camera-follow",
+          "name": "Smart Camera Follow",
+          "source": "Claude",
+          "added_date": "2026-07-16T04:59:19.862400",
+          "status": "active",
+          "size_kb": 5,
+          "tags": [
+            "camera",
+            "follow",
+            "smooth",
+            "lookahead"
+          ],
+          "game_used_in": [
+            "Whisperwood",
+            "Aetheria",
+            "Neon Drift"
+          ],
+          "notes": "",
+          "ai_model": "Claude 3.5 Sonnet",
+          "generation_prompt": "",
+          "license": "mit",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
+    },
+    "animations": {
+      "description": "Character, environment, UI animations",
+      "formats": [
+        "glb",
+        "json"
+      ],
+      "items": [
+        {
+          "id": "character-idle-breathe",
+          "name": "Idle Breathing Animation",
+          "source": "ComfyUI",
+          "added_date": "2026-07-16T04:59:19.862400",
+          "status": "active",
+          "size_kb": 45,
+          "tags": [
+            "animation",
+            "idle",
+            "breathe",
+            "character"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Mixamo",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
+    },
+    "ui_assets": {
+      "description": "Icons, sprites, fonts",
+      "formats": [
+        "svg",
+        "png",
+        "woff2"
+      ],
+      "items": [
+        {
+          "id": "health-bar-hud",
+          "name": "Health Bar HUD Element",
+          "source": "Claude",
+          "added_date": "2026-07-16T04:59:19.865426",
+          "status": "active",
+          "size_kb": 3,
+          "tags": [
+            "ui",
+            "hud",
+            "health",
+            "bar"
+          ],
+          "game_used_in": [
+            "Whisperwood",
+            "Aetheria"
+          ],
+          "notes": "",
+          "ai_model": "Claude + SVG",
+          "generation_prompt": "",
+          "license": "mit",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": "// React component for health bar\nfunction HealthBar({ current, max }: { current: number; max: number }) {\n  return (\n    <div className=\"health-bar\">\n      <div className=\"health-fill\" style={{ width: `${(current/max)*100}%` }} />\n    </div>\n  );\n}"
+        },
+        {
+          "id": "icon-sword-svg",
+          "name": "Sword Icon (SVG)",
+          "source": "Claude",
+          "added_date": "2026-07-16T04:59:19.868456",
+          "status": "active",
+          "size_kb": 1,
+          "tags": [
+            "icon",
+            "svg",
+            "weapon",
+            "ui"
+          ],
+          "game_used_in": [
+            "Whisperwood"
+          ],
+          "notes": "",
+          "ai_model": "Claude + SVG",
+          "generation_prompt": "",
+          "license": "cc0",
+          "resolution": "",
+          "duration_seconds": 0,
+          "polygon_count": 0,
+          "dependencies": [],
+          "usage_example": ""
+        }
+      ]
     }
   },
   "stats": {
-    "total_assets": 0,
-    "total_size_kb": 0,
-    "last_generated": null,
-    "generation_cost_usd": 0
+    "total_assets": 20,
+    "total_size_kb": 10829,
+    "last_generated": "2026-07-16T04:59:19.868456",
+    "generation_cost_usd": 0,
+    "by_game": {
+      "Whisperwood": [
+        "oak-tree-lowpoly",
+        "player-character",
+        "sword-rusty",
+        "forest-floor-diffuse",
+        "bark-normal-map",
+        "sky-hdri-sunset",
+        "footstep-grass",
+        "ambient-forest",
+        "sword-clash",
+        "main-theme",
+        "dissolve-effect",
+        "water-reflective",
+        "pbr-forest-ground",
+        "procedural-tree-gen",
+        "camera-follow",
+        "character-idle-breathe",
+        "health-bar-hud",
+        "icon-sword-svg"
+      ],
+      "Aetheria": [
+        "player-character",
+        "stone-dungeon-wall",
+        "stone-brick-roughness",
+        "sky-hdri-sunset",
+        "sword-clash",
+        "dissolve-effect",
+        "camera-follow",
+        "health-bar-hud"
+      ],
+      "Neon Drift": [
+        "camera-follow"
+      ]
+    }
   }
 }

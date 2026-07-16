@@ -45,6 +45,39 @@ Each agent invocation gets a 50k token budget. At 80% usage, warn. At 95%, trigg
 - No self-certification — the pipeline doesn't mark its own work as verified.
 - No "trust me" — everything is verifiable by a third party.
 - No calendar-based gating — gate on evidence, not time.
+- **No reinventing the wheel** — always check `docs/LEVERAGE.md` before writing any code. If a proven library exists with 100+ stars, use it. Our time goes to game-specific logic and unique differentiators, not reimplementing physics engines or noise generators.
+
+## Continuous Improvement
+
+The pipeline improves itself. Every game we build makes the next one better.
+
+### Weekly Pipeline Health Check
+Every Friday, run through the checklist in `docs/PIPELINE-HEALTH-CHECK.md`:
+1. What did we build this week?
+2. What did we learn?
+3. What gaps did we discover?
+4. What should we research next?
+5. What's blocking us?
+
+### Gap Detection
+When you notice something missing, create a research task:
+- Player testing methodology?
+- Competitive analysis?
+- Accessibility guidelines?
+- Platform optimization?
+- Analytics/telemetry?
+
+**Every gap we find makes the next game better.**
+
+### Triggered Reviews
+Run a gap analysis when:
+- A game scores below 2.0 average
+- Player retention drops
+- A new platform/browser is added
+- A competitor launches something new
+- Player feedback reveals a blind spot
+
+---
 
 ## Resilience
 
