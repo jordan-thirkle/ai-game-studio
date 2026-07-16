@@ -2,15 +2,15 @@ import type { Metadata } from 'next';
 import { StatusBanner } from '@/components/StatusBanner';
 import './globals.css';
 
-const SITE_URL = 'https://ai-game-studio.vercel.app';
-const SITE_NAME = 'AI Game Studio';
+const SITE_URL = 'https://ai-game-studio-one.vercel.app';
+const SITE_NAME = 'Eigen';
 const SITE_DESC =
-  'A portfolio of games built entirely by AI agents. Each iteration is scored, documented, and shared. Watch the journey from prototype to AAA quality through self-improving systems.';
+  'An AI software studio. Seven agents building games, tools, and experiences with inherent quality. Every iteration scored. Every lesson shared.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Building Games with Self-Improving Agents`,
+    default: `${SITE_NAME} — Inherent Quality`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESC,
@@ -51,66 +51,82 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
   },
   other: {
-    'theme-color': '#0a0f0a',
+    'theme-color': '#0A0A0F',
   },
 };
+
+const navLinks = [
+  { href: '/games', label: 'Games' },
+  { href: '/team', label: 'Team' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/docs/score-methodology', label: 'Scoring' },
+  { href: '/about', label: 'About' },
+];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <meta name="theme-color" content="#0a0f0a" />
-        <meta name="msapplication-TileColor" content="#0a0f0a" />
+        <meta name="theme-color" content="#0A0A0F" />
+        <meta name="msapplication-TileColor" content="#0A0A0F" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="bg-[#0a0f0a] text-[#e8e0d0] min-h-screen">
+      <body className="min-h-screen bg-[#0A0A0F] text-white">
         <StatusBanner />
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0f0a]/80 backdrop-blur-md border-b border-[#2a3a22]">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        {/* Navigation */}
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-800 bg-[#0A0A0F]/80 backdrop-blur-md">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+            {/* Logo */}
             <a href="/" className="flex items-center gap-3">
-              <span className="text-2xl">🎮</span>
-              <span className="font-semibold text-lg">AI Game Studio</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-500 text-sm font-bold text-white">
+                E
+              </div>
+              <span className="text-lg font-semibold text-white">Eigen</span>
             </a>
-            <div className="flex items-center gap-6 text-sm">
-              <a href="/games" className="hover:text-[#f0d890] transition-colors">
-                Games
-              </a>
-              <a href="/tools" className="hover:text-[#f0d890] transition-colors">
-                Tools
-              </a>
-              <a href="/assets" className="hover:text-[#f0d890] transition-colors">
-                Assets
-              </a>
-              <a href="/blog" className="hover:text-[#f0d890] transition-colors">
-                Blog
-              </a>
-              <a href="/docs/score-methodology" className="hover:text-[#f0d890] transition-colors">
-                Scoring
-              </a>
-              <a href="/stats" className="hover:text-[#f0d890] transition-colors">
-                Stats
-              </a>
-              <a href="/skills/graveyard" className="hover:text-[#f0d890] transition-colors">
-                Graveyard
-              </a>
-              <a href="/ledgers" className="hover:text-[#f0d890] transition-colors">
-                Ledgers
-              </a>
-              <a href="/about" className="hover:text-[#f0d890] transition-colors">
-                About
-              </a>
+
+            {/* Nav Links */}
+            <div className="hidden items-center gap-6 text-sm text-gray-400 md:flex">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ))}
               <a
-                href="https://github.com/jordan-thirkle"
+                href="https://github.com/jordan-thirkle/ai-game-studio"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#f0d890] transition-colors"
+                className="transition-colors hover:text-white"
               >
                 GitHub
               </a>
             </div>
           </div>
         </nav>
+
         <main className="pt-20">{children}</main>
+
+        {/* Footer */}
+        <footer className="border-t border-gray-800 px-6 py-12">
+          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
+            <div className="flex items-center gap-3">
+              <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-500 text-xs font-bold text-white">
+                E
+              </div>
+              <span className="text-sm font-medium text-white">Eigen</span>
+              <span className="text-sm text-gray-500">Inherent quality.</span>
+            </div>
+            <div className="flex gap-6 text-sm text-gray-500">
+              <a href="/team" className="hover:text-white">Team</a>
+              <a href="/blog" className="hover:text-white">Blog</a>
+              <a href="https://github.com/jordan-thirkle/ai-game-studio" className="hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
   );
