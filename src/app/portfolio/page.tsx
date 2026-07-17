@@ -27,15 +27,15 @@ export default function PortfolioPage() {
               className="group rounded-lg border border-gray-800 bg-gray-900/50 p-6 transition-all hover:border-blue-500/50 hover:bg-gray-900"
             >
               <div className="mb-3 text-xl font-bold group-hover:text-blue-500">
-                {game.name}
+                {game.title}
               </div>
-              <div className="mb-3 text-sm text-gray-500">{game.genre}</div>
+              <div className="mb-3 text-sm text-gray-500">{game.subtitle}</div>
               <p className="mb-4 text-sm text-gray-400">{game.description}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">Status: {game.status}</span>
-                {game.score && (
+                {game.iterations.length > 0 && (
                   <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400">
-                    {game.score}/100
+                    {game.iterations.length} iterations
                   </span>
                 )}
               </div>
