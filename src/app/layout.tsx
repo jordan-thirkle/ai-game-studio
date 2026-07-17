@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { StatusBanner } from '@/components/StatusBanner';
+import { Navigation } from '@/components/Navigation';
 import './globals.css';
 
 const SITE_URL = 'https://ai-game-studio-one.vercel.app';
 const SITE_NAME = 'Eigen';
 const SITE_DESC =
-  'An AI software studio. Seven agents building games, tools, and experiences with inherent quality. Every iteration scored. Every lesson shared.';
+  'An AI game studio. Seven agents building games with inherent quality. Every iteration scored. Every lesson shared.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -14,8 +14,9 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESC,
+  keywords: ['AI game studio', 'Three.js games', 'browser games', 'AI-generated', 'game development', 'web games', 'Eigen'],
   openGraph: {
-    title: SITE_NAME,
+    title: `${SITE_NAME} — Inherent Quality`,
     description: SITE_DESC,
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
         url: '/api/og',
         width: 1200,
         height: 630,
-        alt: SITE_NAME,
+        alt: `${SITE_NAME} — AI Game Studio`,
       },
     ],
     locale: 'en_US',
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: SITE_NAME,
+    title: `${SITE_NAME} — Inherent Quality`,
     description: SITE_DESC,
     images: ['/api/og'],
   },
@@ -51,81 +52,175 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
   },
   other: {
-    'theme-color': '#0A0A0F',
+    'theme-color': '#0a0f0a',
   },
 };
 
-const navLinks = [
-  { href: '/games', label: 'Games' },
-  { href: '/portfolio', label: 'Portfolio' },
-  { href: '/team', label: 'Team' },
-  { href: '/process', label: 'Process' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/docs/score-methodology', label: 'Scoring' },
-  { href: '/about', label: 'About' },
-];
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Eigen',
+    url: SITE_URL,
+    description: SITE_DESC,
+    sameAs: [
+      'https://github.com/jordan-thirkle/ai-game-studio',
+    ],
+    foundingDate: '2026',
+    numberOfEmployees: 7,
+    applicationCategory: 'Game',
+    operatingSystem: 'Web Browser',
+  };
+
+  const webPageData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: SITE_DESC,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_URL}/games?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <html lang="en">
       <head>
-        <meta name="theme-color" content="#0A0A0F" />
-        <meta name="msapplication-TileColor" content="#0A0A0F" />
+        <meta name="theme-color" content="#0a0f0a" />
+        <meta name="msapplication-TileColor" content="#0a0f0a" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageData) }}
+        />
       </head>
-      <body className="min-h-screen bg-[#0A0A0F] text-white">
-        <StatusBanner />
+      <body className="min-h-screen bg-[var(--color-dark)] text-[var(--color-white)]">
+        <Navigation />
 
-        {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-800 bg-[#0A0A0F]/80 backdrop-blur-md">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-500 text-sm font-bold text-white">
-                E
-              </div>
-              <span className="text-lg font-semibold text-white">Eigen</span>
-            </a>
-
-            {/* Nav Links */}
-            <div className="hidden items-center gap-6 text-sm text-gray-400 md:flex">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="transition-colors hover:text-white"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <a
-                href="https://github.com/jordan-thirkle/ai-game-studio"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-white"
-              >
-                GitHub
-              </a>
-            </div>
-          </div>
-        </nav>
-
-        <main className="pt-20">{children}</main>
+        <main className="pt-16">{children}</main>
 
         {/* Footer */}
-        <footer className="border-t border-gray-800 px-6 py-12">
-          <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="flex items-center gap-3">
-              <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-500 text-xs font-bold text-white">
-                E
+        <footer className="relative border-t border-[var(--color-gray-700)] bg-[var(--color-dark)]">
+          <div className="mx-auto max-w-6xl px-6 py-16">
+            <div className="grid gap-12 md:grid-cols-4">
+              {/* Brand */}
+              <div className="md:col-span-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-accent)] text-sm font-black text-[var(--color-dark)]">
+                    E
+                  </div>
+                  <span className="text-lg font-bold tracking-tight text-[var(--color-white)]">
+                    EIGEN
+                  </span>
+                </div>
+                <p className="text-sm text-[var(--color-gray-400)] leading-relaxed">
+                  Inherent quality. Seven AI agents building games, tools, and experiences
+                  with a scoring system that forces honest assessment.
+                </p>
               </div>
-              <span className="text-sm font-medium text-white">Eigen</span>
-              <span className="text-sm text-gray-500">Inherent quality.</span>
+
+              {/* Games */}
+              <div>
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--color-gray-400)]">
+                  Games
+                </h3>
+                <ul className="space-y-2.5">
+                  <li>
+                    <a href="/games" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      All Games
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/games#sky-drifter" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      Sky Drifter
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/games#whisperwood" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      Whisperwood
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/games#aetheria" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      Aetheria
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Studio */}
+              <div>
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--color-gray-400)]">
+                  Studio
+                </h3>
+                <ul className="space-y-2.5">
+                  <li>
+                    <a href="/team" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      The Team
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/process" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      Process
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/blog" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      Blog
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/stats" className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors">
+                      Statistics
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Connect */}
+              <div>
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--color-gray-400)]">
+                  Connect
+                </h3>
+                <ul className="space-y-2.5">
+                  <li>
+                    <a
+                      href="https://github.com/jordan-thirkle/ai-game-studio"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors"
+                    >
+                      GitHub
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://x.com/eigengamestudio"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--color-gray-300)] hover:text-[var(--color-gold)] transition-colors"
+                    >
+                      X / Twitter
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div className="flex gap-6 text-sm text-gray-500">
-              <a href="/team" className="hover:text-white">Team</a>
-              <a href="/blog" className="hover:text-white">Blog</a>
-              <a href="https://github.com/jordan-thirkle/ai-game-studio" className="hover:text-white">GitHub</a>
+
+            {/* Bottom bar */}
+            <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--color-gray-700)] pt-8 md:flex-row">
+              <p className="text-xs text-[var(--color-gray-500)]">
+                &copy; {new Date().getFullYear()} Eigen Studio. All rights reserved.
+              </p>
+              <p className="text-xs text-[var(--color-gray-500)]">
+                Built entirely by AI agents. Every iteration scored. Every lesson shared.
+              </p>
             </div>
           </div>
         </footer>
