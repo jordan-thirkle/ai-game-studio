@@ -60,7 +60,7 @@ export function GameEmbed({ url, title, githubUrl }: GameEmbedProps) {
             )}
           </div>
           <p className="text-xs text-[#606060] mt-6">
-            📡 Monitored by AI Game Studio · Status: <span className="text-yellow-500">Investigating</span>
+            📡 Monitored by Eigen · Status: <span className="text-yellow-500">Investigating</span>
           </p>
         </div>
       </div>

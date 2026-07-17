@@ -1,6 +1,6 @@
 # Indie Browser Game Publishing & Distribution Guide (2025-2026)
 
-> Actionable roadmap for AI Game Studio — Three.js browser games
+> Actionable roadmap for Eigen — Three.js browser games
 
 ---
 
@@ -33,7 +33,7 @@
 | **Exclusivity Required** | Yes (for featured games) | No | No | No | No (but page stays up) |
 | **SDK Required** | Poki SDK (ads, save, analytics) | CrazyGames SDK (ads, cloud saves, analytics) | None | None | Steamworks SDK (optional for browser) |
 
-### Recommended Multi-Platform Strategy for AI Game Studio
+### Recommended Multi-Platform Strategy for Eigen
 
 **Tier 1 — Primary Revenue Platforms:**
 1. **Poki** (if curated) — Highest revenue potential for casual/arcade. Apply early.
@@ -357,7 +357,7 @@ Is the game free-to-play with ads?
 
 ### How Many Games?
 
-**Recommended Cadence for AI Game Studio:**
+**Recommended Cadence for Eigen:**
 
 | Year | Games | Focus | Revenue Target |
 |------|-------|-------|----------------|
@@ -377,7 +377,7 @@ Is the game free-to-play with ads?
 ### Portfolio Architecture
 
 ```
-AI Game Studio Portfolio (2025-2026)
+Eigen Portfolio (2025-2026)
 ├── Micro Games (6-10 total)
 │   ├── Game jam entries (itch.io)
 │   ├── Quick prototypes to test concepts
@@ -596,4 +596,4 @@ GAME IS DONE
 ---
 
 *Last updated: July 2026*
-*For AI Game Studio — Three.js browser games*
+*For Eigen — Three.js browser games*

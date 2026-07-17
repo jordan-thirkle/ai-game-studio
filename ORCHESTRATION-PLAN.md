@@ -1,4 +1,4 @@
-# AI Game Studio — Orchestration Plan
+# Eigen — Orchestration Plan
 
 ## Project Manager: Claw (Hermes Agent)
 ## Owner: Jordan Thirkle
@@ -12,7 +12,7 @@
 
 **What I manage:**
 - Game development teams (Whisperwood, future games)
-- Web development teams (AI Game Studio)
+- Web development teams (Eigen)
 - DevOps teams (monitoring, deployment, CI/CD)
 - Research teams (market analysis, tech scouting)
 - Documentation teams (blog, docs, SEO)
@@ -149,7 +149,7 @@
 - **Tasks:** Next iteration, scoring, documentation
 - **Cadence:** Every 3 days, iterate until S-grade
 
-### Team 3: Web Development (AI Game Studio)
+### Team 3: Web Development (Eigen)
 - **Lead:** Subagent (vercel-skills skill)
 - **Tasks:** Blog system, docs, status page, SEO
 - **Cadence:** Weekly, features + polish

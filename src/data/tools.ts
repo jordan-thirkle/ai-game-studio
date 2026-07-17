@@ -52,7 +52,7 @@ export const tools: Tool[] = [
     description: 'Production-ready orbit camera with smooth damping, zoom limits, and collision avoidance. Supports mouse drag, scroll zoom, and touch gestures out of the box.',
     category: 'threejs-utils',
     version: '1.2.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['camera', 'orbit', 'threejs', 'controls', 'damping', 'zoom'],
     examples: [
       {
@@ -107,7 +107,7 @@ function updateCamera(playerPosition: THREE.Vector3) {
     description: 'One-call setup for golden hour, night, and studio lighting presets. Includes soft shadows, ambient occlusion, and fog configuration.',
     category: 'threejs-utils',
     version: '1.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['lighting', 'shadows', 'fog', 'ambient', 'threejs', 'presets'],
     examples: [
       {
@@ -161,7 +161,7 @@ function setupGoldenHour(scene: THREE.Scene) {
     description: 'Generate infinite procedural terrain using simplex noise with configurable octaves, persistence, and lacunarity. Returns height maps and vertex data ready for Three.js.',
     category: 'procedural-gen',
     version: '2.1.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['noise', 'terrain', 'procedural', 'simplex', 'heightmap', 'world-gen'],
     examples: [
       {
@@ -218,7 +218,7 @@ function generateTerrain(
     description: 'Scatter thousands of objects (trees, rocks, grass) across a terrain using InstancedMesh. Supports density maps, random transforms, and frustum culling.',
     category: 'procedural-gen',
     version: '1.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['instancing', 'scatter', 'vegetation', 'performance', 'threejs', 'procedural'],
     examples: [
       {
@@ -269,7 +269,7 @@ function scatterTrees(
     description: 'Web Audio API wrapper for positional sounds, ambient loops, and music crossfading. Handles context suspension, mobile autoplay policies, and distance-based attenuation.',
     category: 'audio-systems',
     version: '1.3.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['audio', 'spatial', 'positional', 'music', 'ambient', 'web-audio'],
     examples: [
       {
@@ -337,7 +337,7 @@ class SpatialAudioManager {
     description: 'Unified input abstraction for keyboard, mouse, and gamepad. Provides buffered input, action mapping (e.g., "jump" instead of "Space"), and input queue for turn-based games.',
     category: 'input-systems',
     version: '2.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['input', 'keyboard', 'mouse', 'gamepad', 'touch', 'controls'],
     examples: [
       {
@@ -398,7 +398,7 @@ class InputManager {
     description: 'Mobile touch control overlay with virtual joystick and action buttons. Responsive layout, anti-ghosting, and customizable button positioning.',
     category: 'input-systems',
     version: '1.1.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['touch', 'mobile', 'joystick', 'virtual-controls', 'responsive'],
     examples: [
       {
@@ -473,7 +473,7 @@ class InputManager {
     description: 'Ready-to-use post-processing chain: bloom, vignette, chromatic aberration, FXAA, and color grading. Each effect is toggleable and configurable at runtime.',
     category: 'shader-library',
     version: '1.5.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['post-processing', 'bloom', 'vignette', 'fxaa', 'color-grading', 'shaders'],
     examples: [
       {
@@ -556,7 +556,7 @@ function setupPostProcessing(
     description: 'Declarative HUD overlay system with health bars, score counters, minimap, and notifications. Built on HTML/CSS over WebGL canvas for crisp text and responsive layouts.',
     category: 'ui-hud',
     version: '1.2.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['hud', 'ui', 'health-bar', 'score', 'overlay', 'notifications'],
     examples: [
       {
@@ -629,7 +629,7 @@ function setupPostProcessing(
     description: 'Lightweight collision detection without a physics engine. AABB boxes, sphere checks, and raycasting for platformers, collectibles, and trigger zones.',
     category: 'physics-helpers',
     version: '1.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['collision', 'aabb', 'raycast', 'physics', 'trigger', 'platformer'],
     examples: [
       {
@@ -690,7 +690,7 @@ function resolvePlatformCollision(
     description: 'Batch asset loading with progress tracking, retry logic, and memory-aware caching. Handles textures, models, audio, and JSON with configurable concurrency.',
     category: 'asset-pipeline',
     version: '1.4.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['loading', 'assets', 'cache', 'textures', 'models', 'progress'],
     examples: [
       {
@@ -764,7 +764,7 @@ class AssetLoaderPool {
     description: 'Real-time FPS counter with frame time histogram, draw call monitoring, and memory tracking. Renders a minimal performance overlay for development builds.',
     category: 'performance-tools',
     version: '1.1.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['profiling', 'fps', 'performance', 'debug', 'monitoring', 'draw-calls'],
     examples: [
       {
@@ -835,7 +835,7 @@ class AssetLoaderPool {
     description: 'GPU-accelerated chromatic aberration effect with configurable intensity and time-based animation. Perfect for damage flashes, transitions, and cinematic camera shakes.',
     category: 'shader-library',
     version: '1.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['shader', 'chromatic-aberration', 'post-processing', 'glsl', 'screen-effect'],
     examples: [
       {
@@ -905,7 +905,7 @@ function triggerDamageFlash(duration: number = 300) {
     description: 'Generic finite state machine for AI behaviors, player states, and game flow. Supports guards, transitions, and enter/exit callbacks. Zero dependencies.',
     category: 'ai-behavior',
     version: '1.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['state-machine', 'ai', 'behavior', 'finite-state', 'game-logic', 'pattern'],
     examples: [
       {
@@ -980,7 +980,7 @@ class StateMachine<S extends string> {
     description: 'A* pathfinding on 2D grids for tile-based games. Handles weighted terrain, dynamic obstacles, and path smoothing. No navmesh dependencies.',
     category: 'ai-behavior',
     version: '1.0.0',
-    author: 'AI Game Studio',
+    author: 'Eigen',
     tags: ['pathfinding', 'a-star', 'grid', 'navmesh', 'ai', 'movement'],
     examples: [
       {

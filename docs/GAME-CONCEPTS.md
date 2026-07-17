@@ -1,6 +1,6 @@
 # Game Concepts — Browser Game Brainstorm
 
-> Ideas for AI Game Studio portfolio. Based on Three.js capabilities + browser constraints.
+> Ideas for Eigen portfolio. Based on Three.js capabilities + browser constraints.
 > Updated 2026-07-16 with trending genres research.
 
 ---
@@ -115,7 +115,7 @@ Before starting a game, verify:
 
 ---
 
-## Competitive Landscape (AI Game Studios)
+## Competitive Landscape (Eigens)
 
 ### Status: GREENFIELD — No established leader
 

@@ -1,6 +1,6 @@
 # A/B Testing for Browser Games — Implementation Guide
 
-> **Target**: AI Game Studio / Three.js browser games  
+> **Target**: Eigen / Three.js browser games  
 > **Audience**: Indie studios, 1–5 devs, low/no budget  
 > **Scope**: Feature flags, random assignment, metrics, significance testing, dashboards  
 > **Privacy**: No PII collection required, cookie-free variants available

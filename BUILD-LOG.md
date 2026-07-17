@@ -1,4 +1,4 @@
-# AI Game Studio — Build Log
+# Eigen — Build Log
 
 ## Day 1: July 14, 2026
 
@@ -54,7 +54,7 @@ Next.js web app on Vercel, and a documented X.com content strategy.
 
 ### Web App Build
 
-Built AI Game Studio — a portfolio site to showcase the games:
+Built Eigen — a portfolio site to showcase the games:
 
 - **Framework:** Next.js (App Router)
 - **Styling:** Tailwind CSS v4

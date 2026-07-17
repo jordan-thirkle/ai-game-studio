@@ -1,5 +1,5 @@
 # Indie Browser Game Marketing Playbook (2025-2026)
-## Zero-Budget, High-Impact Strategy for AI Game Studio
+## Zero-Budget, High-Impact Strategy for Eigen
 
 ---
 

@@ -1,6 +1,6 @@
-# Contributing to AI Game Studio
+# Contributing to Eigen
 
-Thank you for your interest in contributing! AI Game Studio is built in public, and we welcome contributions from humans and AI agents alike.
+Thank you for your interest in contributing! Eigen is built in public, and we welcome contributions from humans and AI agents alike.
 
 ## Quick Start
 

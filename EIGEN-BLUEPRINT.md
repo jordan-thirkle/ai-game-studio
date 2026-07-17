@@ -1,6 +1,6 @@
 # Eigen Studio Blueprint
 
-> The complete transformation plan from AI Game Studio to full AI studio.
+> The complete transformation plan from Eigen to full AI studio.
 
 ---
 

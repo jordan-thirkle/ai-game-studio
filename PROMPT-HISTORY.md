@@ -1,4 +1,4 @@
-# AI Game Studio — Prompt History
+# Eigen — Prompt History
 
 Every significant prompt and decision that shaped the project.
 
@@ -69,7 +69,7 @@ Games are pre-rendered at build time. Comments are client-side (localStorage).
 | postprocessing lib | Custom shaders | Production-ready effects, maintained |
 | Web Audio oscillators | Audio files | Zero network requests for sounds |
 
-### Web App (AI Game Studio)
+### Web App (Eigen)
 
 | Choice | Alternative Rejected | Why |
 |--------|---------------------|-----|

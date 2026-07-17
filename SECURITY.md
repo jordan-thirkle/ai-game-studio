@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within AI Game Studio, please send an email to **jordan@byjtt.com**. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Eigen, please send an email to **jordan@byjtt.com**. All security vulnerabilities will be promptly addressed.
 
 **Please do NOT report security vulnerabilities through public GitHub issues.**
 
@@ -24,7 +24,7 @@ If you discover a security vulnerability within AI Game Studio, please send an e
 ## Scope
 
 This applies to:
-- The AI Game Studio web application ([ai-game-studio-one.vercel.app](https://ai-game-studio-one.vercel.app))
+- The Eigen web application ([ai-game-studio-one.vercel.app](https://ai-game-studio-one.vercel.app))
 - The GitHub repository and all associated code
 - Game embeds served through this platform
 

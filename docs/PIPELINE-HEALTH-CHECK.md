@@ -1,6 +1,6 @@
 # Pipeline Health Check — Continuous Improvement
 
-> Run this check periodically to identify gaps in the AI Game Studio pipeline.
+> Run this check periodically to identify gaps in the Eigen pipeline.
 > Each gap becomes a research task or implementation task.
 
 ---

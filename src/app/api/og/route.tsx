@@ -4,7 +4,7 @@ export const runtime = 'edge';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get('title') || 'AI Game Studio';
+  const title = searchParams.get('title') || 'Eigen';
   const score = searchParams.get('score');
   const status = searchParams.get('status') || '';
 
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
               letterSpacing: '0.05em',
             }}
           >
-            AI Game Studio
+            Eigen
           </span>
         </div>
 

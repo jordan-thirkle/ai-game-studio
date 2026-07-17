@@ -1,4 +1,4 @@
-# AGENTS.md — AI Game Studio Governance
+# AGENTS.md — Eigen Governance
 
 ## Evidence-First Scoring
 

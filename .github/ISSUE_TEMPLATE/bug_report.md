@@ -1,6 +1,6 @@
 ---
 name: 🐛 Bug Report
-about: Report a bug in AI Game Studio
+about: Report a bug in Eigen
 title: '[BUG] '
 labels: bug, triage
 assignees: ''

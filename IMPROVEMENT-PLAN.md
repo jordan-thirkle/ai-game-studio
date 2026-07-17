@@ -1,4 +1,4 @@
-# AI Game Studio — Comprehensive Improvement Plan
+# Eigen — Comprehensive Improvement Plan
 
 ## Guiding Principle: Don't Reinvent the Wheel
 
@@ -104,7 +104,7 @@ Upptime runs on GitHub Actions (free) and checks:
 # .upptime.yml in repo root
 repo: jordan-thirkle/ai-game-studio
 uptime:
-  - name: AI Game Studio Home
+  - name: Eigen Home
     url: https://ai-game-studio-one.vercel.app
     method: GET
     expectedStatus: 200

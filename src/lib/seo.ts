@@ -66,7 +66,7 @@ export function generateCollectionJsonLd(
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: type === 'tools' ? 'AI Game Studio Tool Library' : 'AI Game Studio Asset Library',
+    name: type === 'tools' ? 'Eigen Tool Library' : 'Eigen Asset Library',
     description:
       type === 'tools'
         ? 'Reusable game development tools for AI agents and developers'

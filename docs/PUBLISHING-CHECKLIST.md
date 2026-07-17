@@ -1,6 +1,6 @@
 # Publishing Checklist — Browser Games
 
-> Step-by-step guide for publishing AI Game Studio games.
+> Step-by-step guide for publishing Eigen games.
 > To be updated with research findings.
 
 ---

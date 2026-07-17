@@ -19,7 +19,7 @@
 - Governance file that codifies pipeline rules
 - Evidence-first scoring, no self-certification
 - Skill lifecycle rules, dependency gate enforcement
-- Source: AI Game Studio (our own pattern, validated)
+- Source: Eigen (our own pattern, validated)
 
 ### Sub-Agent Orchestration
 - Fresh context per sub-agent, no shared state

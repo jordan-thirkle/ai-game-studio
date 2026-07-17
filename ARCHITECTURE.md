@@ -1,4 +1,4 @@
-# AI Game Studio — Architecture
+# Eigen — Architecture
 
 ## Overview
 

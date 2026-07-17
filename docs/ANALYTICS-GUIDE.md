@@ -1,6 +1,6 @@
 # Browser Game Analytics & Telemetry — Implementation Guide
 
-**Target:** AI Game Studio Three.js browser games  
+**Target:** Eigen Three.js browser games  
 **Goal:** Track player behavior, optimize gameplay, measure monetization  
 **Constraints:** GDPR/CCPA compliant, indie-friendly, low-cost, browser-native
 
@@ -31,7 +31,7 @@
 | **Plausible** | Self-host: free | `plausible-tracker` | Traffic analytics, basic events | No cookies, GDPR by design |
 | **PostHog Self-Host** | Self-host: free | `posthog-js` | Full product analytics | Full data control |
 
-### 🏆 Recommended Stack for AI Game Studio
+### 🏆 Recommended Stack for Eigen
 
 **Primary:** GameAnalytics (game-specific metrics) + PostHog (product analytics)  
 **Alternative:** GameAnalytics + Mixpanel (if you prefer Mixpanel's funnel UI)  
@@ -1055,4 +1055,4 @@ npm install posthog-js
 ---
 
 *Last updated: July 2026*  
-*Designed for AI Game Studio Three.js browser games*
+*Designed for Eigen Three.js browser games*

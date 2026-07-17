@@ -1,6 +1,6 @@
 # Monetization Strategies — Research for Browser Games
 
-> Research compiled 2026-07-16 for AI Game Studio pipeline.
+> Research compiled 2026-07-16 for Eigen pipeline.
 > Focus: Three.js browser games, indie studio, ethical monetization.
 
 ---
@@ -169,7 +169,7 @@
 
 ---
 
-## AI Game Studio Strategy
+## Eigen Strategy
 
 ### Phase 1: Launch (Now)
 **Platform:** CrazyGames

@@ -31,7 +31,7 @@
 - Codify pipeline rules
 - Evidence-first, no self-certification
 - Skill lifecycle, dependency gates
-- Source: AI Game Studio (validated pattern)
+- Source: Eigen (validated pattern)
 
 ## Performance
 

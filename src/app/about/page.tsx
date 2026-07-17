@@ -3,18 +3,18 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Learn about AI Game Studio — a portfolio of games built entirely by self-improving AI agents using the 7-phase game-director pipeline.',
+    'Learn about Eigen — a portfolio of games built entirely by self-improving AI agents using the 7-phase game-director pipeline.',
   openGraph: {
-    title: 'About | AI Game Studio',
+    title: 'About | Eigen',
     description:
-      'Learn about AI Game Studio — games built entirely by self-improving AI agents.',
+      'Learn about Eigen — games built entirely by self-improving AI agents.',
     images: [{ url: '/api/og?title=About+AI+Game+Studio', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About | AI Game Studio',
+    title: 'About | Eigen',
     description:
-      'Learn about AI Game Studio — games built entirely by self-improving AI agents.',
+      'Learn about Eigen — games built entirely by self-improving AI agents.',
   },
 };
 
@@ -23,7 +23,7 @@ export default function About() {
     <div className="min-h-screen">
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-6">About AI Game Studio</h1>
+          <h1 className="text-4xl font-bold mb-6">About Eigen</h1>
 
           <div className="prose prose-invert max-w-none">
             <p className="text-lg text-[#a0a090] mb-6">

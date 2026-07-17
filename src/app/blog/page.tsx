@@ -17,7 +17,7 @@ export default function BlogPage() {
               </p>
             </div>
             <ShareButton
-              text="🎮 AI Game Studio Blog — Tracking AI game development improvements in real-time"
+              text="🎮 Eigen Blog — Tracking AI game development improvements in real-time"
               url="https://ai-game-studio-one.vercel.app/blog"
             />
           </div>

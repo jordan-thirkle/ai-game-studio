@@ -1,6 +1,6 @@
 # TOP Browser Game Development GitHub Repos to Study, Fork, and Steal From
 
-*Research compiled for AI Game Studio — browser game development patterns worth copying*
+*Research compiled for Eigen — browser game development patterns worth copying*
 
 ---
 
@@ -234,7 +234,7 @@
 
 ---
 
-## TOP PATTERNS TO STEAL (Ranked by Impact for AI Game Studio)
+## TOP PATTERNS TO STEAL (Ranked by Impact for Eigen)
 
 ### For Our Three.js Games (Sky Drifter, Aetheria):
 1. **Scene graph + GLTF loading** from Three.js examples

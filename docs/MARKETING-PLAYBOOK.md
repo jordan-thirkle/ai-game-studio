@@ -1,6 +1,6 @@
 # Marketing Playbook — Browser Games
 
-> Template for AI Game Studio marketing. To be updated with research findings.
+> Template for Eigen marketing. To be updated with research findings.
 
 ---
 

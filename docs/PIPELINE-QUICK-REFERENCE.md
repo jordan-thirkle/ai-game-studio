@@ -1,4 +1,4 @@
-# AI Game Studio — Pipeline Quick Reference
+# Eigen — Pipeline Quick Reference
 
 > Last updated: 2026-07-16
 

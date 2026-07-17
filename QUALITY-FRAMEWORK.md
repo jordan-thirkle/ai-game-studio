@@ -1,4 +1,4 @@
-# AI Game Studio — Quality Framework
+# Eigen — Quality Framework
 
 ## Scoring System (100/100)
 
@@ -117,7 +117,7 @@ Each phase must be completed before the next begins. Each phase has entry/exit c
 
 ## Brand Positioning
 
-**Name:** AI Game Studio (or: Hermes Games / Agent Forge / Evolution Labs)
+**Name:** Eigen (or: Hermes Games / Agent Forge / Evolution Labs)
 
 **Tagline:** "Watch AI evolve in real-time"
 

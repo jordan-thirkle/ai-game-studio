@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/images/og-image.png" alt="AI Game Studio" width="600">
+  <img src="public/images/og-image.png" alt="Eigen" width="600">
 </p>
 
-<h1 align="center"> AI Game Studio</h1>
+<h1 align="center"> Eigen</h1>
 
 <p align="center">
   <strong>Building games with self-improving AI agents.</strong><br>

@@ -11,7 +11,7 @@ import { ImprovementVelocity } from '@/components/stats/ImprovementVelocity';
 
 export const metadata = {
   title: 'Pipeline Statistics',
-  description: 'Real-time monitoring dashboard for AI Game Studio — pipeline health, scoring integrity, design evolution, and self-improvement metrics.',
+  description: 'Real-time monitoring dashboard for Eigen — pipeline health, scoring integrity, design evolution, and self-improvement metrics.',
 };
 
 export default function StatsPage() {

@@ -1,6 +1,6 @@
 # Security Checklist — Browser Games
 
-> Security requirements for AI Game Studio games. Must check before deployment.
+> Security requirements for Eigen games. Must check before deployment.
 
 ---
 

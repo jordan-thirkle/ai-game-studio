@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
     title: game.title,
     description: desc,
     openGraph: {
-      title: `${game.title} | AI Game Studio`,
+      title: `${game.title} | Eigen`,
       description: desc,
       url: `https://ai-game-studio.vercel.app/games/${game.slug}`,
       images: [
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${game.title} | AI Game Studio`,
+      title: `${game.title} | Eigen`,
       description: desc,
       images: [`/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.total || ''}&status=${game.status}`],
     },

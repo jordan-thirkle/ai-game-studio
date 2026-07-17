@@ -1,6 +1,6 @@
 # Game Design Scoring Rubric
 
-> Used by AI Game Studio to evaluate games across psychological and business dimensions.
+> Used by Eigen to evaluate games across psychological and business dimensions.
 > Updated 2026-07-16 with juice/polish research findings.
 
 ---
