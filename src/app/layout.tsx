@@ -57,7 +57,9 @@ export const metadata: Metadata = {
 
 const navLinks = [
   { href: '/games', label: 'Games' },
+  { href: '/portfolio', label: 'Portfolio' },
   { href: '/team', label: 'Team' },
+  { href: '/process', label: 'Process' },
   { href: '/blog', label: 'Blog' },
   { href: '/docs/score-methodology', label: 'Scoring' },
   { href: '/about', label: 'About' },
