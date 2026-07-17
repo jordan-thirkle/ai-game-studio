@@ -86,3 +86,21 @@ pnpm-lock.yaml
 
 # Upptime (managed separately)
 results.json
+
+# Audit/Plan docs (don't commit)
+MASTER-ACTION-PLAN.md
+*-AUDIT.md
+*-audit.md
+scores/
+luna-output.txt
+luna-prompt.txt
+luna-raw.json
+market-prompt.txt
+
+# Scripts (local only)
+scripts/health-check-proxy.py
+scripts/health-check.py
+scripts/install-merge-proxy-task.bat
+scripts/merge-proxy.py
+scripts/merge_bridge.py
+scripts/start-merge-proxy.bat
