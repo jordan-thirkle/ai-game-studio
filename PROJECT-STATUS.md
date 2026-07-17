@@ -24,8 +24,8 @@
 | Game | Genre | Status | Score | Deploy |
 |------|-------|--------|-------|--------|
 | **AetherRealms** | ARPG | FLAGSHIP — needs build | — | TBD |
-| Whisperwood | Exploration | v1 deployed | 67/100 | whisperwood-v2.vercel.app |
-| Aetheria | Exploration | v0 deployed | 58/100 | aetheria.vercel.app |
+| Whisperwood | Exploration | v2 deployed | ~74-76/100 | whisperwood-v2.vercel.app |
+| Aetheria | Exploration | v1 deployed | ~72/100 | aetheria.vercel.app |
 | Sky Drifter | Survivors-like | prototype | — | TBD |
 | Willow's World | Educational | deployed | — | willow-world.vercel.app |
 | Clicker Tycoon | Idle | deployed | — | TBD |
@@ -53,9 +53,9 @@
 ## In Progress
 
 - [ ] Vercel production deploy (pushed, may need manual promotion)
-- [ ] whisperwood v2 (subagent dispatched)
-- [ ] aetheria v1 (subagent dispatched)
-- [ ] AetherRealms scoring and iteration
+- [x] whisperwood v2 — obstacles, collectibles, textures, VFX (score ~74-76)
+- [x] aetheria v1 — mobile controls, hazards, 10 islands, combo UI (score ~72)
+- [ ] AetherRealms — score and iterate (FLAGSHIP)
 
 ## Pending
 
