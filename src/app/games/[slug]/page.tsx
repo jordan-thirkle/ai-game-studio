@@ -1,231 +1,166 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { games, getGame, getLatestScore, getGradeColor } from '@/data/games';
-import { ShareButton } from '@/components/ShareButton';
-import { ScoreBreakdown } from '@/components/ScoreBreakdown';
-import { IterationTimeline } from '@/components/IterationTimeline';
-import { Comments } from '@/components/Comments';
-import { GameEmbed } from '@/components/GameEmbed';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { Reveal } from "@/components/ui/Reveal";
+import { ScoreBadge } from "@/components/ui/ScoreBadge";
+import { SectionHeading } from "@/components/layout/SectionHeading";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { games, getGameBySlug } from "@/data/games";
 
-export function generateStaticParams() {
+interface GamePageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
   return games.map((g) => ({ slug: g.slug }));
 }
 
-type GamePageProps = {
-  params: Promise<{ slug: string }>;
-};
-
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = getGame(slug);
-  if (!game) return { title: 'Game Not Found' };
-
-  const latestScore = getLatestScore(game);
-  const scoreText = latestScore ? ` Score: ${latestScore.total}/100 (${latestScore.grade})` : '';
-  const desc = `${game.subtitle}. Built entirely by AI. ${game.description.slice(0, 150)}...`;
-
+  const game = getGameBySlug(slug);
+  if (!game) return { title: "Game Not Found" };
   return {
     title: game.title,
-    description: desc,
-    openGraph: {
-      title: `${game.title} | Eigen`,
-      description: desc,
-      url: `https://ai-game-studio.vercel.app/games/${game.slug}`,
-      images: [
-        {
-          url: `/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.total || ''}&status=${game.status}`,
-          width: 1200,
-          height: 630,
-          alt: `${game.title} — ${game.subtitle}`,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${game.title} | Eigen`,
-      description: desc,
-      images: [`/api/og?title=${encodeURIComponent(game.title)}&score=${latestScore?.total || ''}&status=${game.status}`],
-    },
-    other: {
-      'game:status': game.status,
-      'game:score': latestScore?.total.toString() || '',
-    },
+    description: game.tagline,
   };
 }
 
 export default async function GamePage({ params }: GamePageProps) {
   const { slug } = await params;
-  const game = getGame(slug);
-  if (!game) return notFound();
-
-  const latestScore = getLatestScore(game);
+  const game = getGameBySlug(slug);
+  if (!game) notFound();
 
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="relative py-16 px-6 bg-gradient-to-b from-[#1a2e1a]/50 to-transparent">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-2 text-sm text-[#606060] mb-4">
-            <a href="/games" className="hover:text-[#f0d890] transition-colors">
-              Games
-            </a>
-            <span>/</span>
-            <span>{game.title}</span>
-          </div>
+    <>
+      {/* Game Hero */}
+      <section className="section-container py-24">
+        <Reveal>
+          <Link href="/games" className="text-sm text-[var(--color-eigen-green)] hover:text-[var(--color-eigen-bright)] transition-colors no-underline mb-8 inline-block">
+            ← Back to Games
+          </Link>
+        </Reveal>
 
-          <div className="flex items-start justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-4xl font-bold">{game.title}</h1>
-                <span
-                  className="text-xs px-2.5 py-1 rounded-full font-medium"
-                  style={{
-                    backgroundColor:
-                      game.status === 'in-progress'
-                        ? '#4a8a3a20'
-                        : game.status === 'complete'
-                          ? '#60b8d020'
-                          : '#c44a2a20',
-                    color:
-                      game.status === 'in-progress'
-                        ? '#4a8a3a'
-                        : game.status === 'complete'
-                          ? '#60b8d0'
-                          : '#c44a2a',
-                  }}
-                >
-                  {game.status}
+        <Reveal delay={100}>
+          <div className="flex flex-col md:flex-row gap-8 items-start mt-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <ScoreBadge score={game.score} grade={game.grade} size="lg" />
+                <span className={`status-pill status-pill--${game.status === "deployed" ? "deployed" : "active"}`}>
+                  {game.status === "deployed" ? "Deployed" : "In Progress"}
                 </span>
               </div>
-              <p className="text-lg text-[#a0a090]">{game.subtitle}</p>
+              <h1 className="text-[var(--color-eigen-cream)] mb-4">{game.title}</h1>
+              <p className="body-large mb-6">{game.tagline}</p>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {game.techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1.5 text-xs font-mono rounded-full bg-[var(--color-forest-800)] text-[var(--color-eigen-muted)] border border-[var(--color-border)]"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-4">
+                <a href={game.playUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                  Play Now
+                </a>
+              </div>
             </div>
-            <ShareButton
-              text={`🎮 ${game.title} — ${game.subtitle}. Built entirely by AI. Score: ${latestScore?.total || '?'}/100 (${latestScore?.grade || '?'})`}
-              url={`https://ai-game-studio.vercel.app/games/${game.slug}`}
-            />
+            <div className="w-full md:w-96 aspect-video rounded-xl bg-[var(--color-forest-800)] flex items-center justify-center border border-[var(--color-border)]" aria-hidden="true">
+              <span className="text-5xl">🎮</span>
+            </div>
           </div>
+        </Reveal>
+      </section>
 
-          {/* Quick stats */}
-          <div className="flex items-center gap-6 mt-6 text-sm">
-            <span className="text-[#4a8a3a]">{game.status}</span>
-            <span className="text-[#606060]">{game.iterations.length} iterations</span>
-            <span className="text-[#606060]">Updated {game.updatedAt}</span>
-            {latestScore && (
-              <span className="font-mono" style={{ color: getGradeColor(latestScore.grade) }}>
-                {latestScore.total}/100 ({latestScore.grade})
-              </span>
-            )}
+      {/* Score Breakdown */}
+      <section className="section-container py-16" aria-labelledby="score-heading">
+        <Reveal>
+          <SectionHeading eyebrow="SCORING" title="Score Breakdown" />
+        </Reveal>
+        <div className="space-y-4">
+          {game.scores.map((s, i) => (
+            <Reveal key={s.category} delay={i * 80}>
+              <GlassCard className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-[var(--color-eigen-cream)] text-base">{s.category}</h3>
+                    <span className={`text-xs font-mono px-2 py-0.5 rounded ${
+                      s.tier === "A"
+                        ? "bg-[var(--color-eigen-green)]/20 text-[var(--color-eigen-bright)]"
+                        : "bg-[var(--color-eigen-gold)]/20 text-[var(--color-eigen-gold)]"
+                    }`}>
+                      Tier {s.tier}
+                    </span>
+                  </div>
+                  <span className="text-xl font-bold text-[var(--color-eigen-gold)] font-mono">{s.score}</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-[var(--color-forest-800)] overflow-hidden" role="progressbar" aria-valuenow={s.score} aria-valuemin={0} aria-valuemax={100} aria-label={`${s.category}: ${s.score} out of 100`}>
+                  <div
+                    className="h-full rounded-full bg-[var(--color-eigen-green)]"
+                    style={{ width: `${s.score}%` }}
+                  />
+                </div>
+                <p className="text-sm text-[var(--color-eigen-muted)] mt-2">{s.notes}</p>
+              </GlassCard>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Tech Stack */}
+      <section className="section-container py-16" aria-labelledby="tech-heading">
+        <Reveal>
+          <SectionHeading eyebrow="TECHNOLOGY" title="Tech Stack" />
+        </Reveal>
+        <Reveal delay={100}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {game.techStack.map((tech) => (
+              <GlassCard key={tech} className="p-6 text-center">
+                <span className="text-lg font-semibold text-[var(--color-eigen-cream)]">{tech}</span>
+              </GlassCard>
+            ))}
           </div>
+        </Reveal>
+      </section>
 
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {game.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs px-2.5 py-1 bg-[#0a0f0a] border border-[#2a3a22] rounded-full text-[#808080]"
-              >
-                #{tag}
-              </span>
+      {/* Iteration Timeline */}
+      <section className="section-container py-16" aria-labelledby="timeline-heading">
+        <Reveal>
+          <SectionHeading eyebrow="HISTORY" title="Iteration Timeline" />
+        </Reveal>
+        <div className="relative">
+          <div className="absolute left-4 top-0 bottom-0 w-px bg-[var(--color-border)]" aria-hidden="true" />
+          <div className="space-y-8">
+            {game.iterations.map((iter, i) => (
+              <Reveal key={iter.version} delay={i * 100}>
+                <div className="relative pl-12">
+                  <div className="absolute left-2.5 top-1 w-3 h-3 rounded-full bg-[var(--color-eigen-green)] border-2 border-[var(--color-forest-950)]" aria-hidden="true" />
+                  <GlassCard className="p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-mono text-sm font-bold text-[var(--color-eigen-gold)]">{iter.version}</span>
+                      <span className="text-xs text-[var(--color-eigen-muted)]">{iter.date}</span>
+                      <span className="text-xs font-mono text-[var(--color-eigen-green)]">
+                        {iter.scoreBefore} → {iter.scoreAfter}
+                        {iter.scoreAfter > iter.scoreBefore ? ` (+${iter.scoreAfter - iter.scoreBefore})` : ""}
+                      </span>
+                    </div>
+                    <ul className="list-none p-0 m-0 space-y-1">
+                      {iter.changes.map((change) => (
+                        <li key={change} className="text-sm text-[var(--color-eigen-muted)] flex items-center gap-2">
+                          <span className="text-[var(--color-eigen-green)]" aria-hidden="true">•</span>
+                          {change}
+                        </li>
+                      ))}
+                    </ul>
+                  </GlassCard>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
-
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        {/* Playable embed */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold mb-4">Play the Game</h2>
-          <GameEmbed 
-            url={game.playUrl} 
-            title={game.title}
-            githubUrl={game.githubUrl}
-          />
-        </section>
-
-        {/* Score breakdown */}
-        {latestScore && (
-          <section className="mb-12">
-            <h2 className="text-xl font-bold mb-4">Quality Score</h2>
-            <ScoreBreakdown scores={latestScore.scores} totalScoreA={latestScore.totalA} totalScoreB={latestScore.totalB} total={latestScore.total} grade={latestScore.grade} />
-          </section>
-        )}
-
-        {/* Iteration timeline */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold mb-4">Iteration History</h2>
-          <IterationTimeline iterations={game.iterations} />
-        </section>
-
-        {/* Case study */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold mb-4">Case Study</h2>
-          <div className="prose prose-invert max-w-none">
-            {game.caseStudy.split('\n\n').map((block, i) => {
-              if (block.startsWith('## ')) {
-                return (
-                  <h3 key={i} className="text-lg font-bold mt-6 mb-3">
-                    {block.replace('## ', '')}
-                  </h3>
-                );
-              }
-              if (block.startsWith('- [ ] ')) {
-                // Handle task list items
-                const items = block.split('\n').filter((l) => l.startsWith('- [ ] '));
-                return (
-                  <ul key={i} className="list-none space-y-1.5 mb-4">
-                    {items.map((item, j) => (
-                      <li
-                        key={j}
-                        className="flex items-center gap-2 text-sm text-[#a0a090]"
-                      >
-                        <span className="text-[#606060]">☐</span>
-                        {item.replace('- [ ] ', '')}
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-              // Handle inline bold
-              const parts = block.split(/(\*\*[^*]+\*\*)/);
-              return (
-                <p key={i} className="text-[#a0a090] mb-3 leading-relaxed">
-                  {parts.map((part, j) => {
-                    if (part.startsWith('**') && part.endsWith('**')) {
-                      return (
-                        <strong key={j} className="text-[#e8e0d0]">
-                          {part.slice(2, -2)}
-                        </strong>
-                      );
-                    }
-                    return part;
-                  })}
-                </p>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Tech stack */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold mb-4">Tech Stack</h2>
-          <div className="flex flex-wrap gap-2">
-            {game.techStack.map((tech) => (
-              <span
-                key={tech}
-                className="px-3 py-1.5 bg-[#1a2e1a] border border-[#2a3a22] rounded-lg text-sm hover:border-[#4a8a3a]/30 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* Comments */}
-        <section className="mb-12">
-          <h2 className="text-xl font-bold mb-4">Discussion</h2>
-          <Comments gameSlug={game.slug} />
-        </section>
-      </div>
-    </div>
+    </>
   );
 }

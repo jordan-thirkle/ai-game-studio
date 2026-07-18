@@ -1,87 +1,81 @@
-'use client';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Reveal } from "@/components/ui/Reveal";
+import { ScoreBadge } from "@/components/ui/ScoreBadge";
+import { SectionHeading } from "@/components/layout/SectionHeading";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { games } from "@/data/games";
 
-import { useState } from 'react';
-import { games, getTotalStats } from '@/data/games';
-import { GameCard } from '@/components/GameCard';
-import { ScrollReveal } from '@/components/ScrollReveal';
-
-const STATUS_OPTIONS = ['all', 'in-progress', 'complete', 'deployed', 'prototype'] as const;
+export const metadata: Metadata = {
+  title: "Games",
+  description: "Explore our portfolio of AI-developed games, each scored and iterated through our evidence-based process.",
+};
 
 export default function GamesPage() {
-  const stats = getTotalStats();
-  const [filter, setFilter] = useState<string>('all');
-
-  const filteredGames =
-    filter === 'all' ? games : games.filter((g) => g.status === filter);
-
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="hero-gradient noise-overlay relative overflow-hidden px-6 py-20 md:py-28">
-        {/* Background orbs */}
-        <div className="pointer-events-none absolute left-1/4 top-1/3 h-[400px] w-[400px] rounded-full bg-[var(--color-accent)]/5 blur-[120px]" />
-        <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-[300px] w-[300px] rounded-full bg-[var(--color-gold)]/5 blur-[100px]" />
+    <section className="section-container py-24">
+      <Reveal>
+        <SectionHeading
+          eyebrow="PORTFOLIO"
+          title="Our Games"
+          description="Every game is scored, iterated, and improved. Click into any title to see the full breakdown."
+        />
+      </Reveal>
 
-        <div className="relative z-10 mx-auto max-w-6xl">
-          <ScrollReveal>
-            <p className="overline mb-4 text-[var(--color-accent)]">
-              Portfolio
-            </p>
-            <h1 className="heading-xl mb-4 text-[var(--color-white)]">
-              All Games
-            </h1>
-            <p className="text-lg text-[var(--color-gray-300)]">
-              {stats.totalGames} game{stats.totalGames !== 1 ? 's' : ''} built by AI agents
-              <span className="mx-2 text-[var(--color-gray-600)]" aria-hidden="true">·</span>
-              {stats.totalIterations} iterations
-              <span className="mx-2 text-[var(--color-gray-600)]" aria-hidden="true">·</span>
-              avg score {stats.avgScore.toFixed(1)}/100
-            </p>
-          </ScrollReveal>
+      {/* Filters */}
+      <Reveal delay={100}>
+        <div className="flex flex-wrap gap-3 mb-12" role="group" aria-label="Filter games">
+          <span className="px-4 py-2 text-sm font-medium rounded-full bg-[var(--color-eigen-green)] text-[var(--color-forest-950)]">
+            All Games
+          </span>
+          <span className="px-4 py-2 text-sm font-medium rounded-full bg-[var(--color-forest-800)] text-[var(--color-eigen-muted)] border border-[var(--color-border)]">
+            Deployed
+          </span>
+          <span className="px-4 py-2 text-sm font-medium rounded-full bg-[var(--color-forest-800)] text-[var(--color-eigen-muted)] border border-[var(--color-border)]">
+            In Progress
+          </span>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-6xl">
-          {/* Filter bar */}
-          <div className="mb-8 flex flex-wrap items-center gap-2">
-            {STATUS_OPTIONS.map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilter(status)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                  filter === status
-                    ? 'bg-[var(--color-accent)] text-[var(--color-dark)]'
-                    : 'border border-[var(--color-gray-700)] bg-[var(--color-panel)]/50 text-[var(--color-gray-400)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-white)]'
-                }`}
-              >
-                {status === 'all'
-                  ? `All (${games.length})`
-                  : `${status.charAt(0).toUpperCase() + status.slice(1)} (${games.filter((g) => g.status === status).length})`}
-              </button>
-            ))}
-          </div>
-
-          {/* Games grid */}
-          {filteredGames.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredGames.map((game) => (
-                <GameCard key={game.slug} game={game} />
-              ))}
-            </div>
-          ) : (
-            <div className="py-16 text-center">
-              <div className="mb-4 text-4xl" aria-hidden="true">🌲</div>
-              <p className="text-[var(--color-gray-400)]">
-                No games with status &quot;{filter}&quot; yet.
-              </p>
-              <p className="mt-2 text-sm text-[var(--color-gray-600)]">
-                Check back soon — the pipeline is always running.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
+      {/* Game Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {games.map((game, i) => (
+          <Reveal key={game.slug} delay={i * 100}>
+            <Link href={`/games/${game.slug}`} className="block no-underline">
+              <GlassCard className="p-8 group hover:border-[var(--color-eigen-green)]/30 transition-all duration-300 h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <ScoreBadge score={game.score} grade={game.grade} />
+                  <span className={`status-pill status-pill--${game.status === "deployed" ? "deployed" : "active"}`}>
+                    {game.status === "deployed" ? "Deployed" : "In Progress"}
+                  </span>
+                </div>
+                <h3 className="text-xl font-semibold text-[var(--color-eigen-cream)] mb-2 group-hover:text-[var(--color-eigen-gold)] transition-colors">
+                  {game.title}
+                </h3>
+                <p className="text-[var(--color-eigen-muted)] mb-4">{game.tagline}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {game.techStack.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3 py-1 text-xs font-mono rounded-full bg-[var(--color-forest-800)] text-[var(--color-eigen-muted)] border border-[var(--color-border)]"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border)]">
+                  <span className="text-xs font-mono text-[var(--color-eigen-muted)]">
+                    {game.scores.length} categories scored
+                  </span>
+                  <span className="text-sm text-[var(--color-eigen-green)] group-hover:translate-x-1 transition-transform" aria-hidden="true">
+                    →
+                  </span>
+                </div>
+              </GlassCard>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+    </section>
   );
 }

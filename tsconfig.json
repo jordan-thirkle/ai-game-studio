@@ -37,6 +37,8 @@
   ],
   "exclude": [
     "node_modules",
-    "games/**/*"
+    "games/**/*",
+    "src/app-archive-20260718/**/*",
+    "src/app-archive-20260718-bak/**/*"
   ]
 }

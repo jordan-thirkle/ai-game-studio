@@ -1,192 +1,299 @@
-import { games, getLatestIteration, getScoreImprovement, GAME_SCORE_CATEGORIES } from '@/data/games';
-import type { Game, GameScore, Iteration } from '@/data/games';
-import { StatsOverview } from '@/components/stats/StatsOverview';
-import { GamePortfolio } from '@/components/stats/GamePortfolio';
-import { ScoreTrajectory } from '@/components/stats/ScoreTrajectory';
-import { DesignEvolution } from '@/components/stats/DesignEvolution';
-import { IntegrityDashboard } from '@/components/stats/IntegrityDashboard';
-import { ResilienceLog } from '@/components/stats/ResilienceLog';
-import { SkillsTracker } from '@/components/stats/SkillsTracker';
-import { ImprovementVelocity } from '@/components/stats/ImprovementVelocity';
+import type { Metadata } from "next";
+import { Reveal } from "@/components/ui/Reveal";
+import { SectionHeading } from "@/components/layout/SectionHeading";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { Counter } from "@/components/ui/Counter";
+import { games } from "@/data/games";
 
-export const metadata = {
-  title: 'Pipeline Statistics',
-  description: 'Real-time monitoring dashboard for Eigen — pipeline health, scoring integrity, design evolution, and self-improvement metrics.',
+export const metadata: Metadata = {
+  title: "Stats",
+  description: "Studio metrics, score history, and iteration data for Eigen Studio games.",
 };
 
+const allScores = games.flatMap((g) =>
+  g.scores.map((s) => ({ ...s, game: g.title }))
+);
+
+const avgByCategory = ["Gameplay", "Visuals", "Audio", "Performance", "Polish"].map(
+  (cat) => {
+    const scores = allScores.filter((s) => s.category === cat);
+    const avg = scores.length
+      ? Math.round(scores.reduce((sum, s) => sum + s.score, 0) / scores.length)
+      : 0;
+    return { category: cat, avg };
+  }
+);
+
+const totalIterations = games.reduce((sum, g) => sum + g.iterations.length, 0);
+
 export default function StatsPage() {
-  // Compute all stats server-side
-  const totalGames = games.length;
-  const totalIterations = games.reduce((sum, g) => sum + g.iterations.length, 0);
-
-  // Score analysis
-  const allIterations = games.flatMap(g => g.iterations.map(i => ({ ...i, gameSlug: g.slug, gameTitle: g.title })));
-  const latestIterations = games.map(g => ({ game: g, iteration: getLatestIteration(g) })).filter(x => x.iteration);
-  const avgScore = latestIterations.reduce((sum, x) => sum + (x.iteration!.totalScore || 0), 0) / Math.max(latestIterations.length, 1);
-  const avgGrade = latestIterations.length > 0 ? latestIterations[0].iteration!.grade : 'N/A';
-
-  // Tier analysis
-  const allScores = allIterations.flatMap(i => i.scores);
-  const tierAScores = allScores.filter(s => s.tier === 'A');
-  const tierBScores = allScores.filter(s => s.tier === 'B');
-  const avgTierA = tierAScores.length > 0 ? tierAScores.reduce((s, x) => s + x.score, 0) / tierAScores.length : 0;
-  const avgTierB = tierBScores.length > 0 ? tierBScores.reduce((s, x) => s + x.score, 0) / tierBScores.length : 0;
-
-  // Verification status
-  const verifiedScores = allScores.filter(s => s.evidence.some(e => e.verified));
-  const unverifiedScores = allScores.filter(s => !s.evidence.some(e => e.verified));
-  const verificationRate = allScores.length > 0 ? (verifiedScores.length / allScores.length * 100) : 0;
-
-  // Evidence types
-  const machineEvidence = allScores.filter(s => s.evidence.some(e => e.type === 'machine'));
-  const agentEvidence = allScores.filter(s => s.evidence.some(e => e.type === 'agent'));
-  const humanEvidence = allScores.filter(s => s.evidence.some(e => e.type === 'human'));
-
-  // Score improvements
-  const improvements = games.map(g => ({
-    game: g.title,
-    improvement: getScoreImprovement(g),
-    iterations: g.iterations.length,
-  })).filter(x => x.improvement !== null);
-
-  // Design category scores (art, hero, world, materials, lighting, vfx)
-  const designCategories = ['Art Direction', 'Hero/Player', 'World/Environment', 'Materials/Textures', 'Lighting/Render', 'VFX/Motion'];
-  const designScores = designCategories.map(cat => {
-    const scores = allScores.filter(s => s.category === cat);
-    const avg = scores.length > 0 ? scores.reduce((s, x) => s + x.score, 0) / scores.length : 0;
-    const latest = latestIterations.flatMap(x => x.iteration!.scores.filter(s => s.category === cat));
-    return {
-      category: cat,
-      avgScore: Math.round(avg * 10) / 10,
-      latestScore: latest.length > 0 ? latest[0].score : 0,
-      sampleSize: scores.length,
-    };
-  });
-
-  // Tech categories (performance, ui, obstacles)
-  const techCategories = ['Performance', 'UI/HUD', 'Obstacles/Enemies'];
-  const techScores = techCategories.map(cat => {
-    const scores = allScores.filter(s => s.category === cat);
-    const avg = scores.length > 0 ? scores.reduce((s, x) => s + x.score, 0) / scores.length : 0;
-    const latest = latestIterations.flatMap(x => x.iteration!.scores.filter(s => s.category === cat));
-    return {
-      category: cat,
-      avgScore: Math.round(avg * 10) / 10,
-      latestScore: latest.length > 0 ? latest[0].score : 0,
-      sampleSize: scores.length,
-    };
-  });
-
-  // Resilience data
-  const resilienceData = [
-    { id: 'near-miss-001', date: '2026-07-15', category: 'self-certification', severity: 'medium', status: 'open', description: 'Screenshot-evidence skill created without version history' },
-    { id: 'failure-mode-001', date: '2026-07-15', category: 'reporting-error', severity: 'high', status: 'fixed', description: 'Status report incorrectly listed commit contents' },
-    { id: 'near-miss-002', date: '2026-07-15', category: 'dependency-risk', severity: 'low', status: 'fixed', description: 'Playwright installed without running dependency gate' },
-    { id: 'near-miss-003', date: '2026-07-15', category: 'verification-gap', severity: 'medium', status: 'fixed', description: 'Phase 3 scoring built but noted as needs verification' },
-    { id: 'near-miss-004', date: '2026-07-15', category: 'fabricated-data', severity: 'high', status: 'fixed', description: 'Skill Graveyard contained fabricated entry' },
-    { id: 'near-miss-005', date: '2026-07-15', category: 'overstated-verification', severity: 'high', status: 'fixed', description: 'Tier A scores labeled machine-verified but evidence was placeholder' },
-  ];
-
-  const openIssues = resilienceData.filter(r => r.status === 'open').length;
-  const fixedIssues = resilienceData.filter(r => r.status === 'fixed').length;
-  const highSeverity = resilienceData.filter(r => r.severity === 'high').length;
-
-  // Skills data
-  const skillsCount = 118;
-  const skillCategories = [
-    { name: 'Game Dev', count: 12, color: '#4a8a3a' },
-    { name: 'Software Dev', count: 18, color: '#f0d890' },
-    { name: 'Creative', count: 15, color: '#c44a2a' },
-    { name: 'Research', count: 8, color: '#6a9a5a' },
-    { name: 'DevOps', count: 10, color: '#8a6a3a' },
-    { name: 'Media', count: 7, color: '#5a7a9a' },
-    { name: 'Productivity', count: 12, color: '#9a5a7a' },
-    { name: 'MLOps', count: 6, color: '#3a8a6a' },
-    { name: 'GitHub', count: 8, color: '#7a8a3a' },
-    { name: 'Other', count: 22, color: '#606060' },
-  ];
-
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="relative py-20 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2e1a]/50 to-transparent pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#4a8a3a]/5 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-[#4a8a3a]/10 border border-[#4a8a3a]/20 rounded-full text-[#4a8a3a] text-xs uppercase tracking-widest font-medium">
-            <span className="w-1.5 h-1.5 bg-[#4a8a3a] rounded-full animate-pulse" />
-            Live Pipeline Monitoring
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-            Pipeline <span className="text-[#f0d890]">Statistics</span>
-          </h1>
-
-          <p className="text-lg text-[#a0a090] max-w-2xl leading-relaxed">
-            Real-time monitoring of game scoring, design evolution, research integrity,
-            and self-improvement metrics. Every claim backed by evidence. Every failure logged.
-          </p>
+    <>
+      {/* Metric Cards */}
+      <section className="section-container py-24" aria-labelledby="metrics-heading">
+        <Reveal>
+          <SectionHeading
+            eyebrow="ANALYTICS"
+            title="Studio Metrics"
+          />
+        </Reveal>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <Reveal delay={0}>
+            <GlassCard className="p-6">
+              <Counter value={games.length} label="Games Built" />
+            </GlassCard>
+          </Reveal>
+          <Reveal delay={100}>
+            <GlassCard className="p-6">
+              <Counter value={77} label="Peak Score" suffix="/100" />
+            </GlassCard>
+          </Reveal>
+          <Reveal delay={200}>
+            <GlassCard className="p-6">
+              <Counter
+                value={Math.round(
+                  games.reduce((s, g) => s + g.score, 0) / games.length
+                )}
+                label="Avg Score"
+                suffix="/100"
+              />
+            </GlassCard>
+          </Reveal>
+          <Reveal delay={300}>
+            <GlassCard className="p-6">
+              <Counter value={totalIterations} label="Iterations" />
+            </GlassCard>
+          </Reveal>
         </div>
       </section>
 
-      {/* Dashboard */}
-      <section className="px-6 pb-24">
-        <div className="max-w-6xl mx-auto space-y-12">
-
-          {/* Row 1: Overview Stats */}
-          <StatsOverview
-            totalGames={totalGames}
-            totalIterations={totalIterations}
-            avgScore={Math.round(avgScore)}
-            avgGrade={avgGrade}
-            verificationRate={Math.round(verificationRate)}
-            openIssues={openIssues}
-            skillsCount={skillsCount}
+      {/* Score Chart (Accessible SVG) */}
+      <section className="section-container py-16" aria-labelledby="chart-heading">
+        <Reveal>
+          <SectionHeading
+            eyebrow="VISUALIZATION"
+            title="Average Score by Category"
           />
-
-          {/* Row 2: Game Portfolio + Score Trajectory */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <GamePortfolio games={games} />
-            <ScoreTrajectory games={games} />
-          </div>
-
-          {/* Row 3: Design Evolution */}
-          <DesignEvolution
-            designScores={designScores}
-            techScores={techScores}
-          />
-
-          {/* Row 4: Integrity + Resilience */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <IntegrityDashboard
-              tierAAvg={Math.round(avgTierA * 10) / 10}
-              tierBAvg={Math.round(avgTierB * 10) / 10}
-              verificationRate={Math.round(verificationRate)}
-              machineCount={machineEvidence.length}
-              agentCount={agentEvidence.length}
-              humanCount={humanEvidence.length}
-              totalScores={allScores.length}
-            />
-            <ResilienceLog
-              entries={resilienceData}
-              openIssues={openIssues}
-              fixedIssues={fixedIssues}
-              highSeverity={highSeverity}
-            />
-          </div>
-
-          {/* Row 5: Skills + Velocity */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <SkillsTracker
-              totalSkills={skillsCount}
-              categories={skillCategories}
-            />
-            <ImprovementVelocity improvements={improvements} />
-          </div>
-
-        </div>
+        </Reveal>
+        <Reveal delay={100}>
+          <GlassCard className="p-8">
+            <svg
+              viewBox="0 0 600 300"
+              className="w-full max-w-3xl mx-auto"
+              role="img"
+              aria-labelledby="chart-title chart-desc"
+            >
+              <title id="chart-title">Average Score by Category</title>
+              <desc id="chart-desc">Bar chart showing average scores across Gameplay, Visuals, Audio, Performance, and Polish categories</desc>
+              {avgByCategory.map((cat, i) => {
+                const x = 60 + i * 108;
+                const barH = (cat.avg / 100) * 220;
+                return (
+                  <g key={cat.category}>
+                    <rect
+                      x={x}
+                      y={260 - barH}
+                      width={80}
+                      height={barH}
+                      fill="#4a8a3a"
+                      rx="4"
+                    />
+                    <text
+                      x={x + 40}
+                      y={255 - barH}
+                      textAnchor="middle"
+                      fill="#f0d890"
+                      fontSize="14"
+                      fontWeight="bold"
+                      fontFamily="monospace"
+                    >
+                      {cat.avg}
+                    </text>
+                    <text
+                      x={x + 40}
+                      y={280}
+                      textAnchor="middle"
+                      fill="#a7b0a4"
+                      fontSize="11"
+                      fontFamily="sans-serif"
+                    >
+                      {cat.category}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+            {/* Screen reader data table */}
+            <table className="visually-hidden">
+              <caption>Average Score by Category</caption>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Average Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {avgByCategory.map((cat) => (
+                  <tr key={cat.category}>
+                    <td>{cat.category}</td>
+                    <td>{cat.avg}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </GlassCard>
+        </Reveal>
       </section>
-    </div>
+
+      {/* Iteration Chart */}
+      <section className="section-container py-16" aria-labelledby="iteration-heading">
+        <Reveal>
+          <SectionHeading
+            eyebrow="PROGRESSION"
+            title="Score Over Time"
+          />
+        </Reveal>
+        <Reveal delay={100}>
+          <GlassCard className="p-8">
+            <svg
+              viewBox="0 0 600 280"
+              className="w-full max-w-3xl mx-auto"
+              role="img"
+              aria-labelledby="iter-title iter-desc"
+            >
+              <title id="iter-title">Score Over Time</title>
+              <desc id="iter-desc">Line chart showing score progression across iterations for each game</desc>
+              {/* Grid lines */}
+              {[0, 25, 50, 75, 100].map((v) => (
+                <g key={v}>
+                  <line
+                    x1="60"
+                    y1={240 - (v / 100) * 200}
+                    x2="560"
+                    y2={240 - (v / 100) * 200}
+                    stroke="rgba(176,211,155,0.1)"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x="50"
+                    y={244 - (v / 100) * 200}
+                    textAnchor="end"
+                    fill="#a7b0a4"
+                    fontSize="11"
+                    fontFamily="monospace"
+                  >
+                    {v}
+                  </text>
+                </g>
+              ))}
+              {/* Game lines */}
+              {games.map((game, gi) => {
+                const reversed = [...game.iterations].reverse();
+                const points = reversed.map((it, i) => {
+                  const x = 80 + (i / Math.max(reversed.length - 1, 1)) * 460;
+                  const y = 240 - (it.scoreAfter / 100) * 200;
+                  return `${x},${y}`;
+                });
+                const colors = ["#4a8a3a", "#f0d890"];
+                return (
+                  <g key={game.slug}>
+                    <polyline
+                      points={points.join(" ")}
+                      fill="none"
+                      stroke={colors[gi % colors.length]}
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    {reversed.map((it, i) => {
+                      const x = 80 + (i / Math.max(reversed.length - 1, 1)) * 460;
+                      const y = 240 - (it.scoreAfter / 100) * 200;
+                      return (
+                        <circle
+                          key={i}
+                          cx={x}
+                          cy={y}
+                          r="4"
+                          fill={colors[gi % colors.length]}
+                        />
+                      );
+                    })}
+                    <text
+                      x="80"
+                      y={gi === 0 ? 20 : 36}
+                      fill={colors[gi % colors.length]}
+                      fontSize="12"
+                      fontFamily="sans-serif"
+                      fontWeight="600"
+                    >
+                      {game.title}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+            {/* Screen reader data table */}
+            <table className="visually-hidden">
+              <caption>Score Over Time</caption>
+              <thead>
+                <tr>
+                  <th>Game</th>
+                  <th>Version</th>
+                  <th>Score After</th>
+                </tr>
+              </thead>
+              <tbody>
+                {games.flatMap((g) =>
+                  g.iterations.map((it) => (
+                    <tr key={`${g.slug}-${it.version}`}>
+                      <td>{g.title}</td>
+                      <td>{it.version}</td>
+                      <td>{it.scoreAfter}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </GlassCard>
+        </Reveal>
+      </section>
+
+      {/* Per-Game Scores Table */}
+      <section className="section-container py-16" aria-labelledby="table-heading">
+        <Reveal>
+          <SectionHeading eyebrow="DATA" title="Score Breakdown by Game" />
+        </Reveal>
+        <Reveal delay={100}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-[var(--color-border)]">
+                  <th className="py-3 px-4 text-sm font-semibold text-[var(--color-eigen-cream)]">Game</th>
+                  <th className="py-3 px-4 text-sm font-semibold text-[var(--color-eigen-cream)]">Score</th>
+                  <th className="py-3 px-4 text-sm font-semibold text-[var(--color-eigen-cream)]">Grade</th>
+                  <th className="py-3 px-4 text-sm font-semibold text-[var(--color-eigen-cream)]">Status</th>
+                  <th className="py-3 px-4 text-sm font-semibold text-[var(--color-eigen-cream)]">Iterations</th>
+                </tr>
+              </thead>
+              <tbody>
+                {games.map((g) => (
+                  <tr key={g.slug} className="border-b border-[var(--color-border)]/50">
+                    <td className="py-3 px-4 text-sm font-medium text-[var(--color-eigen-cream)]">{g.title}</td>
+                    <td className="py-3 px-4 text-sm font-mono text-[var(--color-eigen-gold)]">{g.score}/100</td>
+                    <td className="py-3 px-4 text-sm font-mono text-[var(--color-eigen-muted)]">{g.grade}</td>
+                    <td className="py-3 px-4">
+                      <span className={`status-pill status-pill--${g.status === "deployed" ? "deployed" : "active"}`}>
+                        {g.status === "deployed" ? "Deployed" : "In Progress"}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-[var(--color-eigen-muted)]">{g.iterations.length}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Reveal>
+      </section>
+    </>
   );
 }
