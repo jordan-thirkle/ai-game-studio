@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { games, getTotalStats } from '@/data/games';
 import { GameCard } from '@/components/GameCard';
+import { ScrollReveal } from '@/components/ScrollReveal';
 
-const STATUS_OPTIONS = ['all', 'in-progress', 'complete', 'prototype'] as const;
+const STATUS_OPTIONS = ['all', 'in-progress', 'complete', 'deployed', 'prototype'] as const;
 
 export default function GamesPage() {
   const stats = getTotalStats();
@@ -15,24 +16,43 @@ export default function GamesPage() {
 
   return (
     <div className="min-h-screen">
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold mb-3">All Games</h1>
-          <p className="text-[#a0a090] text-lg mb-8">
-            {stats.totalGames} game{stats.totalGames !== 1 ? 's' : ''} built by AI agents ·{' '}
-            {stats.totalIterations} iterations · avg score {stats.avgScore.toFixed(1)}/3.0
-          </p>
+      {/* Hero */}
+      <section className="hero-gradient noise-overlay relative overflow-hidden px-6 py-20 md:py-28">
+        {/* Background orbs */}
+        <div className="pointer-events-none absolute left-1/4 top-1/3 h-[400px] w-[400px] rounded-full bg-[var(--color-accent)]/5 blur-[120px]" />
+        <div className="pointer-events-none absolute right-1/4 bottom-1/3 h-[300px] w-[300px] rounded-full bg-[var(--color-gold)]/5 blur-[100px]" />
 
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <ScrollReveal>
+            <p className="overline mb-4 text-[var(--color-accent)]">
+              Portfolio
+            </p>
+            <h1 className="heading-xl mb-4 text-[var(--color-white)]">
+              All Games
+            </h1>
+            <p className="text-lg text-[var(--color-gray-300)]">
+              {stats.totalGames} game{stats.totalGames !== 1 ? 's' : ''} built by AI agents
+              <span className="mx-2 text-[var(--color-gray-600)]" aria-hidden="true">·</span>
+              {stats.totalIterations} iterations
+              <span className="mx-2 text-[var(--color-gray-600)]" aria-hidden="true">·</span>
+              avg score {stats.avgScore.toFixed(1)}/100
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-6xl">
           {/* Filter bar */}
-          <div className="flex items-center gap-2 mb-8 flex-wrap">
+          <div className="mb-8 flex flex-wrap items-center gap-2">
             {STATUS_OPTIONS.map((status) => (
               <button
                 key={status}
                 onClick={() => setFilter(status)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   filter === status
-                    ? 'bg-[#4a8a3a] text-white'
-                    : 'bg-[#1a2e1a]/50 border border-[#2a3a22] text-[#a0a090] hover:border-[#4a8a3a]/50'
+                    ? 'bg-[var(--color-accent)] text-[var(--color-dark)]'
+                    : 'border border-[var(--color-gray-700)] bg-[var(--color-panel)]/50 text-[var(--color-gray-400)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-white)]'
                 }`}
               >
                 {status === 'all'
@@ -44,18 +64,18 @@ export default function GamesPage() {
 
           {/* Games grid */}
           {filteredGames.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredGames.map((game) => (
                 <GameCard key={game.slug} game={game} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-4xl mb-4">🌲</div>
-              <p className="text-[#a0a090]">
+            <div className="py-16 text-center">
+              <div className="mb-4 text-4xl" aria-hidden="true">🌲</div>
+              <p className="text-[var(--color-gray-400)]">
                 No games with status &quot;{filter}&quot; yet.
               </p>
-              <p className="text-sm text-[#606060] mt-2">
+              <p className="mt-2 text-sm text-[var(--color-gray-600)]">
                 Check back soon — the pipeline is always running.
               </p>
             </div>
