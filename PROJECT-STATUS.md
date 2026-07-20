@@ -38,11 +38,14 @@ See [GAMES.md](GAMES.md) for build commands, asset paths, and troubleshooting.
 
 ## Recent Fixes
 
-- [x] Fixed game asset paths (./assets/ not /assets/) — all 3 games now load
+- [x] Fixed game asset paths (./assets/ not /assets/) — all 4 games now load
 - [x] Added base:'./' to all Vite configs
 - [x] Created unified build script (npm run build:games)
 - [x] Fixed Merge Gateway proxy (Bearer auth bug, tool support)
 - [x] Telegram gateway enabled and connected
+- [x] Deployed EigenRealms as playable game
+- [x] Built The Forge — walkable 3D museum of shared game assets
+- [x] Created shared asset library (terrain, particles, materials, lighting, effects)
 
 ## Pending
 
@@ -59,7 +62,9 @@ D:\Projects\active\ai-game-studio\
 │   └── hollow-harvest/ # Hollow Harvest source
 ├── eigenrealms/        # EigenRealms source
 ├── public/games/       # Built games (served by Next.js)
-├── src/                # Next.js site source
+├── src/
+│   ├── app/            # Pages (games, forge, stats, about)
+│   └── lib/game-assets/# Shared asset library
 ├── docs/               # Documentation
 │   └── archive/        # Stale briefs/plans (archived)
 ├── scripts/            # Build scripts

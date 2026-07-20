@@ -174,6 +174,282 @@ function useForgeControls(camera: THREE.PerspectiveCamera, container: HTMLElemen
   return { update, lock, isLocked };
 }
 
+// ── Per-room asset demos ───────────────────────────────────
+
+function buildTerrainDemo(group: THREE.Group): void {
+  // Mini terrain patch with vertex colors
+  const size = 8;
+  const segs = 24;
+  const geom = new THREE.PlaneGeometry(size, size, segs, segs);
+  const pos = geom.attributes.position;
+  const colors = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = -pos.getY(i);
+    const h = Math.sin(x * 0.5) * 0.4 + Math.cos(z * 0.4) * 0.3;
+    pos.setZ(i, h);
+    const t = (h + 0.7) / 1.4;
+    colors[i * 3] = 0.06 + t * 0.08;
+    colors[i * 3 + 1] = 0.12 + t * 0.14;
+    colors[i * 3 + 2] = 0.07 + t * 0.06;
+  }
+  geom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  geom.computeVertexNormals();
+  geom.rotateX(-Math.PI / 2);
+  const mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1 }));
+  mesh.position.y = 1.2;
+  mesh.receiveShadow = true;
+  mesh.castShadow = true;
+  mesh.userData.roomName = "Terrain Hall";
+  mesh.userData.isOrb = true;
+  group.add(mesh);
+
+  // Small tree on terrain
+  const trunk = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.08, 0.12, 1.2, 6),
+    new THREE.MeshStandardMaterial({ color: 0x241b16, roughness: 1 }),
+  );
+  trunk.position.set(0.5, 2, 0.3);
+  trunk.castShadow = true;
+  group.add(trunk);
+  const canopy = new THREE.Mesh(
+    new THREE.ConeGeometry(0.6, 1.4, 6),
+    new THREE.MeshStandardMaterial({ color: 0x10291c, roughness: 1 }),
+  );
+  canopy.position.set(0.5, 2.9, 0.3);
+  canopy.castShadow = true;
+  group.add(canopy);
+}
+
+function buildParticleDemo(group: THREE.Group): void {
+  // Spore particles
+  const count = 80;
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    const r = 1 + Math.random() * 3;
+    positions[i * 3] = Math.cos(angle) * r;
+    positions[i * 3 + 1] = 0.5 + Math.random() * 4;
+    positions[i * 3 + 2] = Math.sin(angle) * r;
+  }
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const points = new THREE.Points(geom, new THREE.PointsMaterial({
+    color: 0x7ecb8e, size: 0.12, transparent: true, opacity: 0.5,
+  }));
+  points.userData.roomName = "Particle Gallery";
+  points.userData.isOrb = true;
+  points.userData.isParticles = true;
+  group.add(points);
+
+  // Firefly particles (golden)
+  const fCount = 30;
+  const fPos = new Float32Array(fCount * 3);
+  for (let i = 0; i < fCount; i++) {
+    const angle = (i / fCount) * Math.PI * 2;
+    const r = 0.5 + Math.random() * 2;
+    fPos[i * 3] = Math.cos(angle) * r;
+    fPos[i * 3 + 1] = 1 + Math.random() * 2.5;
+    fPos[i * 3 + 2] = Math.sin(angle) * r;
+  }
+  const fGeom = new THREE.BufferGeometry();
+  fGeom.setAttribute("position", new THREE.BufferAttribute(fPos, 3));
+  const fireflies = new THREE.Points(fGeom, new THREE.PointsMaterial({
+    color: 0xffe066, size: 0.1, transparent: true, opacity: 0.7,
+  }));
+  group.add(fireflies);
+}
+
+function buildMaterialDemo(group: THREE.Group): void {
+  // Sphere samples of each material
+  const mats = [
+    { color: 0x3a3a3a, rough: 1, metal: 0.05, name: "Stone" },
+    { color: 0x1a4a5a, rough: 0.2, metal: 0.1, name: "Water", transparent: true },
+    { color: 0xb7d7cc, rough: 0.25, metal: 0.75, emissive: 0x28483e, name: "Sword" },
+    { color: 0x241b16, rough: 1, metal: 0, name: "Wood" },
+    { color: 0x49252e, rough: 0.9, metal: 0, emissive: 0x18090d, name: "Wraith" },
+  ];
+
+  mats.forEach((m, i) => {
+    const angle = (i / mats.length) * Math.PI * 2;
+    const sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(0.35, 16, 16),
+      new THREE.MeshStandardMaterial({
+        color: m.color,
+        roughness: m.rough,
+        metalness: m.metal,
+        emissive: m.emissive ?? 0x000000,
+        emissiveIntensity: m.emissive ? 0.5 : 0,
+        transparent: !!m.transparent,
+        opacity: m.transparent ? 0.7 : 1,
+      }),
+    );
+    sphere.position.set(Math.cos(angle) * 2, 2, Math.sin(angle) * 2);
+    sphere.castShadow = true;
+    group.add(sphere);
+  });
+
+  // Click target
+  const target = new THREE.Mesh(
+    new THREE.SphereGeometry(0.01, 4, 4),
+    new THREE.MeshBasicMaterial({ visible: false }),
+  );
+  target.position.y = 2;
+  target.userData.roomName = "Material Vault";
+  target.userData.isOrb = true;
+  group.add(target);
+}
+
+function buildLightingDemo(group: THREE.Group): void {
+  // Three orbs showing different lighting moods
+  const presets = [
+    { color: 0x4c9a68, intensity: 1.5, label: "Forest" },
+    { color: 0x6677aa, intensity: 1.2, label: "Crystal" },
+    { color: 0xddaa66, intensity: 1.0, label: "Wasteland" },
+  ];
+
+  presets.forEach((p, i) => {
+    const orb = new THREE.Mesh(
+      new THREE.SphereGeometry(0.5, 16, 16),
+      new THREE.MeshStandardMaterial({
+        color: p.color,
+        emissive: p.color,
+        emissiveIntensity: 0.6,
+        roughness: 0.3,
+      }),
+    );
+    orb.position.set((i - 1) * 2.5, 2, 0);
+    orb.castShadow = true;
+    group.add(orb);
+
+    // Point light to show the preset
+    const light = new THREE.PointLight(p.color, p.intensity, 8);
+    light.position.set((i - 1) * 2.5, 3, 0);
+    group.add(light);
+  });
+
+  // Click target
+  const target = new THREE.Mesh(
+    new THREE.SphereGeometry(0.01, 4, 4),
+    new THREE.MeshBasicMaterial({ visible: false }),
+  );
+  target.position.y = 2;
+  target.userData.roomName = "Lighting Chamber";
+  target.userData.isOrb = true;
+  group.add(target);
+}
+
+function buildEffectDemo(group: THREE.Group): void {
+  // Static death burst particles frozen in time
+  const count = 12;
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    const r = 0.5 + Math.random() * 0.8;
+    positions[i * 3] = Math.cos(angle) * r;
+    positions[i * 3 + 1] = 1.5 + Math.random() * 2;
+    positions[i * 3 + 2] = Math.sin(angle) * r;
+  }
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const points = new THREE.Points(geom, new THREE.PointsMaterial({
+    color: 0xff6644, size: 0.2, transparent: true, opacity: 0.8,
+  }));
+  points.userData.roomName = "Effect Theater";
+  points.userData.isOrb = true;
+  points.userData.isDeathBurst = true;
+  group.add(points);
+
+  // Impact ring
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.3, 1.5, 24),
+    new THREE.MeshStandardMaterial({
+      color: 0xff6644, emissive: 0xff6644, emissiveIntensity: 0.4,
+      transparent: true, opacity: 0.3, side: THREE.DoubleSide,
+    }),
+  );
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 1.0;
+  group.add(ring);
+}
+
+function buildEntityDemo(group: THREE.Group): void {
+  // Player figure
+  const playerGroup = new THREE.Group();
+  playerGroup.position.set(-2, 1, 0);
+
+  const cloakMat = new THREE.MeshStandardMaterial({ color: 0x172d25, roughness: 0.95 });
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x9aa99b, roughness: 0.75 });
+
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.8, 4, 8), cloakMat);
+  torso.position.y = 1.0;
+  torso.castShadow = true;
+  playerGroup.add(torso);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 8), bodyMat);
+  head.position.y = 1.7;
+  head.castShadow = true;
+  playerGroup.add(head);
+
+  const hood = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.5, 6), cloakMat);
+  hood.position.y = 1.9;
+  hood.rotation.x = Math.PI;
+  playerGroup.add(hood);
+
+  const swordBlade = new THREE.Mesh(
+    new THREE.BoxGeometry(0.06, 1.0, 0.04),
+    new THREE.MeshStandardMaterial({
+      color: 0xb7d7cc, emissive: 0x28483e, emissiveIntensity: 0.7,
+      metalness: 0.75, roughness: 0.25,
+    }),
+  );
+  swordBlade.position.set(0.5, 1.2, 0);
+  swordBlade.rotation.z = -0.4;
+  swordBlade.castShadow = true;
+  playerGroup.add(swordBlade);
+
+  playerGroup.userData.roomName = "Entity Workshop";
+  playerGroup.userData.isOrb = true;
+  playerGroup.userData.isPlayer = true;
+  group.add(playerGroup);
+
+  // Enemy wraith
+  const wraithGroup = new THREE.Group();
+  wraithGroup.position.set(2, 1, 0);
+
+  const wraithMat = new THREE.MeshStandardMaterial({
+    color: 0x49252e, roughness: 0.9, emissive: 0x18090d, emissiveIntensity: 0.8,
+  });
+  const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff8e62 });
+
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 8), wraithMat);
+  body.scale.set(0.8, 1.3, 0.8);
+  body.position.y = 0.9;
+  body.castShadow = true;
+  wraithGroup.add(body);
+
+  const hornL = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.35, 5), wraithMat);
+  hornL.position.set(-0.22, 1.55, 0);
+  hornL.rotation.z = -0.4;
+  wraithGroup.add(hornL);
+
+  const hornR = hornL.clone();
+  hornR.position.x = 0.22;
+  hornR.rotation.z = 0.4;
+  wraithGroup.add(hornR);
+
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), eyeMat);
+  eyeL.position.set(-0.13, 1.0, -0.38);
+  wraithGroup.add(eyeL);
+
+  const eyeR = eyeL.clone();
+  eyeR.position.x = 0.13;
+  wraithGroup.add(eyeR);
+
+  wraithGroup.userData.roomName = "Entity Workshop";
+  group.add(wraithGroup);
+}
+
 // ── Scene builder ──────────────────────────────────────────
 
 function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
@@ -200,13 +476,10 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
     pillar.castShadow = true;
     group.add(pillar);
 
-    // Pillar cap glow
     const cap = new THREE.Mesh(
       new THREE.SphereGeometry(0.18, 8, 8),
       new THREE.MeshStandardMaterial({
-        color: room.accent,
-        emissive: room.accent,
-        emissiveIntensity: 0.8,
+        color: room.accent, emissive: room.accent, emissiveIntensity: 0.8,
       }),
     );
     cap.position.set(Math.cos(angle) * 5.5, 5.1, Math.sin(angle) * 5.5);
@@ -222,35 +495,29 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
   pedestal.castShadow = true;
   group.add(pedestal);
 
-  // Central orb
-  const orb = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(0.8, 2),
-    new THREE.MeshStandardMaterial({
-      color: room.accent,
-      emissive: room.accent,
-      emissiveIntensity: 0.5,
-      roughness: 0.2,
-      metalness: 0.3,
-    }),
-  );
-  orb.position.y = 1.8;
-  orb.castShadow = true;
-  orb.userData.roomName = room.name;
-  orb.userData.isOrb = true;
-  group.add(orb);
-
-  // Ring
-  const ring = new THREE.Mesh(
-    new THREE.TorusGeometry(1.2, 0.05, 8, 48),
-    new THREE.MeshStandardMaterial({
-      color: room.accent,
-      emissive: room.accent,
-      emissiveIntensity: 0.6,
-    }),
-  );
-  ring.position.y = 1.8;
-  ring.rotation.x = Math.PI / 2;
-  group.add(ring);
+  // Room-specific asset demo
+  switch (room.name) {
+    case "Terrain Hall": buildTerrainDemo(group); break;
+    case "Particle Gallery": buildParticleDemo(group); break;
+    case "Material Vault": buildMaterialDemo(group); break;
+    case "Lighting Chamber": buildLightingDemo(group); break;
+    case "Effect Theater": buildEffectDemo(group); break;
+    case "Entity Workshop": buildEntityDemo(group); break;
+    default: {
+      // Fallback orb
+      const orb = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(0.8, 2),
+        new THREE.MeshStandardMaterial({
+          color: room.accent, emissive: room.accent, emissiveIntensity: 0.5, roughness: 0.2, metalness: 0.3,
+        }),
+      );
+      orb.position.y = 1.8;
+      orb.castShadow = true;
+      orb.userData.roomName = room.name;
+      orb.userData.isOrb = true;
+      group.add(orb);
+    }
+  }
 
   // Floor particles
   const dotCount = 30;
@@ -265,14 +532,11 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
   const dotGeom = new THREE.BufferGeometry();
   dotGeom.setAttribute("position", new THREE.BufferAttribute(dotPos, 3));
   const dotMat = new THREE.PointsMaterial({
-    color: room.accent,
-    size: 0.08,
-    transparent: true,
-    opacity: 0.45,
+    color: room.accent, size: 0.08, transparent: true, opacity: 0.45,
   });
   group.add(new THREE.Points(dotGeom, dotMat));
 
-  // Name label (floating text plane)
+  // Name label
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 128;
@@ -338,8 +602,6 @@ export default function ForgePage() {
     renderer: THREE.WebGLRenderer;
     controls: ReturnType<typeof useForgeControls>;
     roomGroups: THREE.Group[];
-    orbs: THREE.Mesh[];
-    rings: THREE.Mesh[];
     frame: number;
   } | null>(null);
 
@@ -395,21 +657,17 @@ export default function ForgePage() {
 
     // Rooms
     const roomGroups: THREE.Group[] = [];
-    const orbs: THREE.Mesh[] = [];
-    const rings: THREE.Mesh[] = [];
 
     for (const room of ROOMS) {
       const group = buildRoom(room, scene);
       roomGroups.push(group);
+    }
 
-      group.traverse((child) => {
-        if (child instanceof THREE.Mesh && child.userData.isOrb) {
-          orbs.push(child);
-        }
-        // Collect rings by geometry
-        if (child instanceof THREE.Mesh && child.geometry instanceof THREE.TorusGeometry) {
-          rings.push(child);
-        }
+    // Collect all clickable targets (meshes and groups with isOrb)
+    const clickTargets: THREE.Object3D[] = [];
+    for (const room of roomGroups) {
+      room.traverse((child) => {
+        if (child.userData.isOrb) clickTargets.push(child);
       });
     }
 
@@ -427,10 +685,11 @@ export default function ForgePage() {
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const hits = raycaster.intersectObjects(orbs);
+      const hits = raycaster.intersectObjects(clickTargets, true);
       if (hits.length > 0) {
-        const roomName = hits[0].object.userData.roomName as string;
-        setHoveredRoom(roomName);
+        const roomName = hits[0].object.userData.roomName as string
+          ?? (hits[0].object.parent?.userData.roomName as string);
+        setHoveredRoom(roomName ?? null);
         el.style.cursor = "pointer";
       } else {
         setHoveredRoom(null);
@@ -444,9 +703,10 @@ export default function ForgePage() {
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const hits = raycaster.intersectObjects(orbs);
+      const hits = raycaster.intersectObjects(clickTargets, true);
       if (hits.length > 0) {
-        const roomName = hits[0].object.userData.roomName as string;
+        const roomName = hits[0].object.userData.roomName as string
+          ?? (hits[0].object.parent?.userData.roomName as string);
         const room = ROOMS.find((r) => r.name === roomName);
         if (room) setSelectedRoom(room);
       }
@@ -466,24 +726,30 @@ export default function ForgePage() {
 
       controls.update(delta);
 
-      // Animate orbs
-      for (const orb of orbs) {
-        orb.rotation.y = time * 0.5;
-        orb.position.y = 1.8 + Math.sin(time * 0.8 + orb.position.x * 0.1) * 0.2;
-      }
-
-      // Animate rings
-      for (const ring of rings) {
-        ring.rotation.z = time * 0.3;
-        ring.position.y = 1.8 + Math.sin(time * 0.8 + ring.position.x * 0.1) * 0.2;
-      }
+      // Animate room assets
+      scene.children.forEach((child) => {
+        if (child instanceof THREE.Group) {
+          child.traverse((obj) => {
+            // Rotate particle systems
+            if (obj instanceof THREE.Points && obj.userData.isParticles) {
+              obj.rotation.y += delta * 0.15;
+            }
+            // Rotate entity figures slowly
+            if (obj instanceof THREE.Group && obj.userData.isPlayer) {
+              obj.rotation.y += delta * 0.3;
+            }
+          });
+        }
+      });
 
       // Update hovered room for UI
       if (locked) {
         raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-        const hits = raycaster.intersectObjects(orbs);
+        const hits = raycaster.intersectObjects(clickTargets, true);
         if (hits.length > 0) {
-          setHoveredRoom(hits[0].object.userData.roomName as string);
+          const roomName = hits[0].object.userData.roomName as string
+            ?? (hits[0].object.parent?.userData.roomName as string);
+          setHoveredRoom(roomName ?? null);
         } else {
           setHoveredRoom(null);
         }
@@ -507,7 +773,7 @@ export default function ForgePage() {
     };
     document.addEventListener("pointerlockchange", onLockChange);
 
-    stateRef.current = { scene, camera, renderer, controls, roomGroups, orbs, rings, frame };
+    stateRef.current = { scene, camera, renderer, controls, roomGroups, frame: 0 };
 
     return () => {
       cancelAnimationFrame(frame);
