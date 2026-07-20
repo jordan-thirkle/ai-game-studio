@@ -21,7 +21,7 @@ export interface AssetEntry {
   lastImproved: string;
   rating: number;          // 0-100 quality score
   tier: "S" | "A" | "B" | "C" | "D";
-  status: "active" | "experimental" | "deprecated" | "archived";
+  status: "active" | "experimental" | "deprecated";
   importPath: string;
   tags: string[];
   versions: AssetVersion[];
@@ -380,26 +380,7 @@ export const assetRegistry: AssetEntry[] = [
     ],
   },
 
-  // ── Archived ──
-  {
-    id: "terrain-old",
-    name: "Flat Terrain (deprecated)",
-    category: "terrain",
-    description: "Original flat terrain without vertex colors — replaced by heightmap system",
-    usedBy: [],
-    created: "2026-06-28",
-    lastImproved: "2026-07-10",
-    rating: 20,
-    tier: "D",
-    status: "archived",
-    importPath: "—",
-    tags: ["terrain", "flat", "legacy"],
-    versions: [
-      { version: 1, date: "2026-06-28", changes: "Initial flat plane terrain", ratingBefore: 0, ratingAfter: 30 },
-      { version: 2, date: "2026-07-10", changes: "Added basic color", ratingBefore: 30, ratingAfter: 35 },
-      { version: 3, date: "2026-07-20", changes: "Deprecated — replaced by vertex-colored heightmap", ratingBefore: 35, ratingAfter: 20 },
-    ],
-  },
+
 ];
 
 // ── Query helpers ──
@@ -442,7 +423,6 @@ export function getAssetStats() {
     active: assetRegistry.filter((a) => a.status === "active").length,
     experimental: assetRegistry.filter((a) => a.status === "experimental").length,
     deprecated: assetRegistry.filter((a) => a.status === "deprecated").length,
-    archived: assetRegistry.filter((a) => a.status === "archived").length,
     games: allGames.size,
     categories: categories.length,
     tags: allTags.length,
