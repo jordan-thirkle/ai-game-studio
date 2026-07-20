@@ -22,6 +22,15 @@ export default function GamesPage() {
         />
       </Reveal>
 
+      <Reveal delay={80}>
+        <div className="mb-10 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="Catalogue summary">
+          <GlassCard className="p-4"><p className="text-xs uppercase tracking-wider text-[var(--color-eigen-muted)]">Playable here</p><p className="mt-1 text-2xl font-bold text-[var(--color-eigen-gold)]">{games.length}</p></GlassCard>
+          <GlassCard className="p-4"><p className="text-xs uppercase tracking-wider text-[var(--color-eigen-muted)]">Evidence loop</p><p className="mt-1 text-2xl font-bold text-[var(--color-eigen-gold)]">Live</p></GlassCard>
+          <GlassCard className="p-4"><p className="text-xs uppercase tracking-wider text-[var(--color-eigen-muted)]">Platforms</p><p className="mt-1 text-2xl font-bold text-[var(--color-eigen-gold)]">2</p></GlassCard>
+          <GlassCard className="p-4"><p className="text-xs uppercase tracking-wider text-[var(--color-eigen-muted)]">Build access</p><p className="mt-1 text-2xl font-bold text-[var(--color-eigen-gold)]">Open</p></GlassCard>
+        </div>
+      </Reveal>
+
       {/* Filters */}
       <Reveal delay={100}>
         <div className="flex flex-wrap gap-3 mb-12" role="group" aria-label="Filter games">
