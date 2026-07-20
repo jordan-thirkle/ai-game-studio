@@ -94,6 +94,20 @@ const ROOMS: Room[] = [
       { name: "Crystal Golem", desc: "Planned — heavy melee archetype" },
     ],
   },
+  {
+    name: "Audio Chamber",
+    description: "Synthesized ambient soundscapes — no files needed",
+    color: 0x2a1a3a,
+    accent: 0x8a6aff,
+    position: [108, 0, 0],
+    assets: [
+      { name: "Wind", desc: "Low howling brown noise at 200Hz", code: 'import { createAmbient, AMBIENT_PRESETS } from \"@/lib/game-assets/audio\"\nconst wind = createAmbient(AMBIENT_PRESETS.wind)\nwind.play()' },
+      { name: "Forest", desc: "Rustling leaves at 400Hz — used in EigenRealms" },
+      { name: "Cave", desc: "Deep underground rumble at 150Hz" },
+      { name: "Rain", desc: "Steady rainfall at 800Hz" },
+      { name: "Fire", desc: "Crackling campfire at 600Hz" },
+    ],
+  },
 ];
 
 // ── Pointer-lock first-person controls ─────────────────────
@@ -340,6 +354,36 @@ function buildLightingDemo(group: THREE.Group): void {
   group.add(target);
 }
 
+function buildAudioDemo(group: THREE.Group): void {
+  // Audio Chamber: concentric ring visualizers representing sound waves
+  const colors = [0x8a6aff, 0x6a4adf, 0x4a2abf, 0x3a1a9f, 0x2a0a7f];
+  for (let i = 0; i < 5; i++) {
+    const geo = new THREE.RingGeometry(0.6 + i * 0.35, 0.7 + i * 0.35, 32);
+    const mat = new THREE.MeshBasicMaterial({
+      color: colors[i],
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.6 - i * 0.1,
+    });
+    const ring = new THREE.Mesh(geo, mat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 1.5 + i * 0.08;
+    ring.userData.isOrb = true;
+    ring.userData.isAudioRing = true;
+    ring.userData.ringIndex = i;
+    group.add(ring);
+  }
+
+  // Central orb
+  const orbGeo = new THREE.SphereGeometry(0.3, 16, 16);
+  const orbMat = new THREE.MeshStandardMaterial({ color: 0x8a6aff, emissive: 0x8a6aff, emissiveIntensity: 0.6, transparent: true, opacity: 0.8 });
+  const orb = new THREE.Mesh(orbGeo, orbMat);
+  orb.position.y = 1.8;
+  orb.userData.isOrb = true;
+  orb.userData.roomName = "Audio Chamber";
+  group.add(orb);
+}
+
 function buildEffectDemo(group: THREE.Group): void {
   // Static death burst particles frozen in time
   const count = 12;
@@ -504,6 +548,7 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
     case "Lighting Chamber": buildLightingDemo(group); break;
     case "Effect Theater": buildEffectDemo(group); break;
     case "Entity Workshop": buildEntityDemo(group); break;
+    case "Audio Chamber": buildAudioDemo(group); break;
     default: {
       // Fallback orb
       const orb = new THREE.Mesh(
@@ -742,6 +787,12 @@ export default function ForgePage() {
             // Rotate entity figures slowly
             if (obj instanceof THREE.Group && obj.userData.isPlayer) {
               obj.rotation.y += delta * 0.3;
+            }
+            // Pulse audio rings
+            if (obj instanceof THREE.Mesh && obj.userData.isAudioRing) {
+              const idx = obj.userData.ringIndex as number;
+              obj.scale.setScalar(1 + Math.sin(time * 2 + idx * 0.8) * 0.1);
+              (obj.material as THREE.MeshBasicMaterial).opacity = 0.3 + Math.sin(time * 1.5 + idx * 1.2) * 0.2;
             }
           });
         }
