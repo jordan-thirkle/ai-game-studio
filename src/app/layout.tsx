@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -51,6 +52,9 @@ export default function RootLayout({
           Skip to main content
         </a>
         <SiteHeader />
+        <div className="border-b border-[var(--color-line)] bg-[var(--color-sand-soft)] px-6 py-2 text-center text-xs text-[var(--color-ink-soft)]">
+          <Link href="/admin" className="font-semibold text-[var(--color-moss-dark)] no-underline">Game Lab</Link> · private iteration workspace
+        </div>
         <main id="main-content">{children}</main>
         <SiteFooter />
       </body>
