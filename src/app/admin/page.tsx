@@ -1,19 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { IterationForm } from "@/components/admin/IterationForm";
 
 export const metadata: Metadata = {
-  title: "Game Lab",
-  description: "Private workspace for reviewing game iterations, previews, and evidence.",
+  title: "The Bench",
+  description: "Private Eigen Studio iteration workspace.",
 };
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const cookieStore = await cookies();
+  if (cookieStore.get("eigen_admin_demo")?.value !== "1") redirect("/api/auth/demo?redirect=/admin");
   return (
     <section className="section-container py-20" aria-labelledby="lab-heading">
       <div className="max-w-3xl">
-        <p className="eyebrow">PRIVATE WORKSPACE</p>
-        <h1 id="lab-heading" className="mt-4 text-5xl">Game Lab</h1>
+        <p className="eyebrow">THE BENCH · PRIVATE WORKSPACE</p>
+        <h1 id="lab-heading" className="mt-4 text-5xl">The Bench</h1>
         <p className="body-large mt-6">A controlled workspace for game iterations: describe a change, inspect the preview, run evidence checks, then promote only verified work.</p>
       </div>
 
@@ -42,6 +46,11 @@ export default function AdminPage() {
           <GlassCard className="p-6">
             <p className="eyebrow">SAFETY RULE</p>
             <p className="mt-3 text-[var(--color-ink-soft)]">The Lab never writes directly to production. Each change must pass through an isolated preview, evidence checks, review, and an explicit promotion step.</p>
+          </GlassCard>
+          <GlassCard className="p-6">
+            <p className="eyebrow">SESSION</p>
+            <p className="mt-3 text-[var(--color-ink-soft)]">Demo access is temporary. Replace this boundary with GitHub OAuth before inviting collaborators.</p>
+            <a href="/api/auth/logout?redirect=/" className="btn-secondary mt-4">Sign out</a>
           </GlassCard>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { Game } from "./Game";
 
 function bootstrap(): void {

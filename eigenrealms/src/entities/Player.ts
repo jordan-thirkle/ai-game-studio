@@ -10,7 +10,7 @@ export class Player {
   private readonly keys = new Set<string>();
   private readonly bodyMaterial: THREE.MeshStandardMaterial;
   private readonly cloakMaterial: THREE.MeshStandardMaterial;
-  private readonly sword: THREE.Group;
+  private sword!: THREE.Group;
 
   private healthValue = 100;
   private attackRequested = false;
