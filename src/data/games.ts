@@ -152,7 +152,7 @@ export const games: Game[] = [
     techStack: ["Three.js", "TypeScript", "Vite"],
     scores: [
       { category: "Gameplay", score: 60, tier: "B", notes: "Core combat loop works, enemies spawn and chase, needs more enemy variety" },
-      { category: "Visuals", score: 40, tier: "B", notes: "Procedural terrain with basic shapes, enemy models are crude" },
+      { category: "Visuals", score: 62, tier: "B", notes: "Vertex-colored terrain, scattered rocks, floating spores, death particles — much more atmospheric" },
       { category: "Audio", score: 0, tier: "B", notes: "No audio yet" },
       { category: "Performance", score: 70, tier: "A", notes: "Stable 60fps on desktop, Three.js WebGL" },
       { category: "Polish", score: 40, tier: "B", notes: "Basic HUD health bar, no menus, no save, no progression UI" },

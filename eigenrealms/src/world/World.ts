@@ -88,17 +88,30 @@ export class World {
     const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
     const positions = geometry.attributes.position;
 
+    // Add vertex colors based on height for visual depth
+    const colors = new Float32Array(positions.count * 3);
     for (let index = 0; index < positions.count; index += 1) {
       const x = positions.getX(index);
       const z = -positions.getY(index);
-      positions.setZ(index, this.getHeight(x, z));
+      const h = this.getHeight(x, z);
+      positions.setZ(index, h);
+
+      // Height-based coloring: valleys dark, hills lighter, peaks misty
+      const t = (h + 1.5) / 3; // normalize ~[-1.5, 1.5] -> [0, 1]
+      const r = 0.06 + t * 0.08;
+      const g = 0.12 + t * 0.14;
+      const b = 0.07 + t * 0.06;
+      colors[index * 3] = r;
+      colors[index * 3 + 1] = g;
+      colors[index * 3 + 2] = b;
     }
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     geometry.computeVertexNormals();
     geometry.rotateX(-Math.PI / 2);
 
     const material = new THREE.MeshStandardMaterial({
-      color: 0x172c1d,
+      vertexColors: true,
       roughness: 1,
       metalness: 0,
     });
@@ -144,6 +157,63 @@ export class World {
 
       this.createTree(x, z, 0.75 + random() * 1.2, trunkMaterial, foliageMaterial);
     }
+
+    // Scattered rocks
+    const rockMaterial = new THREE.MeshStandardMaterial({
+      color: 0x3a3a3a,
+      roughness: 1,
+      metalness: 0.05,
+    });
+    this.materials.push(rockMaterial);
+
+    for (let index = 0; index < 40; index += 1) {
+      const angle = random() * Math.PI * 2;
+      const radius = 5 + random() * 95;
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+
+      if (Math.abs(x) < 4 && Math.abs(z) < 4) continue;
+
+      const rock = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(0.2 + random() * 0.5, 0),
+        rockMaterial,
+      );
+      rock.position.set(x, this.getHeight(x, z) - 0.1, z);
+      rock.rotation.set(random() * Math.PI, random() * Math.PI, 0);
+      rock.scale.set(1, 0.6 + random() * 0.5, 1);
+      rock.castShadow = true;
+      this.group.add(rock);
+    }
+
+    // Floating spore particles
+    this.createParticles();
+  }
+
+  private createParticles(): void {
+    const count = 200;
+    const positions = new Float32Array(count * 3);
+    const random = this.seededRandom(42);
+
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (random() - 0.5) * 200;
+      positions[i * 3 + 1] = 1 + random() * 8;
+      positions[i * 3 + 2] = (random() - 0.5) * 200;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+    const material = new THREE.PointsMaterial({
+      color: 0x7ecb8e,
+      size: 0.15,
+      transparent: true,
+      opacity: 0.4,
+      sizeAttenuation: true,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    particles.name = "Spores";
+    this.group.add(particles);
   }
 
   private createTree(

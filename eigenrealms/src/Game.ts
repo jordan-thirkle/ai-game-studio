@@ -114,7 +114,15 @@ export class Game {
   private update(delta: number): void {
     this.player.update(delta);
     this.combat.update(delta);
+    this.animateParticles(delta);
     this.updateHud();
+  }
+
+  private animateParticles(delta: number): void {
+    const spores = this.world.group.getObjectByName("Spores") as THREE.Points;
+    if (spores) {
+      spores.rotation.y += delta * 0.02;
+    }
   }
 
   private readonly handleResize = (): void => {

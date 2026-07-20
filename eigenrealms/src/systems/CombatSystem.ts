@@ -113,9 +113,67 @@ export class CombatSystem {
       enemy.group.scale.set(pulse, 1, pulse);
 
       if (enemy.health <= 0) {
+        this.spawnDeathParticles(enemy.group.position);
         this.removeEnemy(index);
       }
     }
+  }
+
+  private spawnDeathParticles(position: THREE.Vector3): void {
+    const count = 12;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const velocities: THREE.Vector3[] = [];
+
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = position.x;
+      positions[i * 3 + 1] = position.y + 0.95;
+      positions[i * 3 + 2] = position.z;
+      velocities.push(
+        new THREE.Vector3(
+          (Math.random() - 0.5) * 4,
+          Math.random() * 3 + 1,
+          (Math.random() - 0.5) * 4,
+        ),
+      );
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+    const material = new THREE.PointsMaterial({
+      color: 0xff6644,
+      size: 0.3,
+      transparent: true,
+      opacity: 1,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    this.scene.add(particles);
+
+    let elapsed = 0;
+    const animate = (): void => {
+      elapsed += 0.016;
+      if (elapsed > 0.8) {
+        this.scene.remove(particles);
+        geometry.dispose();
+        material.dispose();
+        return;
+      }
+
+      const pos = geometry.attributes.position;
+      for (let i = 0; i < count; i++) {
+        pos.setY(i, pos.getY(i) + velocities[i].y * 0.016);
+        pos.setX(i, pos.getX(i) + velocities[i].x * 0.016);
+        pos.setZ(i, pos.getZ(i) + velocities[i].z * 0.016);
+        velocities[i].y -= 6 * 0.016;
+      }
+      pos.needsUpdate = true;
+      material.opacity = 1 - elapsed / 0.8;
+
+      requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
   }
 
   public dispose(): void {
