@@ -7,7 +7,9 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { overflow: hidden; background: #000; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif; width: 100%; height: 100%; touch-action: none; user-select: none; }
-    canvas { display: block; width: 100% !important; height: 100% !important; }
+    #game-container { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    #game-container canvas { display: block; width: 100% !important; height: 100% !important; }
+    canvas:not(#game-container canvas) { display: block; width: 100% !important; height: 100% !important; }
     #ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 
     /* HUD */
@@ -359,6 +361,7 @@
   <script type="module" crossorigin src="/assets/index-HkSAZL88.js"></script>
 </head>
 <body>
+  <div id="game-container"></div>
   <div id="ui">
     <div id="hud">
       <div class="hud-left">

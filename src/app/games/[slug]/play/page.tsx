@@ -10,6 +10,7 @@ export default async function GamePlayPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const game = getGameBySlug(slug);
   if (!game) notFound();
+
   const source = slug === "sky-drifter"
     ? "/games/sky-drifter/index.html"
     : slug === "hollow-harvest"
