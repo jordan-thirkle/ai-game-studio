@@ -37,7 +37,7 @@ export const games: Game[] = [
     techStack: ["Three.js", "React", "GLSL", "Vercel"],
     scores: [
       { category: "Gameplay", score: 80, tier: "A", notes: "Intuitive controls, satisfying movement" },
-      { category: "Visuals", score: 82, tier: "B", notes: "Procedural clouds, atmospheric lighting" },
+      { category: "Visuals", score: 60, tier: "B", notes: "Procedural clouds, atmospheric lighting — functional but sparse" },
       { category: "Audio", score: 75, tier: "B", notes: "Ambient soundtrack, wind effects" },
       { category: "Performance", score: 78, tier: "A", notes: "Stable 60fps on desktop" },
       { category: "Polish", score: 70, tier: "B", notes: "Good foundation, room for UI refinement" },
@@ -80,7 +80,7 @@ export const games: Game[] = [
     techStack: ["Three.js", "React", "R3F", "Zustand"],
     scores: [
       { category: "Gameplay", score: 75, tier: "A", notes: "Core loop is engaging, needs more variety" },
-      { category: "Visuals", score: 70, tier: "B", notes: "Stylized low-poly, atmospheric fog" },
+      { category: "Visuals", score: 50, tier: "B", notes: "Basic low-poly, atmospheric fog — needs art pass" },
       { category: "Audio", score: 65, tier: "B", notes: "Minimal ambient, needs music" },
       { category: "Performance", score: 72, tier: "A", notes: "Good chunk loading" },
       { category: "Polish", score: 72, tier: "B", notes: "Functional UI, needs visual refinement" },
@@ -116,7 +116,7 @@ export const games: Game[] = [
     techStack: ["Three.js", "TypeScript", "Vite", "Web Audio", "Playwright"],
     scores: [
       { category: "Gameplay", score: 48, tier: "A", notes: "Movement and collection loop works; automated bot route still needs authored objective coverage." },
-      { category: "Visuals", score: 68, tier: "B", notes: "Warm forest palette, procedural ground texture, water feature, paths, trees, and ambient particles." },
+      { category: "Visuals", score: 78, tier: "B", notes: "Best visuals of the portfolio — paths, ponds, trees, ambient particles, cohesive palette" },
       { category: "Audio", score: 45, tier: "B", notes: "Procedural ambient audio hooks are present; authored audio assets are not yet integrated." },
       { category: "Performance", score: 86, tier: "A", notes: "Vite production build passes; browser visual tests pass on desktop and mobile." },
       { category: "Polish", score: 52, tier: "B", notes: "Collection feedback and mobile UI exist; progression, failure, and replay hooks remain shallow." },
@@ -152,7 +152,7 @@ export const games: Game[] = [
     techStack: ["Three.js", "TypeScript", "Vite"],
     scores: [
       { category: "Gameplay", score: 60, tier: "B", notes: "Core combat loop works, enemies spawn and chase, needs more enemy variety" },
-      { category: "Visuals", score: 55, tier: "B", notes: "Procedural terrain with trees/rocks, basic enemy models, atmospheric fog" },
+      { category: "Visuals", score: 40, tier: "B", notes: "Procedural terrain with basic shapes, enemy models are crude" },
       { category: "Audio", score: 0, tier: "B", notes: "No audio yet" },
       { category: "Performance", score: 70, tier: "A", notes: "Stable 60fps on desktop, Three.js WebGL" },
       { category: "Polish", score: 40, tier: "B", notes: "Basic HUD health bar, no menus, no save, no progression UI" },
