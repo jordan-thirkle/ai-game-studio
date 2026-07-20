@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:games": "bash scripts/build-games.sh",
+    "build:game": "bash scripts/build-games.sh",
     "start": "next start",
     "lint": "tsc --noEmit",
     "assets": "python scripts/asset-tracker.py"

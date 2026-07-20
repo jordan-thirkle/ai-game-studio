@@ -8,7 +8,7 @@
 - **Tagline:** Inherent quality.
 - **Site:** https://ai-game-studio-one.vercel.app
 - **GitHub:** github.com/jordan-thirkle/ai-game-studio
-- **Status:** LIVE — redesign deployed (pending Vercel production promotion)
+- **Status:** LIVE — redesign deployed
 
 ## Team
 - **Vex** — Studio Lead (orchestrator, decisions)
@@ -21,76 +21,56 @@
 
 ## Game Portfolio
 
-| Game | Genre | Status | Score | Deploy |
+| Game | Genre | Status | Score | Source |
 |------|-------|--------|-------|--------|
-| **AetherRealms** | ARPG | FLAGSHIP — needs build | — | TBD |
-| Whisperwood | Exploration | v2 deployed | ~74-76/100 | whisperwood-v2.vercel.app |
-| Aetheria | Exploration | v1 deployed | ~72/100 | aetheria.vercel.app |
-| Sky Drifter | Survivors-like | prototype | — | TBD |
-| Willow's World | Educational | deployed | — | willow-world.vercel.app |
-| Clicker Tycoon | Idle | deployed | — | TBD |
-| Game 6 | Survivors-like | future | — | TBD |
+| **Hollow Harvest** | Survivors-like | In Progress | 71/B | `games/hollow-harvest/` |
+| **Sky Drifter** | Survivors-like | Deployed | 77/B | Pre-built only |
+| **Whisperwood** | Exploration | Deployed | ~74/B | Pre-built only |
+| **EigenRealms** | ARPG | In Progress | — | `eigenrealms/` |
 
-## Current Priority: AetherRealms (ARPG Flagship)
+See [GAMES.md](GAMES.md) for build commands, asset paths, and troubleshooting.
 
-**What:** The flagship game. Full lifecycle ARPG — progression, loot, combat. Tests all 15 scoring categories.
-**Why:** Already has 27 modules, builds clean, deployed. The sunk cost is real — we have a working ARPG.
-**Next:** Score it, iterate, push for 70+.
+## Current Priority
 
-## Completed This Session
+1. **Hollow Harvest** — score and iterate (71/B, playable)
+2. **EigenRealms** — get playable build working
+3. **Site polish** — game screenshots, OG images, loading states
 
-- [x] Workspace organized (active/archived/prototypes/research/workspace)
-- [x] .env gitignore fixed across all projects
-- [x] Security workflows deployed (CodeQL, Dependabot, dependency-review)
-- [x] Eigen identity locked (name, team, design system, brand)
-- [x] Origin story written
-- [x] Team page built
-- [x] Site redesigned (no emoji slop)
-- [x] Cron jobs: heartbeat (30m), issue-scanner (6h)
-- [x] GitHub repos created for all projects
-- [x] Skills saved: project-lifecycle, gitignore-standards, workspace-cleanup, github-security-setup, autonomous-execution
+## Recent Fixes
 
-## In Progress
-
-- [ ] Vercel production deploy (pushed, may need manual promotion)
-- [x] whisperwood v2 — obstacles, collectibles, textures, VFX (score ~74-76)
-- [x] aetheria v1 — mobile controls, hazards, 10 islands, combo UI (score ~72)
-- [ ] AetherRealms — score and iterate (FLAGSHIP)
+- [x] Fixed game asset paths (./assets/ not /assets/) — all 3 games now load
+- [x] Added base:'./' to all Vite configs
+- [x] Created unified build script (npm run build:games)
+- [x] Fixed Merge Gateway proxy (Bearer auth bug, tool support)
+- [x] Telegram gateway enabled and connected
 
 ## Pending
 
-- [ ] AgentOps key rotation (user action needed)
-- [ ] AetherRealms — score and iterate (FLAGSHIP)
-- [ ] Sky Drifter — build from prototype
-- [ ] More cron jobs: score updater, content generator
-- [ ] Portfolio page update with all games
+- [ ] Merge Gateway credits needed ($10 minimum) for Luna
+- [ ] AetherRealms — playable build
+- [ ] Site: game screenshots, OG images, 404 page
+- [ ] More games (Game 6 planned)
 
 ## Workspace Structure
 
 ```
-D:\Projects\
-├── active/       — 13 projects currently in development
-├── prototypes/   — 24 built but not active
-├── archived/     — 32 old/abandoned
-├── research/     — 14 research docs by topic
-├── workspace/    — shared tools, templates
-├── README.md     — structure documentation
-└── .hermes/      — plans
+D:\Projects\active\ai-game-studio\
+├── games/              # Game source (Vite projects)
+│   └── hollow-harvest/ # Hollow Harvest source
+├── eigenrealms/        # EigenRealms source
+├── public/games/       # Built games (served by Next.js)
+├── src/                # Next.js site source
+├── docs/               # Documentation
+│   └── archive/        # Stale briefs/plans (archived)
+├── scripts/            # Build scripts
+├── GAMES.md            # Game build guide
+└── PROJECT-STATUS.md   # This file
 ```
-
-## Cron Jobs
-
-| Job | Schedule | Purpose |
-|-----|----------|---------|
-| eigen-heartbeat | every 30m | Check all sites for uptime |
-| eigen-issue-scanner | every 6h | Scan games for issues |
 
 ## Key Files
 
-- `IDENTITY.md` — Team and brand identity
-- `content/blog/the-origin-of-eigen.md` — Origin story
-- `src/data/team.ts` — Agent definitions
+- `GAMES.md` — Game structure, build commands, troubleshooting
 - `src/data/games.ts` — Game data and scores
-- `src/lib/design-system.ts` — Design tokens
-- `docs/ARPG-GENRE-EVALUATION.md` — Genre strategy
-- `.hermes/plans/` — Implementation plans
+- `src/app/games/[slug]/page.tsx` — Game detail pages
+- `src/app/games/[slug]/play/page.tsx` — Game embed pages
+- `scripts/build-games.sh` — Unified game build script
