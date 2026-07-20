@@ -12,22 +12,24 @@
     "assets": "python scripts/asset-tracker.py"
   },
   "dependencies": {
+    "@types/three": "^0.185.1",
     "@vercel/og": "^0.11.1",
     "gray-matter": "^4.0.3",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "three": "^0.185.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.3.2",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^10.7.0",
     "eslint-config-next": "^16.2.10",
-    "@playwright/test": "^1.58.2",
     "postcss": "^8.5.19",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.7.0"
