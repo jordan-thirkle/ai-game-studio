@@ -112,7 +112,7 @@ const ROOMS: Room[] = [
 
 // ── Pointer-lock first-person controls ─────────────────────
 
-function useForgeControls(camera: THREE.PerspectiveCamera, container: HTMLElement | null) {
+function useForgeControls(cameraRef: React.RefObject<THREE.PerspectiveCamera | null>, container: HTMLElement | null) {
   const keys = useRef(new Set<string>());
   const euler = useRef(new THREE.Euler(0, 0, 0, "YXZ"));
   const isLocked = useRef(false);
@@ -148,6 +148,8 @@ function useForgeControls(camera: THREE.PerspectiveCamera, container: HTMLElemen
 
   const update = useCallback(
     (delta: number) => {
+      const camera = cameraRef.current;
+      if (!camera) return;
       camera.quaternion.setFromEuler(euler.current);
       const speed = 14;
       const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
@@ -171,7 +173,7 @@ function useForgeControls(camera: THREE.PerspectiveCamera, container: HTMLElemen
       }
       camera.position.y = 2.5; // lock height
     },
-    [camera],
+    [cameraRef],
   );
 
   const lock = useCallback(() => {
@@ -646,6 +648,8 @@ export default function ForgePage() {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [showBrowser, setShowBrowser] = useState(false);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const controls = useForgeControls(cameraRef, containerRef.current);
   const stateRef = useRef<{
     scene: THREE.Scene;
     camera: THREE.PerspectiveCamera;
@@ -667,6 +671,7 @@ export default function ForgePage() {
     // Camera
     const camera = new THREE.PerspectiveCamera(55, el.clientWidth / el.clientHeight, 0.1, 300);
     camera.position.set(0, 2.5, 8);
+    cameraRef.current = camera;
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -721,9 +726,7 @@ export default function ForgePage() {
       });
     }
 
-    // Controls
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const controls = useForgeControls(camera, el);
+    // Controls (already hooked at top level)
 
     // Raycaster for hover
     const raycaster = new THREE.Raycaster();

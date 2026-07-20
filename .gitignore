@@ -104,3 +104,5 @@ scripts/install-merge-proxy-task.bat
 scripts/merge-proxy.py
 scripts/merge_bridge.py
 scripts/start-merge-proxy.bat
+
+.vercel
