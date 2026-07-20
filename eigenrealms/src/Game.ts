@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { World } from "./world/World";
 import { Player } from "./entities/Player";
 import { CombatSystem } from "./systems/CombatSystem";
+import { AudioManager } from "./systems/AudioManager";
 
 export class Game {
   public readonly scene: THREE.Scene;
@@ -16,10 +17,18 @@ export class Game {
   private readonly hud: HTMLDivElement;
   private readonly healthFill: HTMLDivElement;
   private readonly healthText: HTMLDivElement;
+  private readonly audio: AudioManager;
 
   private animationFrame = 0;
   private running = false;
   private previousHealth = -1;
+
+  // Touch control state
+  private readonly touchStick: HTMLElement;
+  private readonly touchKnob: HTMLElement;
+  private readonly attackButton: HTMLElement;
+  private touchStickRadius = 0;
+  private activeTouchId: number | null = null;
 
   public constructor(container: HTMLElement) {
     this.container = container;
@@ -63,6 +72,14 @@ export class Game {
       ".eigen-health-text",
     ) as HTMLDivElement;
 
+    this.audio = new AudioManager();
+
+    // Touch controls
+    this.touchStick = document.getElementById("touch-stick")!;
+    this.touchKnob = document.getElementById("touch-knob")!;
+    this.attackButton = document.getElementById("attack-button")!;
+    this.initTouchControls();
+
     window.addEventListener("resize", this.handleResize);
   }
 
@@ -72,6 +89,7 @@ export class Game {
     }
 
     this.running = true;
+    this.audio.startAmbient('cave');
     this.clock.start();
     this.animationFrame = window.requestAnimationFrame(this.loop);
   }
@@ -83,7 +101,9 @@ export class Game {
 
   public dispose(): void {
     this.stop();
+    this.audio.stop();
     window.removeEventListener("resize", this.handleResize);
+    this.disposeTouchControls();
     this.player.dispose();
     this.combat.dispose();
     this.world.dispose();
@@ -116,6 +136,10 @@ export class Game {
     this.combat.update(delta);
     this.animateParticles(delta);
     this.updateHud();
+
+    if (this.player.isDead) {
+      this.audio.stop();
+    }
   }
 
   private animateParticles(delta: number): void {
@@ -180,4 +204,83 @@ export class Game {
     this.healthFill.style.width = `${Math.max(0, ratio) * 100}%`;
     this.healthText.textContent = `HEALTH ${health} / ${this.player.maxHealth}`;
   }
+
+  // ── Touch Controls ──────────────────────────────────────────────
+
+  private initTouchControls(): void {
+    this.touchStick.addEventListener("pointerdown", this.onStickDown);
+    this.attackButton.addEventListener("pointerdown", this.onAttackDown);
+  }
+
+  private disposeTouchControls(): void {
+    this.touchStick.removeEventListener("pointerdown", this.onStickDown);
+    this.attackButton.removeEventListener("pointerdown", this.onAttackDown);
+    // Clean up any lingering pointer capture
+    this.endStick();
+  }
+
+  private readonly onStickDown = (e: PointerEvent): void => {
+    e.preventDefault();
+    this.touchStick.setPointerCapture(e.pointerId);
+    this.activeTouchId = e.pointerId;
+    this.touchStickRadius = this.touchStick.clientWidth / 2;
+
+    this.touchStick.addEventListener("pointermove", this.onStickMove);
+    this.touchStick.addEventListener("pointerup", this.onStickUp);
+    this.touchStick.addEventListener("pointercancel", this.onStickUp);
+    this.touchStick.addEventListener("lostpointercapture", this.onStickUp);
+
+    // Process the initial touch position
+    this.moveStick(e);
+  };
+
+  private readonly onStickMove = (e: PointerEvent): void => {
+    if (e.pointerId !== this.activeTouchId) return;
+    e.preventDefault();
+    this.moveStick(e);
+  };
+
+  private readonly onStickUp = (e: PointerEvent): void => {
+    if (e.pointerId !== this.activeTouchId) return;
+    this.endStick();
+  };
+
+  private moveStick(e: PointerEvent): void {
+    const rect = this.touchStick.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    let dx = (e.clientX - cx) / this.touchStickRadius;
+    let dy = (e.clientY - cy) / this.touchStickRadius;
+
+    // Clamp to circle
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 1) {
+      dx /= dist;
+      dy /= dist;
+    }
+
+    // Move the knob visually (percentage from center)
+    this.touchKnob.style.transform = `translate(calc(-50% + ${dx * 50}%), calc(-50% + ${dy * 50}%))`;
+
+    // Map to game axes: screen X → game X, screen Y (down) → game Z
+    this.player.setTouchMovement(dx, dy);
+  }
+
+  private endStick(): void {
+    this.activeTouchId = null;
+    this.touchStick.removeEventListener("pointermove", this.onStickMove);
+    this.touchStick.removeEventListener("pointerup", this.onStickUp);
+    this.touchStick.removeEventListener("pointercancel", this.onStickUp);
+    this.touchStick.removeEventListener("lostpointercapture", this.onStickUp);
+
+    // Snap knob back to center
+    this.touchKnob.style.transform = "translate(-50%, -50%)";
+    this.player.clearTouchMovement();
+  }
+
+  private readonly onAttackDown = (e: PointerEvent): void => {
+    e.preventDefault();
+    this.player.requestAttack();
+  };
 }

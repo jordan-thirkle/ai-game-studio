@@ -133,6 +133,32 @@ export class Player {
     }
   }
 
+  /** Set movement from a touch joystick vector (-1..1 on each axis). */
+  public setTouchMovement(x: number, z: number): void {
+    this.keys.delete("w");
+    this.keys.delete("a");
+    this.keys.delete("s");
+    this.keys.delete("d");
+    const deadzone = 0.2;
+    if (x > deadzone) this.keys.add("d");
+    if (x < -deadzone) this.keys.add("a");
+    if (z > deadzone) this.keys.add("s");
+    if (z < -deadzone) this.keys.add("w");
+  }
+
+  /** Clear all touch-based movement (call on pointerup). */
+  public clearTouchMovement(): void {
+    this.keys.delete("w");
+    this.keys.delete("a");
+    this.keys.delete("s");
+    this.keys.delete("d");
+  }
+
+  /** Request an attack (same as pressing Space). */
+  public requestAttack(): void {
+    this.attackRequested = true;
+  }
+
   public dispose(): void {
     window.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("keyup", this.handleKeyUp);

@@ -95,6 +95,7 @@ body {
   justify-content: space-between;
   align-items: flex-end;
   pointer-events: none;
+  touch-action: none;
 }
 
 #touch-stick {
@@ -118,18 +119,33 @@ body {
   background: #f5ba49;
   box-shadow: 0 0 24px rgba(245, 186, 73, 0.44);
   transform: translate(-50%, -50%);
+  transition: transform 0.08s ease-out;
+}
+
+#touch-knob.active {
+  background: #fff;
+  box-shadow: 0 0 32px rgba(255, 255, 255, 0.6);
 }
 
 #dash-button {
-  width: clamp(74px, 18vw, 96px);
+  width: clamp(80px, 20vw, 104px);
   aspect-ratio: 1;
   border: 1px solid rgba(246, 241, 223, 0.3);
   border-radius: 50%;
   color: #111312;
   background: #48baa7;
   font-weight: 800;
+  font-size: 0.9rem;
   pointer-events: auto;
   touch-action: none;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#dash-button.active {
+  transform: scale(0.88);
+  opacity: 0.7;
 }
 
 @media (pointer: coarse), (max-width: 760px) {

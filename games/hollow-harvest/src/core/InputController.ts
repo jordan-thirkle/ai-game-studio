@@ -49,6 +49,7 @@ export class InputController {
     } catch {
       // Synthetic test events do not always have a capturable pointer id.
     }
+    this.knob.classList.add('active');
     this.updatePointer(event.clientX, event.clientY);
   };
 
@@ -64,17 +65,20 @@ export class InputController {
     this.pointerState.active = false;
     this.pointerState.id = null;
     this.pointer.set(0, 0);
+    this.knob.classList.remove('active');
     this.updateKnob();
   };
 
   private readonly onDashDown = (event: PointerEvent) => {
     event.preventDefault();
     this.dashDown = true;
+    this.dashButton.classList.add('active');
   };
 
   private readonly onDashUp = (event: PointerEvent) => {
     event.preventDefault();
     this.dashDown = false;
+    this.dashButton.classList.remove('active');
   };
 
   constructor(
@@ -132,7 +136,8 @@ export class InputController {
   }
 
   private updateKnob(): void {
-    const distance = 38;
+    const rect = this.stick.getBoundingClientRect();
+    const distance = rect.width * 0.32;
     this.knob.style.transform = `translate(calc(-50% + ${this.pointer.x * distance}px), calc(-50% + ${this.pointer.y * distance}px))`;
-  }
+  };
 }

@@ -14,6 +14,8 @@ import { ParticleSystem } from '../systems/ParticleSystem';
 import { UpgradeSystem } from '../systems/UpgradeSystem';
 import { Minimap } from '../systems/Minimap';
 import { ScreenEffects } from '../systems/ScreenEffects';
+import { AtmosphereSystem } from '../systems/AtmosphereSystem';
+import { GroundSystem } from '../systems/GroundSystem';
 import {
   ARENA, COLORS,
 } from '../constants';
@@ -34,6 +36,7 @@ export class Game {
   private readonly upgradeSystem = new UpgradeSystem();
   private readonly minimap: Minimap;
   private readonly screenEffects: ScreenEffects;
+  private readonly atmosphere: AtmosphereSystem;
   private readonly projectiles: Projectile[] = [];
   private readonly pickups: Pickup[] = [];
   private readonly loop = new Loop(
@@ -77,6 +80,7 @@ export class Game {
     });
 
     this.createScene();
+    this.atmosphere = new AtmosphereSystem(this.scene);
     this.cameraRig.snapTo(this.player.group.position);
     resizeRenderer(this.renderer, this.camera, 2);
     this.showTitle();
@@ -108,6 +112,7 @@ export class Game {
     this.waveSystem.dispose();
     this.particles.dispose();
     this.upgradeSystem.dispose();
+    this.atmosphere.dispose();
     this.minimap.dispose();
     this.screenEffects.dispose();
     for (const p of this.projectiles) p.dispose();
@@ -237,6 +242,7 @@ export class Game {
 
     // Season visual update
     this.updateSeason();
+    this.atmosphere.update(elapsed);
 
     // HUD
     this.hud.update(
@@ -693,24 +699,9 @@ export class Game {
     const hw = ARENA.halfWidth;
     const hd = ARENA.halfDepth;
 
-    // Floor
-    const floorTexture = this.createFloorTexture();
-    floorTexture.wrapS = THREE.RepeatWrapping;
-    floorTexture.wrapT = THREE.RepeatWrapping;
-    floorTexture.repeat.set(hw / 2, hd / 2);
-
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(hw * 2, hd * 2, 1, 1),
-      new THREE.MeshStandardMaterial({
-        color: COLORS.ground,
-        map: floorTexture,
-        roughness: 0.72,
-        metalness: 0.02,
-      }),
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    arena.add(floor);
+    // Floor — procedural vertex-colored ground with height variation
+    const groundSystem = new GroundSystem();
+    arena.add(groundSystem.mesh);
 
     // Boundary walls (stone-like)
     const wallMat = new THREE.MeshStandardMaterial({
@@ -841,42 +832,7 @@ export class Game {
     return bush;
   }
 
-  private createFloorTexture(): THREE.CanvasTexture {
-    const size = 256;
-    const textureCanvas = document.createElement('canvas');
-    textureCanvas.width = size;
-    textureCanvas.height = size;
-    const context = textureCanvas.getContext('2d');
-    if (!context) throw new Error('Could not create floor texture context.');
 
-    context.fillStyle = COLORS.groundAccent;
-    context.fillRect(0, 0, size, size);
-
-    // Grass lines
-    context.strokeStyle = 'rgba(246, 241, 223, 0.06)';
-    context.lineWidth = 1;
-    for (let i = 0; i <= size; i += 16) {
-      context.beginPath();
-      context.moveTo(i + Math.random() * 4, 0);
-      context.lineTo(i + Math.random() * 4, size);
-      context.stroke();
-    }
-
-    // Scattered leaf shapes
-    const leafColors = ['rgba(217, 123, 42, 0.15)', 'rgba(196, 74, 42, 0.12)', 'rgba(217, 168, 42, 0.1)'];
-    for (let i = 0; i < 30; i++) {
-      context.fillStyle = leafColors[Math.floor(Math.random() * leafColors.length)];
-      const x = Math.random() * size;
-      const y = Math.random() * size;
-      context.beginPath();
-      context.ellipse(x, y, 3 + Math.random() * 4, 1.5 + Math.random() * 2, Math.random() * Math.PI, 0, Math.PI * 2);
-      context.fill();
-    }
-
-    const texture = new THREE.CanvasTexture(textureCanvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return texture;
-  }
 
   private showTitle(): void {
     this.titleElement = document.createElement('div');

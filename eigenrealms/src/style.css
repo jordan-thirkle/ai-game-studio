@@ -266,3 +266,49 @@ body {
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+/* Touch Controls (virtual joystick + attack button) */
+#touch-controls {
+  position: absolute;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  left: max(18px, env(safe-area-inset-left));
+  right: max(18px, env(safe-area-inset-right));
+  display: none;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 10;
+}
+#touch-stick {
+  position: relative;
+  width: clamp(96px, 24vw, 132px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  pointer-events: auto;
+  touch-action: none;
+}
+#touch-knob {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 42%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  touch-action: none;
+}
+#attack-button {
+  width: clamp(56px, 14vw, 72px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 100, 50, 0.3);
+  color: white;
+  font-size: 1.5rem;
+  pointer-events: auto;
+  touch-action: none;
+}
+@media (pointer: coarse), (max-width: 760px) {
+  #touch-controls { display: flex; }
+}
