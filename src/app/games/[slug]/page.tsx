@@ -11,6 +11,7 @@ const INTERNAL_EMBEDS: Record<string, string> = {
   "sky-drifter": "/games/sky-drifter/index.html",
   "hollow-harvest": "/games/hollow-harvest/index.html",
   "whisperwood-v2": "/games/whisperwood-v2/index.html",
+  "eigenrealms": "/games/eigenrealms/index.html",
 };
 
 interface GamePageProps {

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EIGENREALMS - Build the Studio. Ship the Games.</title>
+    <script type="module" crossorigin src="./assets/index-HYAXjEfJ.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DbAM4meE.css">
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+      
+      <!-- HUD Overlay -->
+      <div id="hud">
+        <div id="health-bar">
+          <div id="health-fill"></div>
+          <span id="health-text">100/100</span>
+        </div>
+        
+        <div id="score-display">
+          <span id="score-value">0</span>
+          <span id="score-label">SCORE</span>
+        </div>
+        
+        <div id="minimap">
+          <canvas id="minimap-canvas" width="150" height="150"></canvas>
+        </div>
+        
+        <div id="quest-tracker">
+          <h3>Active Quests</h3>
+          <ul id="quest-list"></ul>
+        </div>
+      </div>
+      
+      <!-- Menu Overlay -->
+      <div id="menu-overlay" class="hidden">
+        <div id="menu">
+          <h1>EIGENREALMS</h1>
+          <p>Build the Studio. Ship the Games.</p>
+          <button id="start-btn">Start Game</button>
+          <button id="continue-btn">Continue</button>
+          <button id="settings-btn">Settings</button>
+        </div>
+      </div>
+    </div>
+    
+  </body>
+</html>

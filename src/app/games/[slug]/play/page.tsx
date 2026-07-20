@@ -17,7 +17,9 @@ export default async function GamePlayPage({ params }: { params: Promise<{ slug:
       ? "/games/hollow-harvest/index.html"
       : slug === "whisperwood-v2"
         ? "/games/whisperwood-v2/index.html"
-        : null;
+        : slug === "eigenrealms"
+          ? "/games/eigenrealms/index.html"
+          : null;
   const playableLabel = source ? "Playable build" : "Build preparation";
 
   return (

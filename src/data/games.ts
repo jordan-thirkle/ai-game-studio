@@ -136,6 +136,28 @@ export const games: Game[] = [
       },
     ],
   },
+  {
+    slug: "eigenrealms",
+    title: "EigenRealms",
+    tagline: "A survival combat arena — fight, level up, craft, explore",
+    description:
+      "EigenRealms is a Three.js survival combat game with procedural terrain, enemy waves, skill trees, crafting, quests, and an economy system. WASD to move, Space to attack.",
+    score: 0,
+    grade: "—",
+    status: "in-progress",
+    playUrl: "",
+    techStack: ["Three.js", "TypeScript", "Vite"],
+    scores: [],
+    iterations: [
+      {
+        version: "v0.1",
+        date: "2026-07-20",
+        changes: ["Initial playable build", "Player, enemies, combat, terrain"],
+        scoreBefore: 0,
+        scoreAfter: 0,
+      },
+    ],
+  },
 ];
 
 export function getGameBySlug(slug: string): Game | undefined {
