@@ -9,7 +9,8 @@
     "build:game": "bash scripts/build-games.sh",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "assets": "python scripts/asset-tracker.py"
+    "assets": "python scripts/asset-tracker.py",
+    "test": "vitest run"
   },
   "dependencies": {
     "@types/three": "^0.185.1",
@@ -28,10 +29,13 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "canvas": "^3.2.3",
     "eslint": "^10.7.0",
     "eslint-config-next": "^16.2.10",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.19",
     "tailwindcss": "^4.3.2",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.10"
   }
 }
