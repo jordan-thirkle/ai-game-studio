@@ -879,6 +879,45 @@ export default function ForgePage() {
         </div>
       )}
 
+      {/* Asset Status Panel (visible when not locked) */}
+      {!locked && (
+        <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
+          <div className="max-w-6xl mx-auto px-8 pb-8">
+            <div className="bg-[#0a100c]/90 border border-[#1a2e1a] rounded-lg p-5 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-[#f0d890]">Asset Registry</h2>
+                <span className="text-[10px] text-[#51614e]">16 assets · 4 games · 12 active</span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div className="border border-[#1a2e1a] rounded p-2">
+                  <p className="text-[#71816e]">Terrain</p>
+                  <p className="text-[#dfead7] font-semibold">3 palettes</p>
+                  <p className="text-[#51614e]">1 used</p>
+                </div>
+                <div className="border border-[#1a2e1a] rounded p-2">
+                  <p className="text-[#71816e]">Particles</p>
+                  <p className="text-[#dfead7] font-semibold">3 systems</p>
+                  <p className="text-[#51614e]">1 used</p>
+                </div>
+                <div className="border border-[#1a2e1a] rounded p-2">
+                  <p className="text-[#71816e]">Materials</p>
+                  <p className="text-[#dfead7] font-semibold">5 presets</p>
+                  <p className="text-[#51614e]">3 games</p>
+                </div>
+                <div className="border border-[#1a2e1a] rounded p-2">
+                  <p className="text-[#71816e]">Lighting</p>
+                  <p className="text-[#dfead7] font-semibold">3 presets</p>
+                  <p className="text-[#51614e]">1 used</p>
+                </div>
+              </div>
+              <p className="mt-3 text-[10px] text-[#51614e]">
+                Click to enter · WASD move · Mouse look · Click assets to inspect · ESC to exit
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 3D Canvas */}
       <div ref={containerRef} className="w-full h-screen" />
     </main>
