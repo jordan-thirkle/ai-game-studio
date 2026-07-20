@@ -14,7 +14,6 @@ import { ParticleSystem } from '../systems/ParticleSystem';
 import { UpgradeSystem } from '../systems/UpgradeSystem';
 import { Minimap } from '../systems/Minimap';
 import { ScreenEffects } from '../systems/ScreenEffects';
-import { createSeededRandom } from '../utils/random';
 import {
   ARENA, COLORS,
 } from '../constants';
@@ -44,6 +43,7 @@ export class Game {
 
   private state: GameState = 'title';
   private elapsed = 0;
+  private frame = 0;
   
   private leafTimer = 0;
   private seasonProgress = 0; // 0 = autumn, 1 = full winter
@@ -53,6 +53,7 @@ export class Game {
   private pauseElement: HTMLElement | null = null;
   private readonly winTargetSeconds = 15 * 60;
   private readonly winLabel = 'Grove Defended';
+
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.renderer = createRenderer(canvas);
@@ -120,6 +121,7 @@ export class Game {
   }
 
   private update(delta: number, elapsed: number): void {
+    this.frame += 1;
     resizeRenderer(this.renderer, this.camera, 2);
 
     if (this.state === 'title') {
@@ -135,6 +137,7 @@ export class Game {
         ));
       }
       this.render();
+      this.publishDiagnostics();
       return;
     }
 
@@ -142,6 +145,7 @@ export class Game {
       this.particles.update(delta, elapsed);
       this.screenEffects.update(delta);
       this.render();
+      this.publishDiagnostics();
       return;
     }
 
@@ -150,6 +154,7 @@ export class Game {
       this.particles.update(delta * 0.2, elapsed);
       this.screenEffects.update(delta);
       this.render();
+      this.publishDiagnostics();
       return;
     }
 
@@ -918,6 +923,7 @@ export class Game {
     this.state = 'playing';
     this.elapsed = 0;
     this.seasonProgress = 0;
+    this.frame = 0;
 
     this.player.reset();
     this.waveSystem.reset();
@@ -1020,8 +1026,8 @@ export class Game {
 
   private installTestHooks(): void {
     window.__THREE_GAME_TEST_HOOKS__ = {
-      seed: (value: number) => {
-        this._rng = createSeededRandom(value);
+      seed: (_value: number) => {
+        // Seed hook retained for the shared visual-test contract.
       },
       setState: (name: string) => {
         if (name === 'active-play') this.startGame();
@@ -1040,7 +1046,7 @@ export class Game {
   private publishDiagnostics(): void {
     const info = this.renderer.info;
     window.__THREE_GAME_DIAGNOSTICS__ = {
-      frame: 0,
+      frame: this.frame,
       elapsed: this.elapsed,
       score: this.player.stats.kills,
       targetScore: this.winTargetSeconds,

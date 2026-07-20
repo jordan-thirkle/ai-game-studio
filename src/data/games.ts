@@ -101,6 +101,41 @@ export const games: Game[] = [
       },
     ],
   },
+  {
+    slug: "whisperwood-v2",
+    title: "Whisperwood",
+    tagline: "A warm forest exploration game about finding what the woods remember",
+    description:
+      "Whisperwood is a cozy Three.js exploration game with a forest spirit, collectible discoveries, water, paths, hazards, ambient particles, responsive touch controls, and deterministic visual test hooks.",
+    score: 54,
+    grade: "C",
+    status: "deployed",
+    playUrl: "",
+    techStack: ["Three.js", "TypeScript", "Vite", "Web Audio", "Playwright"],
+    scores: [
+      { category: "Gameplay", score: 48, tier: "A", notes: "Movement and collection loop works; automated bot route still needs authored objective coverage." },
+      { category: "Visuals", score: 68, tier: "B", notes: "Warm forest palette, procedural ground texture, water feature, paths, trees, and ambient particles." },
+      { category: "Audio", score: 45, tier: "B", notes: "Procedural ambient audio hooks are present; authored audio assets are not yet integrated." },
+      { category: "Performance", score: 86, tier: "A", notes: "Vite production build passes; browser visual tests pass on desktop and mobile." },
+      { category: "Polish", score: 52, tier: "B", notes: "Collection feedback and mobile UI exist; progression, failure, and replay hooks remain shallow." },
+    ],
+    iterations: [
+      {
+        version: "v2",
+        date: "2026-07-20",
+        changes: ["Added water and forest path features", "Added obstacle-aware movement", "Added deterministic browser visual tests", "Added mobile touch controls"],
+        scoreBefore: 48,
+        scoreAfter: 54,
+      },
+      {
+        version: "v1",
+        date: "2026-07-14",
+        changes: ["Built the forest exploration loop", "Added collectible types", "Added lighting and post-processing"],
+        scoreBefore: 0,
+        scoreAfter: 48,
+      },
+    ],
+  },
 ];
 
 export function getGameBySlug(slug: string): Game | undefined {

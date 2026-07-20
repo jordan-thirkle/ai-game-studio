@@ -39,6 +39,7 @@
     "node_modules",
     "games/**/*",
     "src/app-archive-20260718/**/*",
-    "src/app-archive-20260718-bak/**/*"
+    "src/app-archive-20260718-bak/**/*",
+    "eigenrealms/**/*"
   ]
 }

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sky Drifter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { overflow: hidden; background: #000; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif; width: 100%; height: 100%; touch-action: none; user-select: none; }
+    canvas { display: block; width: 100% !important; height: 100% !important; }
+    #ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+    /* HUD */
+    #hud { position: absolute; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .hud-left, .hud-right { display: flex; flex-direction: column; gap: 4px; }
+    #health-bar { width: min(35vw, 140px); height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+    #health-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #ef4444, #22c55e); border-radius: 3px; transition: width 0.1s; }
+    #score { color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 1px; font-variant-numeric: tabular-nums; }
+    #wave { color: rgba(255,255,255,0.5); font-size: 12px; }
+    #combo { position: absolute; top: 18%; left: 50%; transform: translate(-50%, -50%); color: #ffd700; font-size: clamp(32px, 10vw, 56px); font-weight: 900; opacity: 0; transition: opacity 0.2s, transform 0.2s; text-shadow: 0 0 40px rgba(255,215,0,0.6); pointer-events: none; letter-spacing: 2px; }
+    #xp-bar { position: absolute; bottom: max(80px, calc(env(safe-area-inset-bottom) + 70px)); left: 50%; transform: translateX(-50%); width: min(50vw, 200px); height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: visible; }
+    #xp-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); border-radius: 2px; transition: width 0.15s; }
+    #level-num { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); color: #d6a83f; font-size: 10px; font-weight: 700; letter-spacing: 1px; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+    #abilities { position: absolute; bottom: max(95px, calc(env(safe-area-inset-bottom) + 85px)); left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+    .ability { width: 28px; height: 28px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 13px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .ability-level { position: absolute; bottom: -1px; right: 1px; font-size: 7px; color: #ffd700; }
+
+    /* TOUCH */
+    #touch-zone { position: absolute; bottom: 0; left: 0; width: 50%; height: 35%; pointer-events: auto; z-index: 5; }
+    #joystick { display: none; position: absolute; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12); }
+    #joystick-knob { position: absolute; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+
+    /* MENU — Title Screen */
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 20px rgba(240,216,144,0.3), 0 0 40px rgba(240,216,144,0.15), 0 0 80px rgba(240,216,144,0.05); }
+      50% { text-shadow: 0 0 30px rgba(240,216,144,0.5), 0 0 60px rgba(240,216,144,0.25), 0 0 100px rgba(240,216,144,0.1); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInWord {
+      0% { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bgPan {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+    @keyframes subtleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    #menu {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #0a0f0a;
+      background-image:
+        radial-gradient(ellipse at 30% 20%, rgba(74,138,58,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(240,216,144,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(20,25,35,0.9) 0%, #0a0f0a 100%);
+      animation: bgPan 20s ease-in-out infinite alternate;
+      background-size: 200% 200%;
+      pointer-events: auto;
+      overflow: hidden;
+    }
+    #menu::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(240,216,144,0.015) 2px,
+        rgba(240,216,144,0.015) 4px
+      );
+      pointer-events: none;
+      animation: subtleFloat 6s ease-in-out infinite;
+    }
+    #menu h1 {
+      font-size: clamp(42px, 14vw, 80px);
+      color: #f0d890;
+      letter-spacing: 10px;
+      font-weight: 900;
+      text-shadow: 0 0 20px rgba(240,216,144,0.3), 0 0 40px rgba(240,216,144,0.15), 0 0 80px rgba(240,216,144,0.05);
+      animation: glow 3s ease-in-out infinite;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    #menu .sub {
+      color: rgba(255,255,255,0.3);
+      font-size: clamp(9px, 2.5vw, 12px);
+      letter-spacing: 6px;
+      margin-bottom: 8px;
+      position: relative; z-index: 1;
+    }
+    #menu .tagline {
+      color: rgba(240,216,144,0.7);
+      font-size: clamp(11px, 3vw, 15px);
+      font-weight: 600;
+      letter-spacing: 3px;
+      margin-bottom: 48px;
+      position: relative; z-index: 1;
+      display: flex; gap: 10px;
+    }
+    #menu .tagline .word {
+      opacity: 0;
+      animation: fadeInWord 0.5s ease-out forwards;
+    }
+    #menu .tagline .word:nth-child(1) { animation-delay: 0.8s; }
+    #menu .tagline .word:nth-child(2) { animation-delay: 1.4s; }
+    #menu .tagline .word:nth-child(3) { animation-delay: 2.0s; }
+
+    .menu-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    /* Shared play button style for game over */
+    .play-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); border: none; color: #fff; padding: 16px 48px; border-radius: 14px; font-size: 17px; font-weight: 700; letter-spacing: 2px; cursor: pointer; box-shadow: 0 4px 24px rgba(59,130,246,0.4); transition: all 0.15s; }
+    .play-btn:active { transform: scale(0.96); box-shadow: 0 2px 12px rgba(59,130,246,0.3); }
+    .menu-btn {
+      background: rgba(20,25,35,0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      padding: 16px 48px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out forwards;
+      min-width: 260px;
+      text-align: center;
+    }
+    .menu-btn:nth-child(1) { animation-delay: 0.3s; }
+    .menu-btn:nth-child(2) { animation-delay: 0.45s; }
+    .menu-btn:nth-child(3) { animation-delay: 0.6s; }
+    .menu-btn:active { transform: scale(0.96); }
+    .menu-btn:hover {
+      border-color: rgba(240,216,144,0.4);
+      box-shadow: 0 0 24px rgba(240,216,144,0.12);
+      transform: translateY(-2px);
+    }
+
+    .menu-btn.primary {
+      background: linear-gradient(135deg, rgba(240,216,144,0.15) 0%, rgba(20,25,35,0.9) 100%);
+      border: 2px solid #f0d890;
+      color: #f0d890;
+      font-size: 18px;
+      padding: 18px 56px;
+      box-shadow: 0 4px 30px rgba(240,216,144,0.15);
+    }
+    .menu-btn.primary:hover {
+      border-color: #f0d890;
+      box-shadow: 0 0 40px rgba(240,216,144,0.25), 0 4px 30px rgba(240,216,144,0.15);
+      transform: translateY(-3px);
+    }
+
+    .menu-hints {
+      color: rgba(255,255,255,0.2);
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-top: 48px;
+      position: relative; z-index: 1;
+      opacity: 0;
+      animation: fadeInWord 0.5s ease-out 2.5s forwards;
+    }
+    .menu-version {
+      position: absolute;
+      bottom: 16px;
+      right: 20px;
+      color: rgba(255,255,255,0.15);
+      font-size: 10px;
+      letter-spacing: 1px;
+      z-index: 1;
+    }
+
+    /* GAME OVER */
+    #gameover { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.88); pointer-events: auto; }
+    #gameover h2 { font-size: clamp(28px, 9vw, 48px); color: #fff; letter-spacing: 4px; font-weight: 800; margin-bottom: 20px; }
+    .go-stats { color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 6px; }
+    .go-coins { color: #ffd700; font-size: 16px; margin: 16px 0 28px; font-weight: 600; }
+
+    /* UPGRADE — Dark Glass Panel */
+    #upgrade-panel {
+      position: absolute; inset: 0; display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(6,6,15,0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      pointer-events: auto; z-index: 10; padding: 20px;
+      animation: fadeIn 0.25s ease-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes panelSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes cardPop { from { opacity: 0; transform: scale(0.85) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    .upgrade-panel-inner {
+      background: #151923ee;
+      border: 2px solid #d6a83f;
+      border-radius: 18px;
+      padding: clamp(20px, 4vw, 32px);
+      display: flex; flex-direction: column; align-items: center;
+      max-width: 520px; width: 90vw;
+      box-shadow: 0 0 40px rgba(214,168,63,0.15), 0 12px 40px rgba(0,0,0,0.5);
+      animation: panelSlideUp 0.3s ease-out;
+    }
+    .upgrade-panel-inner h2 {
+      color: #d6a83f; font-size: clamp(16px, 5vw, 22px);
+      margin-bottom: 6px; letter-spacing: 4px; font-weight: 800;
+      text-shadow: 0 0 20px rgba(214,168,63,0.4);
+    }
+    .upgrade-panel-sub {
+      color: rgba(255,255,255,0.35); font-size: 11px;
+      letter-spacing: 2px; margin-bottom: 20px;
+    }
+
+    .upgrade-choices {
+      display: flex; gap: 10px; width: 100%; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .upgrade-btn {
+      background: linear-gradient(160deg, rgba(21,25,35,0.95) 0%, rgba(12,14,22,0.98) 100%);
+      border: 1.5px solid rgba(214,168,63,0.2);
+      border-radius: 14px;
+      padding: 16px 14px;
+      color: #fff; cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+      width: min(28vw, 150px);
+      text-align: center;
+      pointer-events: auto;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center;
+      animation: cardPop 0.35s ease-out both;
+    }
+    .upgrade-btn:nth-child(1) { animation-delay: 0.05s; }
+    .upgrade-btn:nth-child(2) { animation-delay: 0.12s; }
+    .upgrade-btn:nth-child(3) { animation-delay: 0.19s; }
+
+    .upgrade-btn::before {
+      content: ''; position: absolute; inset: 0; border-radius: 14px;
+      background: radial-gradient(circle at 50% 0%, rgba(214,168,63,0.08) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .upgrade-btn:hover::before, .upgrade-btn:focus-visible::before { opacity: 1; }
+
+    .upgrade-btn:hover {
+      border-color: #d6a83f;
+      box-shadow: 0 0 20px rgba(214,168,63,0.25), 0 4px 16px rgba(0,0,0,0.4);
+      transform: translateY(-3px) scale(1.03);
+    }
+    .upgrade-btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 10px rgba(214,168,63,0.15);
+    }
+
+    .upgrade-icon { font-size: 28px; margin-bottom: 6px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
+    .upgrade-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; color: #fff; }
+    .upgrade-lvl { font-size: 10px; color: #d6a83f; font-weight: 600; margin-bottom: 6px; letter-spacing: 1px; }
+    .upgrade-desc { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 8px; line-height: 1.3; }
+    .upgrade-effect {
+      font-size: 10px; color: #60a5fa; font-weight: 600;
+      background: rgba(59,130,246,0.1); padding: 3px 8px;
+      border-radius: 6px; width: 100%;
+    }
+
+    /* Mobile responsive: stack vertically on small screens */
+    @media (max-width: 480px) {
+      .upgrade-choices { flex-direction: column; align-items: center; }
+      .upgrade-btn { width: 85vw; max-width: 280px; flex-direction: row; gap: 12px; padding: 14px 16px; text-align: left; }
+      .upgrade-icon { font-size: 24px; margin-bottom: 0; flex-shrink: 0; }
+      .upgrade-info { flex: 1; }
+      .upgrade-lvl { margin-bottom: 0; }
+      .upgrade-effect { width: auto; }
+    }
+
+    /* STORE */
+    #store { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.92); pointer-events: auto; z-index: 20; padding: 20px; overflow-y: auto; }
+    #store h2 { color: #ffd700; font-size: clamp(18px, 6vw, 24px); margin-bottom: 16px; letter-spacing: 3px; }
+    .store-coins { color: #ffd700; font-size: 15px; margin-bottom: 16px; }
+    #store-content { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 400px; }
+    .store-item { background: rgba(15,23,42,0.95); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; color: #fff; cursor: pointer; transition: all 0.12s; width: min(38vw, 130px); text-align: center; }
+    .store-item:active { border-color: #3b82f6; transform: scale(0.97); }
+    .store-item.owned { border-color: #22c55e; }
+    .store-color { width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 6px; }
+    .store-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+    .store-stat { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .store-price { font-size: 11px; color: #ffd700; }
+    .store-item.owned .store-price { color: #22c55e; }
+    #store-close { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+
+    /* DAMAGE NUMBERS */
+    /* PAUSE MENU */
+    #pause-menu {
+      position: absolute; inset: 0; display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      pointer-events: auto; z-index: 15;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .pause-inner {
+      background: #151923ee;
+      border: 2px solid #d6a83f;
+      border-radius: 18px;
+      padding: clamp(20px, 4vw, 32px);
+      display: flex; flex-direction: column; align-items: center;
+      max-width: 360px; width: 85vw;
+      box-shadow: 0 0 40px rgba(214,168,63,0.15), 0 12px 40px rgba(0,0,0,0.5);
+      animation: panelSlideUp 0.3s ease-out;
+    }
+    .pause-inner h2 {
+      color: #d6a83f; font-size: clamp(16px, 5vw, 22px);
+      margin-bottom: 16px; letter-spacing: 4px; font-weight: 800;
+      text-shadow: 0 0 20px rgba(214,168,63,0.4);
+    }
+    .pause-stats {
+      display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center;
+    }
+    .pause-stat {
+      text-align: center;
+    }
+    .pause-stat-label {
+      color: rgba(255,255,255,0.35); font-size: 10px; letter-spacing: 1px; margin-bottom: 2px;
+    }
+    .pause-stat-val {
+      color: #fff; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;
+    }
+    .pause-buttons {
+      display: flex; flex-direction: column; gap: 10px; width: 100%;
+    }
+    .pause-btn {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border: none; color: #fff; padding: 14px 0; border-radius: 12px;
+      font-size: 15px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(59,130,246,0.35); transition: all 0.15s;
+      width: 100%;
+    }
+    .pause-btn:active { transform: scale(0.96); }
+    .pause-btn.secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: none;
+    }
+    .pause-btn.secondary:active { background: rgba(255,255,255,0.12); }
+
+    #damage-numbers { position: absolute; inset: 0; pointer-events: none; }
+    .dmg { position: absolute; font-weight: 800; pointer-events: none; animation: dmgFloat 0.6s ease-out forwards; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+    @keyframes dmgFloat { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-35px) scale(1.2); } }
+  </style>
+  <script type="module" crossorigin src="/assets/index-HkSAZL88.js"></script>
+</head>
+<body>
+  <div id="ui">
+    <div id="hud">
+      <div class="hud-left">
+        <div id="health-bar"><div id="health-fill"></div></div>
+        <div id="wave">Wave <span id="wave-num">1</span></div>
+      </div>
+      <div class="hud-right">
+        <div id="score">0</div>
+      </div>
+    </div>
+    <div id="xp-bar"><div id="xp-fill"></div><span id="level-num">Lv 1</span></div>
+    <div id="abilities"></div>
+    <div id="combo"></div>
+    <div id="damage-numbers"></div>
+
+    <div id="touch-zone">
+      <div id="joystick"><div id="joystick-knob"></div></div>
+    </div>
+
+    <div id="menu">
+      <h1>SKY DRIFTER</h1>
+      <div class="sub">A VAMPIRE SURVIVORS-LIKE EXPERIENCE</div>
+      <div class="tagline">
+        <span class="word">Survive.</span>
+        <span class="word">Evolve.</span>
+        <span class="word">Dominate.</span>
+      </div>
+      <div class="menu-btns">
+        <button class="menu-btn primary" id="btn-start">▶ START GAME</button>
+        <button class="menu-btn" id="btn-daily">🎲 DAILY CHALLENGE</button>
+        <button class="menu-btn" id="btn-store">🏪 STORE</button>
+      </div>
+      <div class="menu-hints">Arrow keys / WASD to move • Auto-attack • Collect XP to level up</div>
+      <div class="menu-version">v0.9.0</div>
+    </div>
+
+    <div id="gameover">
+      <h2>GAME OVER</h2>
+      <div class="go-stats">Score: <span id="final-score">0</span></div>
+      <div class="go-stats">Wave: <span id="final-wave">1</span></div>
+      <div class="go-stats">Kills: <span id="final-kills">0</span></div>
+      <div class="go-coins">+<span id="final-coins">0</span> coins</div>
+      <button class="play-btn" id="btn-restart">PLAY AGAIN</button>
+    </div>
+
+    <div id="upgrade-panel">
+      <div class="upgrade-panel-inner">
+        <h2>CHOOSE UPGRADE</h2>
+        <div class="upgrade-panel-sub">LEVEL UP!</div>
+        <div class="upgrade-choices" id="upgrade-choices"></div>
+      </div>
+    </div>
+    <div id="pause-menu">
+      <div class="pause-inner">
+        <h2>PAUSED</h2>
+        <div class="pause-stats">
+          <div class="pause-stat">
+            <div class="pause-stat-label">SCORE</div>
+            <div class="pause-stat-val" id="pause-score">0</div>
+          </div>
+          <div class="pause-stat">
+            <div class="pause-stat-label">WAVE</div>
+            <div class="pause-stat-val" id="pause-wave">1</div>
+          </div>
+          <div class="pause-stat">
+            <div class="pause-stat-label">KILLS</div>
+            <div class="pause-stat-val" id="pause-kills">0</div>
+          </div>
+          <div class="pause-stat">
+            <div class="pause-stat-label">TIME</div>
+            <div class="pause-stat-val" id="pause-time">0s</div>
+          </div>
+        </div>
+        <div class="pause-buttons">
+          <button class="pause-btn" id="pause-resume">RESUME</button>
+          <button class="pause-btn secondary" id="pause-restart">RESTART</button>
+          <button class="pause-btn secondary" id="pause-menu-btn">MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="store">
+      <h2>CHARACTERS</h2>
+      <div id="store-content"></div>
+      <button id="store-close">✕</button>
+    </div>
+  </div>
+</body>
+</html>

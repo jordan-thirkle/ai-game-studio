@@ -7,6 +7,12 @@ import { SectionHeading } from "@/components/layout/SectionHeading";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { games, getGameBySlug } from "@/data/games";
 
+const INTERNAL_EMBEDS: Record<string, string> = {
+  "sky-drifter": "/games/sky-drifter/index.html",
+  "hollow-harvest": "/games/hollow-harvest/index.html",
+  "whisperwood-v2": "/games/whisperwood-v2/index.html",
+};
+
 interface GamePageProps {
   params: Promise<{ slug: string }>;
 }
@@ -22,6 +28,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
   return {
     title: game.title,
     description: game.tagline,
+    alternates: { canonical: `/games/${game.slug}` },
   };
 }
 
@@ -62,15 +69,28 @@ export default async function GamePage({ params }: GamePageProps) {
                 ))}
               </div>
               <div className="flex gap-4">
-                <a href={game.playUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                  Play Now
-                </a>
+                <Link href={`/games/${game.slug}/play`} className="btn-primary">
+                  Play in browser
+                </Link>
               </div>
             </div>
             <div className="w-full md:w-96 aspect-video rounded-xl bg-[var(--color-forest-800)] flex items-center justify-center border border-[var(--color-border)]" aria-hidden="true">
               <span className="text-5xl">🎮</span>
             </div>
           </div>
+        </Reveal>
+      </section>
+
+      <section className="section-container pb-16" aria-labelledby="play-heading">
+        <Reveal>
+          <SectionHeading eyebrow="PLAYABLE BUILD" title="Play it here" />
+          {INTERNAL_EMBEDS[game.slug] ? (
+            <div className="mt-6 overflow-hidden rounded-2xl border border-[var(--color-border)] bg-black shadow-2xl" style={{ aspectRatio: "16 / 9" }}>
+              <iframe src={INTERNAL_EMBEDS[game.slug]} title={`${game.title} playable game`} className="h-full w-full border-0" allow="fullscreen" />
+            </div>
+          ) : (
+            <GlassCard className="mt-6 p-8"><p className="text-[var(--color-eigen-muted)]">The playable build is being prepared for this page. The full design, technical record, and iteration history remain available below.</p></GlassCard>
+          )}
         </Reveal>
       </section>
 

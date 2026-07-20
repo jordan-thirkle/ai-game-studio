@@ -55,6 +55,10 @@ test('renders a nonblank interactive game canvas', async ({ page }, testInfo) =>
   await page.goto('/');
   await expect(page.locator('#game-canvas')).toBeVisible();
   await page.waitForFunction(() => (window.__THREE_GAME_DIAGNOSTICS__?.frame ?? 0) > 10);
+  await page.evaluate(() => {
+    window.__THREE_GAME_TEST_HOOKS__?.seed(12345);
+    window.__THREE_GAME_TEST_HOOKS__?.setState('active-play');
+  });
 
   const sample = await sampleCanvas(page);
   expect(sample, JSON.stringify(sample)).toMatchObject({ ok: true });

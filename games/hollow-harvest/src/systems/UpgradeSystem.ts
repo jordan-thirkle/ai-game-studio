@@ -44,7 +44,6 @@ export type UpgradeState = UpgradeDef[];
 
 export class UpgradeSystem {
   private upgrades: UpgradeState;
-  private _onSelection: ((upgrade: UpgradeDef) => void) | null = null;
   private selectionElement: HTMLElement | null = null;
 
   constructor() {
@@ -66,7 +65,7 @@ export class UpgradeSystem {
     if (available.length === 0) return [];
 
     // Shuffle and take count
-    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    const shuffled = [...available];
     return shuffled.slice(0, Math.min(count, shuffled.length));
   }
 
@@ -82,7 +81,7 @@ export class UpgradeSystem {
     choices: UpgradeDef[],
     callback: (upgrade: UpgradeDef) => void,
   ): void {
-    this._onSelection = callback;
+
 
     // Create or reuse selection overlay
     this.selectionElement = document.getElementById('upgrade-selection');
@@ -148,7 +147,7 @@ export class UpgradeSystem {
     if (this.selectionElement) {
       this.selectionElement.style.display = 'none';
     }
-    this._onSelection = null;
+
   }
 
   isShowing(): boolean {
