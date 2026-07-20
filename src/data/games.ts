@@ -41,6 +41,7 @@ export const games: Game[] = [
       { category: "Audio", score: 75, tier: "B", notes: "Ambient soundtrack, wind effects" },
       { category: "Performance", score: 78, tier: "A", notes: "Stable 60fps on desktop" },
       { category: "Polish", score: 70, tier: "B", notes: "Good foundation, room for UI refinement" },
+      { category: "Responsiveness", score: 65, tier: "B", notes: "Desktop controls solid, no mobile/touch support yet" },
     ],
     iterations: [
       {
@@ -83,6 +84,7 @@ export const games: Game[] = [
       { category: "Audio", score: 65, tier: "B", notes: "Minimal ambient, needs music" },
       { category: "Performance", score: 72, tier: "A", notes: "Good chunk loading" },
       { category: "Polish", score: 72, tier: "B", notes: "Functional UI, needs visual refinement" },
+      { category: "Responsiveness", score: 50, tier: "B", notes: "Desktop only, no mobile touch controls" },
     ],
     iterations: [
       {
@@ -118,6 +120,7 @@ export const games: Game[] = [
       { category: "Audio", score: 45, tier: "B", notes: "Procedural ambient audio hooks are present; authored audio assets are not yet integrated." },
       { category: "Performance", score: 86, tier: "A", notes: "Vite production build passes; browser visual tests pass on desktop and mobile." },
       { category: "Polish", score: 52, tier: "B", notes: "Collection feedback and mobile UI exist; progression, failure, and replay hooks remain shallow." },
+      { category: "Responsiveness", score: 72, tier: "B", notes: "Has mobile touch controls and responsive layout, works on phone and desktop" },
     ],
     iterations: [
       {
@@ -147,7 +150,14 @@ export const games: Game[] = [
     status: "in-progress",
     playUrl: "",
     techStack: ["Three.js", "TypeScript", "Vite"],
-    scores: [],
+    scores: [
+      { category: "Gameplay", score: 60, tier: "B", notes: "Core combat loop works, enemies spawn and chase, needs more enemy variety" },
+      { category: "Visuals", score: 55, tier: "B", notes: "Procedural terrain with trees/rocks, basic enemy models, atmospheric fog" },
+      { category: "Audio", score: 0, tier: "B", notes: "No audio yet" },
+      { category: "Performance", score: 70, tier: "A", notes: "Stable 60fps on desktop, Three.js WebGL" },
+      { category: "Polish", score: 40, tier: "B", notes: "Basic HUD health bar, no menus, no save, no progression UI" },
+      { category: "Responsiveness", score: 30, tier: "B", notes: "Keyboard only (WASD + Space), no touch controls, no mobile layout" },
+    ],
     iterations: [
       {
         version: "v0.1",

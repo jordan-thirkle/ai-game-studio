@@ -3838,5 +3838,5 @@ void main() {
       <div style="margin-top: 12px; font-size: 10px; color: #71816e; letter-spacing: 0.08em;">
         WASD MOVE&nbsp;&nbsp;&nbsp; SPACE ATTACK
       </div>
-    `,document.body.appendChild(t),t}updateHud(){const t=this.player.health;if(t===this.previousHealth)return;this.previousHealth=t;const e=this.player.maxHealth>0?t/this.player.maxHealth:0;this.healthFill.style.width=`${Math.max(0,e)*100}%`,this.healthText.textContent=`HEALTH ${t} / ${this.player.maxHealth}`}}function po(){const i=new Xp(document.body);window.addEventListener("beforeunload",()=>{i.dispose()}),i.start()}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",po,{once:!0}):po();
-//# sourceMappingURL=index-HYAXjEfJ.js.map
+    `,document.body.appendChild(t),t}updateHud(){const t=this.player.health;if(t===this.previousHealth)return;this.previousHealth=t;const e=this.player.maxHealth>0?t/this.player.maxHealth:0;this.healthFill.style.width=`${Math.max(0,e)*100}%`,this.healthText.textContent=`HEALTH ${t} / ${this.player.maxHealth}`}}function po(){const i=document.getElementById("game-container")||document.body,t=new Xp(i);window.addEventListener("beforeunload",()=>{t.dispose()}),t.start()}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",po,{once:!0}):po();
+//# sourceMappingURL=index-C-jjt9l2.js.map
