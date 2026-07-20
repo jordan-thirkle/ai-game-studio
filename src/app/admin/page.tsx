@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { games } from "@/data/games";
+import { IterationForm } from "@/components/admin/IterationForm";
 
 export const metadata: Metadata = {
   title: "Game Lab",
@@ -26,20 +26,7 @@ export default function AdminPage() {
             </div>
             <span className="status-pill status-pill--active">Local preview</span>
           </div>
-          <form className="mt-8 space-y-5" action="#iteration-preview">
-            <div>
-              <label className="form-label" htmlFor="game">Game</label>
-              <select id="game" name="game" className="form-input" defaultValue={games[0]?.slug}>
-                {games.map((game) => <option key={game.slug} value={game.slug}>{game.title}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="form-label" htmlFor="brief">Iteration brief</label>
-              <textarea id="brief" name="brief" rows={5} className="form-input" placeholder="Describe one measurable change to make next." />
-              <p className="mt-2 text-sm text-[var(--color-ink-soft)]">Keep the brief narrow enough to verify with a build, test, or runtime metric.</p>
-            </div>
-            <button type="submit" className="btn-primary">Create preview brief</button>
-          </form>
+          <IterationForm />
         </GlassCard>
 
         <div className="space-y-6">
