@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
+import { assetRegistry, getAssetStats, type AssetEntry } from "@/lib/game-assets/registry";
 
 // ── Room data ──────────────────────────────────────────────
 
@@ -596,6 +597,10 @@ export default function ForgePage() {
   const [locked, setLocked] = useState(false);
   const [hoveredRoom, setHoveredRoom] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<AssetEntry | null>(null);
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [showBrowser, setShowBrowser] = useState(false);
   const stateRef = useRef<{
     scene: THREE.Scene;
     camera: THREE.PerspectiveCamera;
@@ -880,39 +885,230 @@ export default function ForgePage() {
       )}
 
       {/* Asset Status Panel (visible when not locked) */}
-      {!locked && (
+      {!locked && !showBrowser && (
         <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none">
           <div className="max-w-6xl mx-auto px-8 pb-8">
             <div className="bg-[#0a100c]/90 border border-[#1a2e1a] rounded-lg p-5 backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-[#f0d890]">Asset Registry</h2>
-                <span className="text-[10px] text-[#51614e]">16 assets · 4 games · 12 active</span>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div className="border border-[#1a2e1a] rounded p-2">
-                  <p className="text-[#71816e]">Terrain</p>
-                  <p className="text-[#dfead7] font-semibold">3 palettes</p>
-                  <p className="text-[#51614e]">1 used</p>
-                </div>
-                <div className="border border-[#1a2e1a] rounded p-2">
-                  <p className="text-[#71816e]">Particles</p>
-                  <p className="text-[#dfead7] font-semibold">3 systems</p>
-                  <p className="text-[#51614e]">1 used</p>
-                </div>
-                <div className="border border-[#1a2e1a] rounded p-2">
-                  <p className="text-[#71816e]">Materials</p>
-                  <p className="text-[#dfead7] font-semibold">5 presets</p>
-                  <p className="text-[#51614e]">3 games</p>
-                </div>
-                <div className="border border-[#1a2e1a] rounded p-2">
-                  <p className="text-[#71816e]">Lighting</p>
-                  <p className="text-[#dfead7] font-semibold">3 presets</p>
-                  <p className="text-[#51614e]">1 used</p>
-                </div>
-              </div>
+              {(() => { const stats = getAssetStats(); return (
+                <>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-sm font-semibold text-[#f0d890]">Asset Registry</h2>
+                    <div className="flex items-center gap-4">
+                      <span className="text-[10px] text-[#51614e]">
+                        {stats.total} assets · {stats.active} active · {stats.experimental} experimental · avg {stats.avgRating}
+                      </span>
+                      <button
+                        onClick={() => setShowBrowser(true)}
+                        className="text-[10px] text-[#4a8a3a] hover:text-[#69b94d] bg-transparent border border-[#1a2e1a] rounded px-2 py-1 cursor-pointer pointer-events-auto"
+                      >
+                        Browse All →
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+                    {(["S", "A", "B", "C", "D"] as const).map((tier) => (
+                      <div key={tier} className="border border-[#1a2e1a] rounded p-2">
+                        <p className="text-[#71816e]">Tier {tier}</p>
+                        <p className="text-[#dfead7] font-semibold">{stats.tiers[tier]} assets</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ); })()}
               <p className="mt-3 text-[10px] text-[#51614e]">
                 Click to enter · WASD move · Mouse look · Click assets to inspect · ESC to exit
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Asset Browser (full catalog with filters) */}
+      {showBrowser && (
+        <div className="absolute inset-0 z-40 bg-[#060a08]/98 backdrop-blur-sm overflow-y-auto pointer-events-auto">
+          <div className="max-w-5xl mx-auto px-8 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-[10px] tracking-[0.2em] uppercase text-[#51614e]">Eigen Studio</p>
+                <h1 className="text-2xl font-bold text-[#f0d890]">Asset Catalog</h1>
+              </div>
+              <button
+                onClick={() => { setShowBrowser(false); setSelectedAsset(null); }}
+                className="text-[#71816e] hover:text-[#dfead7] bg-transparent border border-[#1a2e1a] rounded px-3 py-1.5 cursor-pointer text-xs"
+              >
+                ← Back to Forge
+              </button>
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-wrap gap-3 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-[#51614e] uppercase">Category</span>
+                {["all", "terrain", "particles", "materials", "lighting", "effects", "entities"].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setFilterCategory(cat)}
+                    className={`text-[10px] px-2 py-1 rounded border cursor-pointer ${
+                      filterCategory === cat
+                        ? "border-[#4a8a3a] text-[#4a8a3a] bg-[#4a8a3a]/10"
+                        : "border-[#1a2e1a] text-[#71816e] bg-transparent hover:border-[#2a3e2a]"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-[#51614e] uppercase">Status</span>
+                {["all", "active", "experimental", "archived"].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setFilterStatus(s)}
+                    className={`text-[10px] px-2 py-1 rounded border cursor-pointer ${
+                      filterStatus === s
+                        ? "border-[#4a8a3a] text-[#4a8a3a] bg-[#4a8a3a]/10"
+                        : "border-[#1a2e1a] text-[#71816e] bg-transparent hover:border-[#2a3e2a]"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-6">
+              {/* Asset List */}
+              <div className="flex-1 space-y-2">
+                {assetRegistry
+                  .filter((a) => filterCategory === "all" || a.category === filterCategory)
+                  .filter((a) => filterStatus === "all" || a.status === filterStatus)
+                  .map((asset) => (
+                    <button
+                      key={asset.id}
+                      onClick={() => setSelectedAsset(asset)}
+                      className={`w-full text-left border rounded-lg p-3 cursor-pointer transition-colors ${
+                        selectedAsset?.id === asset.id
+                          ? "border-[#4a8a3a] bg-[#0c1a10]"
+                          : "border-[#1a2e1a] bg-[#0a100c]/60 hover:border-[#2a3e2a]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                            asset.tier === "S" ? "bg-[#f0d890] text-[#0a0f0a]" :
+                            asset.tier === "A" ? "bg-[#4a8a3a] text-white" :
+                            asset.tier === "B" ? "bg-[#2a5a3a] text-[#dfead7]" :
+                            asset.tier === "C" ? "bg-[#3a3a2a] text-[#aebdac]" :
+                            "bg-[#2a1a1a] text-[#71816e]"
+                          }`}>
+                            {asset.tier}
+                          </span>
+                          <span className="text-sm text-[#dfead7]">{asset.name}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-[#71816e]">{asset.rating}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded ${
+                            asset.status === "active" ? "text-[#4a8a3a]" :
+                            asset.status === "experimental" ? "text-[#f0d890]" :
+                            asset.status === "deprecated" ? "text-[#a85a3a]" :
+                            "text-[#51614e]"
+                          }`}>
+                            {asset.status}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-[#51614e] mt-1">{asset.description.slice(0, 80)}</p>
+                    </button>
+                  ))}
+              </div>
+
+              {/* Asset Detail */}
+              {selectedAsset && (
+                <div className="w-96 border border-[#1a2e1a] rounded-lg p-5 bg-[#0a100c] h-fit sticky top-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                      selectedAsset.tier === "S" ? "bg-[#f0d890] text-[#0a0f0a]" :
+                      selectedAsset.tier === "A" ? "bg-[#4a8a3a] text-white" :
+                      selectedAsset.tier === "B" ? "bg-[#2a5a3a] text-[#dfead7]" :
+                      selectedAsset.tier === "C" ? "bg-[#3a3a2a] text-[#aebdac]" :
+                      "bg-[#2a1a1a] text-[#71816e]"
+                    }`}>
+                      {selectedAsset.tier}
+                    </span>
+                    <h3 className="text-lg font-bold text-[#dfead7]">{selectedAsset.name}</h3>
+                  </div>
+
+                  <p className="text-xs text-[#92a68e] mb-4">{selectedAsset.description}</p>
+
+                  {/* Stats row */}
+                  <div className="grid grid-cols-3 gap-2 mb-4 text-center">
+                    <div className="bg-[#0c120e] rounded p-2">
+                      <p className="text-lg font-bold text-[#f0d890]">{selectedAsset.rating}</p>
+                      <p className="text-[10px] text-[#51614e]">Rating</p>
+                    </div>
+                    <div className="bg-[#0c120e] rounded p-2">
+                      <p className="text-lg font-bold text-[#dfead7]">v{selectedAsset.versions[selectedAsset.versions.length - 1]?.version ?? 0}</p>
+                      <p className="text-[10px] text-[#51614e]">Version</p>
+                    </div>
+                    <div className="bg-[#0c120e] rounded p-2">
+                      <p className="text-lg font-bold text-[#dfead7]">{selectedAsset.usedBy.length}</p>
+                      <p className="text-[10px] text-[#51614e]">Games</p>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {selectedAsset.tags.map((tag) => (
+                      <span key={tag} className="text-[9px] px-1.5 py-0.5 rounded bg-[#1a2e1a] text-[#71816e]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Used by */}
+                  {selectedAsset.usedBy.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-[10px] text-[#51614e] uppercase mb-1">Used by</p>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedAsset.usedBy.map((g) => (
+                          <span key={g} className="text-[10px] px-2 py-0.5 rounded bg-[#1a2e1a] text-[#aebdac]">
+                            {g}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Import path */}
+                  <div className="mb-4">
+                    <p className="text-[10px] text-[#51614e] uppercase mb-1">Import</p>
+                    <pre className="text-[10px] text-[#aebdac] bg-[#0c120e] rounded p-2 overflow-x-auto">
+                      {selectedAsset.importPath}
+                    </pre>
+                  </div>
+
+                  {/* Version History */}
+                  <div>
+                    <p className="text-[10px] text-[#51614e] uppercase mb-2">Version History</p>
+                    <div className="space-y-2">
+                      {[...selectedAsset.versions].reverse().map((v) => (
+                        <div key={v.version} className="border-l-2 border-[#1a2e1a] pl-3 py-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-semibold text-[#dfead7]">v{v.version}</span>
+                            <span className="text-[10px] text-[#51614e]">{v.date}</span>
+                          </div>
+                          <p className="text-[10px] text-[#71816e] mt-0.5">{v.changes}</p>
+                          {v.ratingAfter > 0 && (
+                            <p className="text-[10px] text-[#4a8a3a] mt-0.5">
+                              Rating: {v.ratingBefore} → {v.ratingAfter}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
