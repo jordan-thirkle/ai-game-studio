@@ -23,21 +23,26 @@
 
 | Game | Genre | Status | Score | Source |
 |------|-------|--------|-------|--------|
-| **Hollow Harvest** | Survivors-like | In Progress | 71/B | `games/hollow-harvest/` |
+| **Hollow Harvest** | Survivors-like | In Progress | 78/B | `games/hollow-harvest/` |
 | **Sky Drifter** | Survivors-like | Deployed | 77/B | Pre-built only |
 | **Whisperwood** | Exploration | Deployed | ~74/B | Pre-built only |
-| **EigenRealms** | ARPG | In Progress | — | `eigenrealms/` |
+| **EigenRealms** | ARPG | In Progress | ~40/— | `eigenrealms/` |
 
 See [GAMES.md](GAMES.md) for build commands, asset paths, and troubleshooting.
 
 ## Current Priority
 
-1. **Hollow Harvest** — score and iterate (71/B, playable)
-2. **EigenRealms** — get playable build working
+1. **Hollow Harvest** — score and iterate (78/B, visual pass done)
+2. **EigenRealms** — audio + touch controls added, needs scoring pass
 3. **Site polish** — game screenshots, OG images, loading states
 
 ## Recent Fixes
 
+- [x] Hollow Harvest: AtmosphereSystem with 6 flickering firefly point lights
+- [x] Hollow Harvest: GroundSystem with vertex-colored procedural terrain
+- [x] Hollow Harvest: Touch control polish (visual feedback, snap-back, sizing)
+- [x] EigenRealms: AudioManager using shared Web Audio ambient library
+- [x] EigenRealms: Mobile touch controls (virtual joystick + attack button)
 - [x] Fixed game asset paths (./assets/ not /assets/) — all 4 games now load
 - [x] Added base:'./' to all Vite configs
 - [x] Created unified build script (npm run build:games)
