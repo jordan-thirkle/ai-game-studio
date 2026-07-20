@@ -108,6 +108,48 @@ const ROOMS: Room[] = [
       { name: "Fire", desc: "Crackling campfire at 600Hz" },
     ],
   },
+  {
+    name: "Sprite Gallery",
+    description: "Procedural textures — trees, rocks, grass generated via Canvas2D",
+    color: 0x1a2a1a,
+    accent: 0x5a9a4a,
+    position: [126, 0, 0],
+    assets: [
+      { name: "Oak Tree", desc: "Procedural tree with seasonal leaves — 4 variants × 4 seasons", code: 'import { generateTree, canvasToTexture } from "@/lib/game-assets/sprites"' },
+      { name: "Rock", desc: "Irregular polygon rocks — normal, mossy, crystal, lava", code: 'import { generateRock } from "@/lib/game-assets/sprites"' },
+      { name: "Grass", desc: "Curved blade tufts — green, dry, dead variants" },
+    ],
+  },
+  {
+    name: "Animation Theater",
+    description: "Reusable animation clips for game characters",
+    color: 0x2a1a2a,
+    accent: 0xaa66cc,
+    position: [144, 0, 0],
+    assets: [
+      { name: "Idle", desc: "Subtle breathing scale pulse —2s loop", code: 'import { createIdleAnimation } from "@/lib/game-assets/animations"' },
+      { name: "Walk Cycle", desc: "Vertical bounce + forward lean —0.8s loop" },
+      { name: "Attack", desc: "Forward lunge with tilt —0.4s one-shot" },
+      { name: "Death", desc: "Collapse with squash —0.6s one-shot" },
+      { name: "Jump", desc: "Arc with squash/stretch —0.6s" },
+    ],
+  },
+  {
+    name: "Entity Vault",
+    description: "Procedural 3D character and prop models",
+    color: 0x2a2a1a,
+    accent: 0xccaa44,
+    position: [162, 0, 0],
+    assets: [
+      { name: "Warrior", desc: "Cloaked fighter with hood and emissive sword" },
+      { name: "Mage", desc: "Robed caster with floating orb" },
+      { name: "Rogue", desc: "Masked figure with dagger" },
+      { name: "Wraith", desc: "Horned enemy with glowing eyes" },
+      { name: "Golem", desc: "Heavy box-bodied enemy with rune" },
+      { name: "Barrel", desc: "Wooden barrel with metal bands" },
+      { name: "Chest", desc: "Openable treasure chest with gold lock" },
+    ],
+  },
 ];
 
 // ── Pointer-lock first-person controls ─────────────────────
@@ -386,6 +428,208 @@ function buildAudioDemo(group: THREE.Group): void {
   group.add(orb);
 }
 
+function buildSpriteDemo(group: THREE.Group): void {
+  // Procedural sprite textures rendered as flat planes
+  const sprites = [
+    { color: 0x2d6b1e, w: 1.2, h: 1.6, label: "Oak Tree" },
+    { color: 0x6a6a5a, w: 0.8, h: 0.6, label: "Rock" },
+    { color: 0x3a7a2a, w: 1.0, h: 0.4, label: "Grass" },
+  ];
+
+  sprites.forEach((s, i) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d")!;
+    // Draw procedural shape
+    ctx.fillStyle = `#${s.color.toString(16).padStart(6, "0")}`;
+    if (s.label === "Oak Tree") {
+      // Trunk
+      ctx.fillStyle = "#3d2b1a";
+      ctx.fillRect(56, 70, 16, 58);
+      // Canopy
+      ctx.fillStyle = "#2d6b1e";
+      ctx.beginPath();
+      ctx.arc(64, 45, 40, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#4a9a3a";
+      ctx.beginPath();
+      ctx.arc(50, 55, 25, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (s.label === "Rock") {
+      ctx.fillStyle = "#6a6a5a";
+      ctx.beginPath();
+      ctx.moveTo(20, 90);
+      ctx.lineTo(40, 30);
+      ctx.lineTo(80, 25);
+      ctx.lineTo(110, 80);
+      ctx.lineTo(90, 100);
+      ctx.lineTo(30, 95);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#8a8a7a";
+      ctx.beginPath();
+      ctx.moveTo(40, 30);
+      ctx.lineTo(80, 25);
+      ctx.lineTo(65, 50);
+      ctx.lineTo(45, 45);
+      ctx.closePath();
+      ctx.fill();
+    } else {
+      // Grass tufts
+      for (let b = 0; b < 8; b++) {
+        const bx = 15 + b * 14;
+        ctx.strokeStyle = "#3a7a2a";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bx, 110);
+        ctx.quadraticCurveTo(bx - 5, 60, bx + 3, 30 + Math.random() * 20);
+        ctx.stroke();
+      }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(s.w, s.h),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide }),
+    );
+    const angle = (i / sprites.length) * Math.PI * 2;
+    plane.position.set(Math.cos(angle) * 2, 2, Math.sin(angle) * 2);
+    plane.rotation.y = -angle + Math.PI;
+    plane.userData.roomName = "Sprite Gallery";
+    plane.userData.isOrb = true;
+    group.add(plane);
+  });
+}
+
+function buildAnimationDemo(group: THREE.Group): void {
+  // Simple humanoid figure (capsule body + sphere head) that cycles idle animation
+  const figure = new THREE.Group();
+
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x8a66cc, roughness: 0.7 });
+  const headMat = new THREE.MeshStandardMaterial({ color: 0xaa88ee, roughness: 0.5 });
+
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.25, 0.6, 4, 8), bodyMat);
+  torso.position.y = 1.0;
+  torso.castShadow = true;
+  torso.userData.isAnimIdle = true;
+  figure.add(torso);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 8), headMat);
+  head.position.y = 1.6;
+  head.castShadow = true;
+  head.userData.isAnimIdle = true;
+  figure.add(head);
+
+  // Arms
+  const armL = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 0.4, 3, 6), bodyMat);
+  armL.position.set(-0.4, 1.0, 0);
+  figure.add(armL);
+  const armR = armL.clone();
+  armR.position.x = 0.4;
+  figure.add(armR);
+
+  // Legs
+  const legL = new THREE.Mesh(new THREE.CapsuleGeometry(0.1, 0.5, 3, 6), bodyMat);
+  legL.position.set(-0.15, 0.35, 0);
+  figure.add(legL);
+  const legR = legL.clone();
+  legR.position.x = 0.15;
+  figure.add(legR);
+
+  figure.userData.roomName = "Animation Theater";
+  figure.userData.isOrb = true;
+  figure.userData.isAnimFigure = true;
+  figure.position.y = 0.6;
+  group.add(figure);
+
+  // Platform base
+  const base = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.8, 0.9, 0.2, 16),
+    new THREE.MeshStandardMaterial({ color: 0x2a1a2a, roughness: 0.8 }),
+  );
+  base.position.y = 0.2;
+  group.add(base);
+}
+
+function buildEntityVaultDemo(group: THREE.Group): void {
+  // Warrior and Wraith facing each other
+  const warriorGroup = new THREE.Group();
+  warriorGroup.position.set(-2, 0.6, 0);
+
+  const cloakMat = new THREE.MeshStandardMaterial({ color: 0x1a2a1a, roughness: 0.95 });
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x9aa99b, roughness: 0.75 });
+
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.8, 4, 8), cloakMat);
+  torso.position.y = 1.0;
+  torso.castShadow = true;
+  warriorGroup.add(torso);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 8), bodyMat);
+  head.position.y = 1.7;
+  head.castShadow = true;
+  warriorGroup.add(head);
+
+  const hood = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.5, 6), cloakMat);
+  hood.position.y = 1.9;
+  hood.rotation.x = Math.PI;
+  warriorGroup.add(hood);
+
+  const swordBlade = new THREE.Mesh(
+    new THREE.BoxGeometry(0.06, 1.0, 0.04),
+    new THREE.MeshStandardMaterial({
+      color: 0xb7d7cc, emissive: 0x28483e, emissiveIntensity: 0.7,
+      metalness: 0.75, roughness: 0.25,
+    }),
+  );
+  swordBlade.position.set(0.5, 1.2, 0);
+  swordBlade.rotation.z = -0.4;
+  swordBlade.castShadow = true;
+  warriorGroup.add(swordBlade);
+
+  warriorGroup.userData.roomName = "Entity Vault";
+  warriorGroup.userData.isOrb = true;
+  group.add(warriorGroup);
+
+  // Wraith facing warrior
+  const wraithGroup = new THREE.Group();
+  wraithGroup.position.set(2, 0.6, 0);
+
+  const wraithMat = new THREE.MeshStandardMaterial({
+    color: 0x49252e, roughness: 0.9, emissive: 0x18090d, emissiveIntensity: 0.8,
+  });
+  const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff8e62 });
+
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 8), wraithMat);
+  body.scale.set(0.8, 1.3, 0.8);
+  body.position.y = 0.9;
+  body.castShadow = true;
+  wraithGroup.add(body);
+
+  const hornL = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.35, 5), wraithMat);
+  hornL.position.set(-0.22, 1.55, 0);
+  hornL.rotation.z = -0.4;
+  wraithGroup.add(hornL);
+
+  const hornR = hornL.clone();
+  hornR.position.x = 0.22;
+  hornR.rotation.z = 0.4;
+  wraithGroup.add(hornR);
+
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), eyeMat);
+  eyeL.position.set(-0.13, 1.0, -0.38);
+  wraithGroup.add(eyeL);
+
+  const eyeR = eyeL.clone();
+  eyeR.position.x = 0.13;
+  wraithGroup.add(eyeR);
+
+  wraithGroup.userData.roomName = "Entity Vault";
+  wraithGroup.userData.isOrb = true;
+  wraithGroup.rotation.y = Math.PI; // face the warrior
+  group.add(wraithGroup);
+}
+
 function buildEffectDemo(group: THREE.Group): void {
   // Static death burst particles frozen in time
   const count = 12;
@@ -551,6 +795,9 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
     case "Effect Theater": buildEffectDemo(group); break;
     case "Entity Workshop": buildEntityDemo(group); break;
     case "Audio Chamber": buildAudioDemo(group); break;
+    case "Sprite Gallery": buildSpriteDemo(group); break;
+    case "Animation Theater": buildAnimationDemo(group); break;
+    case "Entity Vault": buildEntityVaultDemo(group); break;
     default: {
       // Fallback orb
       const orb = new THREE.Mesh(
@@ -690,7 +937,7 @@ export default function ForgePage() {
     dir.position.set(-20, 25, 10);
     dir.castShadow = true;
     dir.shadow.mapSize.set(1024, 1024);
-    const d = 60;
+    const d = 100;
     dir.shadow.camera.left = -d;
     dir.shadow.camera.right = d;
     dir.shadow.camera.top = d;
@@ -699,11 +946,11 @@ export default function ForgePage() {
 
     // Floor
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(200, 30),
+      new THREE.PlaneGeometry(250, 30),
       new THREE.MeshStandardMaterial({ color: 0x080e0a, roughness: 1 }),
     );
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(45, -0.2, 0);
+    floor.position.set(81, -0.2, 0);
     floor.receiveShadow = true;
     scene.add(floor);
 
@@ -796,6 +1043,14 @@ export default function ForgePage() {
               const idx = obj.userData.ringIndex as number;
               obj.scale.setScalar(1 + Math.sin(time * 2 + idx * 0.8) * 0.1);
               (obj.material as THREE.MeshBasicMaterial).opacity = 0.3 + Math.sin(time * 1.5 + idx * 1.2) * 0.2;
+            }
+            // Idle breathing animation
+            if (obj instanceof THREE.Mesh && obj.userData.isAnimIdle) {
+              obj.scale.y = 1 + Math.sin(time * 3) * 0.03;
+            }
+            // Rotate entity vault figures slowly
+            if (obj instanceof THREE.Group && obj.userData.isAnimFigure) {
+              obj.rotation.y += delta * 0.3;
             }
           });
         }
