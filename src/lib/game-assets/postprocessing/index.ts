@@ -69,11 +69,11 @@ export function createPostProcessing(
 
   // SSAO — disabled by default (needs depth/normal buffers)
   if (config.ssao) {
-    // SSAOEffect expects a normalBuffer; pass null to let it compute normals internally
+    // SSAOEffect expects a normalBuffer; pass undefined to let it compute normals internally
     composer.addPass(
       new EffectPass(
         camera,
-        new SSAOEffect(camera as THREE.PerspectiveCamera, null, {
+        new SSAOEffect(camera as THREE.PerspectiveCamera, undefined, {
           radius: 0.1825,
           intensity: 1.0,
           luminanceInfluence: 0.7,
@@ -102,6 +102,8 @@ export function createPostProcessing(
         camera,
         new ChromaticAberrationEffect({
           offset: new THREE.Vector2(0.001, 0.001),
+          radialModulation: false,
+          modulationOffset: 0.15,
         })
       )
     );
