@@ -222,6 +222,42 @@ const ROOMS: Room[] = [
       { name: "Normal Maps", desc: "Procedurally generated surface bump details" },
     ],
   },
+  {
+    name: "Dialogue Hall",
+    description: "Branching NPC conversations with conditions and effects",
+    color: 0x2a2a0a,
+    accent: 0xaaaa44,
+    position: [288, 0, 0],
+    assets: [
+      { name: "Dialogue Trees", desc: "Branching conversations with conditions and effects", code: 'import { createDialogueTree, createDialogueRenderer } from "@/lib/game-assets/dialogue"' },
+      { name: "Conditions", desc: "hasItem, questComplete, level, flag checks" },
+      { name: "DOM Renderer", desc: "Typewriter text, option buttons, dark theme" },
+    ],
+  },
+  {
+    name: "Wave Arena",
+    description: "Enemy wave management — escalating difficulty, boss rushes",
+    color: 0x0a0a2a,
+    accent: 0x4444aa,
+    position: [306, 0, 0],
+    assets: [
+      { name: "Wave System", desc: "Escalating enemy waves with callbacks", code: 'import { createWaveManager, WAVE_PRESETS } from "@/lib/game-assets/waves"' },
+      { name: "4 Presets", desc: "Forest waves, boss rush, endless, survival" },
+      { name: "Callbacks", desc: "onEnemySpawn, onWaveComplete, onAllWavesComplete" },
+    ],
+  },
+  {
+    name: "Audio Space",
+    description: "3D spatial audio — positional sound, HRTF, distance rolloff",
+    color: 0x1a0a2a,
+    accent: 0xaa44aa,
+    position: [324, 0, 0],
+    assets: [
+      { name: "Spatial Audio", desc: "3D positional audio with listener tracking", code: 'import { createSpatialAudio, attachSpatialPanner } from "@/lib/game-assets/audio/SpatialAudio"' },
+      { name: "HRTF", desc: "High-quality head-related transfer function panning" },
+      { name: "Distance Rolloff", desc: "Realistic volume drop-off with distance" },
+    ],
+  },
 ];
 // ── Pointer-lock first-person controls ─────────────────────
 
@@ -1013,6 +1049,157 @@ function buildPBRWorkshopDemo(group: THREE.Group): void {
   group.add(normalPlane);
 }
 
+function buildDialogueHallDemo(group: THREE.Group): void {
+  // Character figure with speech bubble
+  const charMat = new THREE.MeshStandardMaterial({ color: 0xaaaa44, roughness: 0.7 });
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.8, 4, 8), charMat);
+  body.position.set(-1.5, 1.0, 0);
+  body.castShadow = true;
+  body.userData.roomName = "Dialogue Hall";
+  body.userData.isOrb = true;
+  group.add(body);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 8), charMat);
+  head.position.set(-1.5, 1.7, 0);
+  head.castShadow = true;
+  group.add(head);
+
+  // Speech bubble (rounded box)
+  const bubble = new THREE.Mesh(
+    new THREE.BoxGeometry(1.8, 0.6, 0.1),
+    new THREE.MeshStandardMaterial({ color: 0xeee8aa, roughness: 0.5, transparent: true, opacity: 0.85 }),
+  );
+  bubble.position.set(-1.5, 2.6, 0);
+  bubble.castShadow = true;
+  group.add(bubble);
+
+  // Tail triangle
+  const tail = new THREE.Mesh(
+    new THREE.ConeGeometry(0.15, 0.25, 3),
+    new THREE.MeshStandardMaterial({ color: 0xeee8aa, roughness: 0.5, transparent: true, opacity: 0.85 }),
+  );
+  tail.position.set(-1.5, 2.2, 0);
+  tail.rotation.z = Math.PI;
+  group.add(tail);
+
+  // Dialogue option buttons
+  const optionMat = new THREE.MeshStandardMaterial({ color: 0x2a2a0a, roughness: 0.6, transparent: true, opacity: 0.8 });
+  const options = ["Yes", "No", "Tell me more"];
+  options.forEach((_, i) => {
+    const opt = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 0.2, 0.08),
+      optionMat,
+    );
+    opt.position.set(1.5, 2.8 - i * 0.35, 0);
+    opt.castShadow = true;
+    group.add(opt);
+  });
+}
+
+function buildWaveArenaDemo(group: THREE.Group): void {
+  // Spawn point rings arranged in a circle
+  const spawnCount = 6;
+  for (let i = 0; i < spawnCount; i++) {
+    const angle = (i / spawnCount) * Math.PI * 2;
+    const r = 3;
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.3, 0.4, 16),
+      new THREE.MeshStandardMaterial({
+        color: 0x4444aa, emissive: 0x4444aa, emissiveIntensity: 0.5,
+        transparent: true, opacity: 0.6, side: THREE.DoubleSide,
+      }),
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(Math.cos(angle) * r, 0.3, Math.sin(angle) * r);
+    ring.userData.isWaveRing = true;
+    group.add(ring);
+
+    // Enemy indicator (small cube)
+    const enemy = new THREE.Mesh(
+      new THREE.BoxGeometry(0.25, 0.25, 0.25),
+      new THREE.MeshStandardMaterial({ color: 0x664444, roughness: 0.7 }),
+    );
+    enemy.position.set(Math.cos(angle) * r, 0.5, Math.sin(angle) * r);
+    enemy.castShadow = true;
+    group.add(enemy);
+  }
+
+  // Wave counter orb (center)
+  const counter = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.4, 1),
+    new THREE.MeshStandardMaterial({
+      color: 0x4444aa, emissive: 0x4444aa, emissiveIntensity: 0.6,
+      transparent: true, opacity: 0.8,
+    }),
+  );
+  counter.position.y = 2.0;
+  counter.castShadow = true;
+  counter.userData.roomName = "Wave Arena";
+  counter.userData.isOrb = true;
+  group.add(counter);
+
+  // Wave number ring
+  const waveRing = new THREE.Mesh(
+    new THREE.RingGeometry(1.5, 1.6, 24),
+    new THREE.MeshStandardMaterial({
+      color: 0x4444aa, transparent: true, opacity: 0.3, side: THREE.DoubleSide,
+    }),
+  );
+  waveRing.rotation.x = -Math.PI / 2;
+  waveRing.position.y = 0.35;
+  group.add(waveRing);
+}
+
+function buildAudioSpaceDemo(group: THREE.Group): void {
+  // Orbiting sound source sphere
+  const source = new THREE.Mesh(
+    new THREE.SphereGeometry(0.3, 16, 16),
+    new THREE.MeshStandardMaterial({
+      color: 0xaa44aa, emissive: 0xaa44aa, emissiveIntensity: 0.6,
+      transparent: true, opacity: 0.85,
+    }),
+  );
+  source.position.set(3, 2, 0);
+  source.castShadow = true;
+  source.userData.roomName = "Audio Space";
+  source.userData.isOrb = true;
+  source.userData.isAudioOrbit = true;
+  group.add(source);
+
+  // Orbit path ring
+  const orbitPath = new THREE.Mesh(
+    new THREE.RingGeometry(2.9, 3.0, 32),
+    new THREE.MeshStandardMaterial({
+      color: 0xaa44aa, transparent: true, opacity: 0.2, side: THREE.DoubleSide,
+    }),
+  );
+  orbitPath.rotation.x = -Math.PI / 2;
+  orbitPath.position.y = 2;
+  group.add(orbitPath);
+
+  // Distance rolloff rings (concentric)
+  for (let i = 1; i <= 3; i++) {
+    const rolloff = new THREE.Mesh(
+      new THREE.RingGeometry(i * 1.2 - 0.05, i * 1.2 + 0.05, 32),
+      new THREE.MeshStandardMaterial({
+        color: 0xaa44aa, transparent: true, opacity: 0.15 - i * 0.03, side: THREE.DoubleSide,
+      }),
+    );
+    rolloff.rotation.x = -Math.PI / 2;
+    rolloff.position.y = 0.3;
+    group.add(rolloff);
+  }
+
+  // Listener indicator (center)
+  const listener = new THREE.Mesh(
+    new THREE.ConeGeometry(0.15, 0.3, 8),
+    new THREE.MeshStandardMaterial({ color: 0x8a8a8a, roughness: 0.5 }),
+  );
+  listener.position.set(0, 2, 0);
+  listener.rotation.z = Math.PI;
+  group.add(listener);
+}
+
 
 function buildEffectDemo(group: THREE.Group): void {
   // Static death burst particles frozen in time
@@ -1188,6 +1375,9 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
     case "Physics Lab": buildPhysicsLabDemo(group); break;
     case "Particle Forge": buildParticleForgeDemo(group); break;
     case "PBR Workshop": buildPBRWorkshopDemo(group); break;
+    case "Dialogue Hall": buildDialogueHallDemo(group); break;
+    case "Wave Arena": buildWaveArenaDemo(group); break;
+    case "Audio Space": buildAudioSpaceDemo(group); break;
     default: {
       // Fallback orb
       const orb = new THREE.Mesh(
@@ -1306,7 +1496,7 @@ export default function ForgePage() {
     scene.fog = new THREE.FogExp2(0x060a08, 0.008);
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(55, el.clientWidth / el.clientHeight, 0.1, 300);
+    const camera = new THREE.PerspectiveCamera(55, el.clientWidth / el.clientHeight, 0.1, 500);
     camera.position.set(0, 2.5, 8);
     cameraRef.current = camera;
 
@@ -1336,11 +1526,11 @@ export default function ForgePage() {
 
     // Floor
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(340, 30),
+      new THREE.PlaneGeometry(380, 30),
       new THREE.MeshStandardMaterial({ color: 0x080e0a, roughness: 1 }),
     );
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(141, -0.2, 0);
+    floor.position.set(161, -0.2, 0);
     floor.receiveShadow = true;
     scene.add(floor);
 
@@ -1441,6 +1631,17 @@ export default function ForgePage() {
             // Rotate entity vault figures slowly
             if (obj instanceof THREE.Group && obj.userData.isAnimFigure) {
               obj.rotation.y += delta * 0.3;
+            }
+            // Orbit audio space source around camera
+            if (obj instanceof THREE.Mesh && obj.userData.isAudioOrbit) {
+              const orbitTime = time * 0.8;
+              obj.position.x = Math.cos(orbitTime) * 3;
+              obj.position.z = Math.sin(orbitTime) * 3;
+              obj.position.y = 2 + Math.sin(orbitTime * 0.5) * 0.5;
+            }
+            // Pulse wave arena spawn rings
+            if (obj instanceof THREE.Mesh && obj.userData.isWaveRing) {
+              obj.scale.setScalar(1 + Math.sin(time * 2) * 0.1);
             }
           });
         }
