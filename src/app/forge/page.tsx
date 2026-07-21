@@ -150,6 +150,42 @@ const ROOMS: Room[] = [
       { name: "Chest", desc: "Openable treasure chest with gold lock" },
     ],
   },
+  {
+    name: "Shader Lab",
+    description: "Custom GLSL shaders — water, grass, toon effects",
+    color: 0x1a1a2a,
+    accent: 0x6644aa,
+    position: [180, 0, 0],
+    assets: [
+      { name: "Water Shader", desc: "Animated waves, caustics, fresnel, foam — ocean, cave, lava presets", code: 'import { createWaterMaterial, WATER_PRESET } from "@/lib/game-assets/shaders/WaterShader"' },
+      { name: "Grass Shader", desc: "Instanced grass blades with wind animation — 5000 blades at 60fps", code: 'import { createGrassField, FOREST_GRASS } from "@/lib/game-assets/shaders/GrassShader"' },
+      { name: "Toon Shader", desc: "Cel shading with quantized lighting and outline pass", code: 'import { createToonMaterial, TOON_PRESETS } from "@/lib/game-assets/shaders/ToonShader"' },
+    ],
+  },
+  {
+    name: "Dungeon Forge",
+    description: "BSP dungeon generator — rooms, corridors, 3D meshes",
+    color: 0x2a1a0a,
+    accent: 0xcc8833,
+    position: [198, 0, 0],
+    assets: [
+      { name: "BSP Generator", desc: "Binary Space Partitioning — random rooms connected by corridors", code: 'import { generateDungeon, dungeonToWalls } from "@/lib/game-assets/dungeon"' },
+      { name: "3D Mesh Output", desc: "Automatic wall and floor meshes from dungeon grid" },
+      { name: "Configurable", desc: "Width, height, room sizes, corridor width, seed" },
+    ],
+  },
+  {
+    name: "Loot Vault",
+    description: "Weighted loot tables with level scaling — 8 preset configurations",
+    color: 0x0a2a1a,
+    accent: 0x44cc88,
+    position: [216, 0, 0],
+    assets: [
+      { name: "Weighted Drops", desc: "Items with weights, quantity ranges, level requirements", code: 'import { rollLoot, LOOT_PRESETS } from "@/lib/game-assets/loot"' },
+      { name: "8 Presets", desc: "Forest enemy, cave enemy, boss, chest types, mining, fishing" },
+      { name: "Level Scaling", desc: "Filter drops by player level, guaranteed drops for legendaries" },
+    ],
+  },
 ];
 
 // ── Pointer-lock first-person controls ─────────────────────
@@ -630,6 +666,189 @@ function buildEntityVaultDemo(group: THREE.Group): void {
   group.add(wraithGroup);
 }
 
+function buildShaderLabDemo(group: THREE.Group): void {
+  // Water plane — blue translucent with animated normals
+  const waterGeo = new THREE.PlaneGeometry(4, 4, 32, 32);
+  const waterMat = new THREE.MeshStandardMaterial({
+    color: 0x2266aa,
+    emissive: 0x113366,
+    emissiveIntensity: 0.3,
+    transparent: true,
+    opacity: 0.65,
+    roughness: 0.1,
+    metalness: 0.3,
+    side: THREE.DoubleSide,
+  });
+  const water = new THREE.Mesh(waterGeo, waterMat);
+  water.rotation.x = -Math.PI / 2;
+  water.position.set(-2, 0.8, 0);
+  water.userData.roomName = "Shader Lab";
+  water.userData.isOrb = true;
+  water.userData.isWaterPlane = true;
+  group.add(water);
+
+  // Grass field — instanced blades
+  const bladeCount = 120;
+  const bladePositions = new Float32Array(bladeCount * 3);
+  for (let i = 0; i < bladeCount; i++) {
+    bladePositions[i * 3] = 1.5 + (Math.random() - 0.5) * 3;
+    bladePositions[i * 3 + 1] = 0.5 + Math.random() * 0.3;
+    bladePositions[i * 3 + 2] = (Math.random() - 0.5) * 2;
+  }
+  const bladeGeo = new THREE.BufferGeometry();
+  bladeGeo.setAttribute("position", new THREE.BufferAttribute(bladePositions, 3));
+  const blades = new THREE.Points(bladeGeo, new THREE.PointsMaterial({
+    color: 0x44aa33,
+    size: 0.15,
+    transparent: true,
+    opacity: 0.8,
+  }));
+  blades.userData.isGrassField = true;
+  group.add(blades);
+
+  // Toon sphere — quantized shading via basic material
+  const toonSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5, 12, 8),
+    new THREE.MeshStandardMaterial({
+      color: 0x6644aa,
+      emissive: 0x442288,
+      emissiveIntensity: 0.4,
+      roughness: 0.5,
+    }),
+  );
+  toonSphere.position.set(0, 1.8, 0);
+  toonSphere.castShadow = true;
+  toonSphere.userData.roomName = "Shader Lab";
+  toonSphere.userData.isOrb = true;
+  toonSphere.userData.isToon = true;
+  group.add(toonSphere);
+
+  // Outline ring around toon sphere
+  const outline = new THREE.Mesh(
+    new THREE.RingGeometry(0.52, 0.56, 24),
+    new THREE.MeshBasicMaterial({ color: 0x1a0a33, side: THREE.DoubleSide }),
+  );
+  outline.position.copy(toonSphere.position);
+  outline.rotation.y = Math.PI / 4;
+  group.add(outline);
+}
+
+function buildDungeonDemo(group: THREE.Group): void {
+  // Mini BSP dungeon — walls and floor tiles
+  const wallMat = new THREE.MeshStandardMaterial({ color: 0x664422, roughness: 0.9 });
+  const floorMat = new THREE.MeshStandardMaterial({ color: 0x332211, roughness: 1 });
+
+  // Grid: 8x6 dungeon layout
+  const gridW = 8, gridH = 6;
+  const tileSize = 0.6;
+
+  // Floor tiles
+  for (let x = 0; x < gridW; x++) {
+    for (let z = 0; z < gridH; z++) {
+      // Rooms and corridors
+      const isRoom = (x >= 1 && x <= 3 && z >= 1 && z <= 3) ||
+                     (x >= 5 && x <= 6 && z >= 3 && z <= 5) ||
+                     (x >= 3 && x <= 5 && z >= 2 && z <= 3); // corridor
+      if (isRoom) {
+        const tile = new THREE.Mesh(
+          new THREE.BoxGeometry(tileSize, 0.05, tileSize),
+          floorMat,
+        );
+        tile.position.set((x - gridW / 2) * tileSize, 0.3, (z - gridH / 2) * tileSize);
+        tile.receiveShadow = true;
+        group.add(tile);
+      }
+    }
+  }
+
+  // Walls along room edges
+  for (let x = 0; x <= gridW; x++) {
+    for (let z = 0; z <= gridH; z++) {
+      const isEdge = (x === 1 || x === 4 || x === 7) && (z >= 1 && z <= 3) ||
+                     (z === 1 || z === 4) && (x >= 1 && x <= 3) ||
+                     (x === 5 || x === 7) && (z >= 3 && z <= 5) ||
+                     (z === 3 || z === 6) && (x >= 5 && x <= 6);
+      if (isEdge) {
+        const wall = new THREE.Mesh(
+          new THREE.BoxGeometry(tileSize, 0.8, tileSize),
+          wallMat,
+        );
+        wall.position.set((x - gridW / 2) * tileSize, 0.7, (z - gridH / 2) * tileSize);
+        wall.castShadow = true;
+        wall.receiveShadow = true;
+        group.add(wall);
+      }
+    }
+  }
+
+  // Central orb for interaction
+  const orb = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.3, 1),
+    new THREE.MeshStandardMaterial({
+      color: 0xcc8833, emissive: 0xcc8833, emissiveIntensity: 0.5,
+    }),
+  );
+  orb.position.y = 1.8;
+  orb.castShadow = true;
+  orb.userData.roomName = "Dungeon Forge";
+  orb.userData.isOrb = true;
+  group.add(orb);
+}
+
+function buildLootVaultDemo(group: THREE.Group): void {
+  // Treasure chest
+  const chestBody = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 0.7, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0x553311, roughness: 0.9 }),
+  );
+  chestBody.position.set(0, 0.65, 0);
+  chestBody.castShadow = true;
+  chestBody.userData.roomName = "Loot Vault";
+  chestBody.userData.isOrb = true;
+  chestBody.userData.isChest = true;
+  group.add(chestBody);
+
+  // Chest lid (slightly open)
+  const lid = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 0.15, 0.8),
+    new THREE.MeshStandardMaterial({ color: 0x664422, roughness: 0.85 }),
+  );
+  lid.position.set(0, 1.1, -0.15);
+  lid.rotation.x = -0.3;
+  lid.castShadow = true;
+  lid.userData.isChestLid = true;
+  group.add(lid);
+
+  // Gold lock
+  const lock = new THREE.Mesh(
+    new THREE.BoxGeometry(0.15, 0.2, 0.1),
+    new THREE.MeshStandardMaterial({
+      color: 0xf0d890, emissive: 0xf0d890, emissiveIntensity: 0.5,
+      metalness: 0.7, roughness: 0.3,
+    }),
+  );
+  lock.position.set(0, 0.95, 0.42);
+  group.add(lock);
+
+  // Loot particles spilling out
+  const lootCount = 15;
+  const lootPositions = new Float32Array(lootCount * 3);
+  for (let i = 0; i < lootCount; i++) {
+    const angle = (i / lootCount) * Math.PI * 2;
+    const r = 0.3 + Math.random() * 0.8;
+    lootPositions[i * 3] = Math.cos(angle) * r;
+    lootPositions[i * 3 + 1] = 1.2 + Math.random() * 1.0;
+    lootPositions[i * 3 + 2] = Math.sin(angle) * r;
+  }
+  const lootGeo = new THREE.BufferGeometry();
+  lootGeo.setAttribute("position", new THREE.BufferAttribute(lootPositions, 3));
+  const lootParticles = new THREE.Points(lootGeo, new THREE.PointsMaterial({
+    color: 0xf0d890, size: 0.12, transparent: true, opacity: 0.8,
+  }));
+  lootParticles.userData.isLootSpill = true;
+  group.add(lootParticles);
+}
+
 function buildEffectDemo(group: THREE.Group): void {
   // Static death burst particles frozen in time
   const count = 12;
@@ -798,6 +1017,9 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
     case "Sprite Gallery": buildSpriteDemo(group); break;
     case "Animation Theater": buildAnimationDemo(group); break;
     case "Entity Vault": buildEntityVaultDemo(group); break;
+    case "Shader Lab": buildShaderLabDemo(group); break;
+    case "Dungeon Forge": buildDungeonDemo(group); break;
+    case "Loot Vault": buildLootVaultDemo(group); break;
     default: {
       // Fallback orb
       const orb = new THREE.Mesh(
@@ -946,7 +1168,7 @@ export default function ForgePage() {
 
     // Floor
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(250, 30),
+      new THREE.PlaneGeometry(280, 30),
       new THREE.MeshStandardMaterial({ color: 0x080e0a, roughness: 1 }),
     );
     floor.rotation.x = -Math.PI / 2;
