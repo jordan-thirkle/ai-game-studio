@@ -10,9 +10,11 @@
     "start": "next start",
     "lint": "tsc --noEmit",
     "assets": "python scripts/asset-tracker.py",
+    "asset-report": "tsx src/lib/game-assets/cli/version-cli.ts",
     "test": "vitest run"
   },
   "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.19.3",
     "@types/three": "^0.185.1",
     "@vercel/og": "^0.11.1",
     "alea": "^1.0.1",
