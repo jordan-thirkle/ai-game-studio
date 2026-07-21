@@ -1,7 +1,7 @@
 /**
  * @module audio
  *
- * Real-time sound synthesis via the Web Audio API.
+ * Real-time sound synthesis via Tone.js.
  *
  * Provides oscillators, envelopes, harmonics, LFO modulation, noise generators,
  * and ready-made presets for ambient backgrounds and short sound effects.
@@ -21,6 +21,8 @@
  * pickup.play();
  * ```
  */
+
+import * as Tone from 'tone';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -104,136 +106,54 @@ export interface AmbientConfig {
 }
 
 // ---------------------------------------------------------------------------
-// Singleton AudioContext (lazy)
+// Return types
 // ---------------------------------------------------------------------------
 
-let _ctx: AudioContext | null = null;
+/** Handle returned by {@link createAmbient}. */
+export interface AmbientSound {
+  /** Start (or resume) the ambient loop */
+  play(): void;
+  /** Stop all sources — call play() again to restart */
+  stop(): void;
+  /** Set master volume (0 – 1) */
+  setVolume(v: number): void;
+  /** Stop + dispose Tone.js nodes. Dispose when permanently done. */
+  dispose(): void;
+}
+
+/** Handle returned by {@link createSfx}. */
+export interface SoundEffect {
+  /** Play the sound effect (once) */
+  play(): void;
+  /** Release resources */
+  dispose(): void;
+}
+
+// ---------------------------------------------------------------------------
+// AudioContext bridge (for Three.js compatibility)
+// ---------------------------------------------------------------------------
 
 /**
- * Returns the shared {@link AudioContext}, creating it on first call.
+ * Returns the underlying raw Web Audio AudioContext from Tone.js.
+ *
+ * This is needed for Three.js integration where a raw AudioContext is expected.
  *
  * @example
  * ```ts
  * const ctx = getAudioContext();
- * // ctx is reused across the entire module
+ * // ctx is Tone.js's underlying AudioContext
  * ```
  */
 export function getAudioContext(): AudioContext {
-  if (!_ctx) {
-    _ctx = new AudioContext();
-  }
-  return _ctx;
+  return Tone.getContext().rawContext as AudioContext;
 }
 
 // ---------------------------------------------------------------------------
-// Noise generators
+// Map noise type → Tone.js noise type
 // ---------------------------------------------------------------------------
 
-/**
- * Create an {@link AudioBuffer} filled with the requested noise colour.
- *
- * @param type  - `'white'`, `'pink'`, or `'brown'`
- * @param duration - length in seconds (default 4)
- * @returns Mono AudioBuffer looping-ready
- *
- * @example
- * ```ts
- * const ctx = getAudioContext();
- * const buf = createNoiseBuffer('pink', 8);
- * const src = ctx.createBufferSource();
- * src.buffer = buf;
- * src.loop = true;
- * ```
- */
-export function createNoiseBuffer(
-  type: "brown" | "pink" | "white",
-  duration = 4,
-): AudioBuffer {
-  const ctx = getAudioContext();
-  const length = ctx.sampleRate * duration;
-  const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-
-  switch (type) {
-    case "white":
-      for (let i = 0; i < length; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-      break;
-
-    case "brown": {
-      let last = 0;
-      for (let i = 0; i < length; i++) {
-        const white = Math.random() * 2 - 1;
-        last = (last + 0.02 * white) / 1.02;
-        data[i] = last * 3.5; // compensate for amplitude loss
-      }
-      break;
-    }
-
-    case "pink": {
-      // Paul Kellet's economy pink-noise algorithm
-      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-      for (let i = 0; i < length; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.969 * b2 + white * 0.153852;
-        b3 = 0.8665 * b3 + white * 0.3104856;
-        b4 = 0.55 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.016898;
-        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
-        b6 = white * 0.115926;
-      }
-      break;
-    }
-  }
-
-  return buffer;
-}
-
-// ---------------------------------------------------------------------------
-// Envelope helper
-// ---------------------------------------------------------------------------
-
-/**
- * Apply a linear ADSR envelope to an {@link AudioParam}.
- *
- * Call this once per note-on. The ramp schedule is anchored at `startTime`.
- *
- * @param param   - The AudioParam to animate
- * @param config  - ADSR values
- * @param startTime - When the envelope begins (AudioContext.currentTime)
- *
- * @example
- * ```ts
- * const gain = ctx.createGain();
- * gain.gain.value = 0;
- * applyEnvelope(gain.gain, { attack: 0.01, decay: 0.1, sustain: 0.7, release: 0.2 }, ctx.currentTime);
- * ```
- */
-export function applyEnvelope(
-  param: AudioParam,
-  config: EnvelopeConfig,
-  startTime: number,
-): void {
-  const { attack, decay, sustain, release } = config;
-
-  // attack: 0 → 1
-  param.setValueAtTime(0, startTime);
-  param.linearRampToValueAtTime(1, startTime + attack);
-
-  // decay: 1 → sustain
-  param.linearRampToValueAtTime(sustain, startTime + attack + decay);
-
-  // sustain held — caller schedules release via setTargetAtTime or extra ramp
-  // We return the time at which the sustain ends so callers can add release.
-  // But since this is fire-and-forget for SFX, the release is baked in.
-
-  // release: sustain → 0
-  const releaseStart = startTime + attack + decay;
-  param.setValueAtTime(sustain, releaseStart);
-  param.linearRampToValueAtTime(0, releaseStart + release);
+function mapNoiseType(type: "brown" | "pink" | "white"): "brown" | "pink" | "white" {
+  return type; // Tone.js supports the same names
 }
 
 // ---------------------------------------------------------------------------
@@ -243,6 +163,7 @@ export function applyEnvelope(
 /**
  * Create a short, self-contained sound effect from a {@link SynthConfig}.
  *
+ * Uses Tone.js Synth for improved sound quality and proper envelope handling.
  * The returned object's `play()` fires the sound; it auto-stops after
  * `config.duration` seconds. Call `dispose()` when the effect is no longer
  * needed to release resources.
@@ -264,96 +185,116 @@ export function applyEnvelope(
  * ```
  */
 export function createSfx(config: SynthConfig): SoundEffect {
-  const ctx = getAudioContext();
+  const synths: Tone.Synth[] = [];
+  let masterGain: Tone.Gain | null = null;
+  let filterNode: Tone.Filter | null = null;
+  let lfoNode: Tone.LFO | null = null;
+
+  function init(): void {
+    masterGain = new Tone.Gain(config.gain ?? 1).toDestination();
+
+    // Optional filter
+    if (config.filter) {
+      filterNode = new Tone.Filter(config.filter.frequency, config.filter.type, -24);
+      filterNode.Q.value = config.filter.Q;
+      filterNode.connect(masterGain);
+    }
+
+    // Optional LFO
+    if (config.lfo && filterNode) {
+      lfoNode = new Tone.LFO({
+        frequency: config.lfo.rate,
+        type: config.lfo.waveform as any,
+        min: -config.lfo.depth,
+        max: config.lfo.depth,
+      });
+
+      if (config.lfo.target === "filterFreq") {
+        lfoNode.connect(filterNode.frequency);
+      } else if (config.lfo.target === "detune") {
+        lfoNode.connect(filterNode.detune);
+      } else if (config.lfo.target === "gain" && masterGain) {
+        lfoNode.connect(masterGain.gain);
+      }
+    }
+
+    // Create synths for each oscillator
+    for (const oscCfg of config.oscillators) {
+      const synth = new Tone.Synth({
+        oscillator: { type: oscCfg.type } as any,
+        envelope: {
+          attack: config.envelope.attack,
+          decay: config.envelope.decay,
+          sustain: config.envelope.sustain,
+          release: config.envelope.release,
+        },
+      });
+
+      const oscGain = new Tone.Gain(oscCfg.gain ?? 1);
+
+      if (filterNode) {
+        synth.connect(oscGain).connect(filterNode);
+      } else {
+        synth.connect(oscGain).connect(masterGain!);
+      }
+
+      synths.push(synth);
+    }
+  }
+
   let isPlaying = false;
-  let stopTimeout: ReturnType<typeof setTimeout> | null = null;
 
   function play(): void {
     if (isPlaying) return;
     isPlaying = true;
 
-    if (ctx.state === "suspended") {
-      ctx.resume();
+    // Ensure Tone.js context is started (user gesture requirement)
+    if (Tone.context.state !== "running") {
+      Tone.start();
     }
 
-    const now = ctx.currentTime;
-    const masterGain = ctx.createGain();
-    masterGain.gain.value = config.gain ?? 1;
-    masterGain.connect(ctx.destination);
+    init();
 
-    // Optional filter
-    let lastNode: AudioNode = masterGain;
-    let filter: BiquadFilterNode | null = null;
-    if (config.filter) {
-      filter = ctx.createBiquadFilter();
-      filter.type = config.filter.type;
-      filter.frequency.value = config.filter.frequency;
-      filter.Q.value = config.filter.Q;
-      filter.connect(lastNode);
-      lastNode = filter;
-    }
+    // Start LFO if present
+    lfoNode?.start();
 
-    // Optional LFO
-    if (config.lfo) {
-      const lfoOsc = ctx.createOscillator();
-      lfoOsc.type = config.lfo.waveform;
-      lfoOsc.frequency.value = config.lfo.rate;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = config.lfo.depth;
+    // Play all synths
+    for (let i = 0; i < synths.length; i++) {
+      const synth = synths[i];
+      const oscCfg = config.oscillators[i];
 
-      let targetParam: AudioParam | null = null;
-      if (filter) {
-        if (config.lfo.target === "filterFreq") {
-          targetParam = filter.frequency;
-        } else if (config.lfo.target === "detune") {
-          targetParam = filter.detune;
-        }
-      }
-      if (targetParam) {
-        lfoOsc.connect(lfoGain);
-        lfoGain.connect(targetParam);
-        lfoOsc.start(now);
-        lfoOsc.stop(now + config.duration + 1);
-      }
-    }
-
-    // Oscillators
-    for (const oscCfg of config.oscillators) {
-      const osc = ctx.createOscillator();
-      osc.type = oscCfg.type;
-      osc.frequency.value = oscCfg.frequency;
-
-      const oscGain = ctx.createGain();
-      oscGain.gain.value = oscCfg.gain ?? 1;
-
-      // Pitch envelope
+      // Apply pitch envelope if configured
       if (oscCfg.pitchEnvelope) {
-        const pe = oscCfg.pitchEnvelope;
-        osc.frequency.setValueAtTime(pe.start, now);
-        osc.frequency.linearRampToValueAtTime(pe.end, now + pe.time);
+        const now = Tone.now();
+        synth.frequency.setValueAtTime(oscCfg.pitchEnvelope.start, now);
+        synth.frequency.linearRampToValueAtTime(oscCfg.pitchEnvelope.end, now + oscCfg.pitchEnvelope.time);
       }
 
-      // ADSR on the per-oscillator gain
-      applyEnvelope(oscGain.gain, config.envelope, now);
-
-      osc.connect(oscGain);
-      oscGain.connect(lastNode);
-      osc.start(now);
-      osc.stop(now + config.duration + 0.1);
+      // Trigger the note
+      synth.triggerAttackRelease(
+        oscCfg.frequency,
+        config.duration,
+      );
     }
 
     // Auto-stop
-    stopTimeout = setTimeout(() => {
+    setTimeout(() => {
       isPlaying = false;
-    }, config.duration * 1000 + 50);
+    }, config.duration * 1000 + 100);
   }
 
   function dispose(): void {
-    if (stopTimeout) {
-      clearTimeout(stopTimeout);
-      stopTimeout = null;
-    }
     isPlaying = false;
+    for (const synth of synths) {
+      synth.dispose();
+    }
+    synths.length = 0;
+    masterGain?.dispose();
+    masterGain = null;
+    filterNode?.dispose();
+    filterNode = null;
+    lfoNode?.dispose();
+    lfoNode = null;
   }
 
   return { play, dispose };
@@ -366,6 +307,7 @@ export function createSfx(config: SynthConfig): SoundEffect {
 /**
  * Create a looping ambient sound from synthesized noise + optional harmonics.
  *
+ * Uses Tone.js NoiseSynth + Filter + LFO for improved sound quality.
  * The chain is: **noise source → filter → LFO (optional) → master gain →
  * destination**. If `config.harmonics` are provided, they are mixed in after
  * the filter.
@@ -384,159 +326,110 @@ export function createSfx(config: SynthConfig): SoundEffect {
  * ```
  */
 export function createAmbient(config: AmbientConfig): AmbientSound {
-  let ctx: AudioContext | null = null;
-  let gain: GainNode | null = null;
-  let sources: AudioBufferSourceNode[] = [];
-  let harmonicOscs: OscillatorNode[] = [];
-  let lfoOsc: OscillatorNode | null = null;
+  let noise: Tone.Noise | null = null;
+  let filter: Tone.Filter | null = null;
+  let gain: Tone.Gain | null = null;
+  let lfo: Tone.LFO | null = null;
+  const harmonics: Tone.Oscillator[] = [];
+  const harmonicGains: Tone.Gain[] = [];
 
-  function init(): AudioContext {
-    if (ctx) return ctx;
-    ctx = getAudioContext();
-    gain = ctx.createGain();
-    gain.gain.value = config.volume;
-    gain.connect(ctx.destination);
+  function init(): void {
+    // Create noise source
+    noise = new Tone.Noise(mapNoiseType(config.noiseType)).start();
 
-    // --- Noise source ---
-    const buf = createNoiseBuffer(config.noiseType, 4);
-    const noiseSrc = ctx.createBufferSource();
-    noiseSrc.buffer = buf;
-    noiseSrc.loop = true;
-
-    // --- Filter ---
-    const filter = ctx.createBiquadFilter();
-    filter.type = config.filter.type;
-    filter.frequency.value = config.filter.frequency;
+    // Create filter
+    filter = new Tone.Filter(config.filter.frequency, config.filter.type, -24);
     filter.Q.value = config.filter.Q;
 
-    noiseSrc.connect(filter);
-    sources.push(noiseSrc);
+    // Create master gain
+    gain = new Tone.Gain(config.volume);
+    gain.toDestination();
 
-    // --- LFO on filter frequency ---
-    let filterOutput: AudioNode = filter;
+    // Connect noise → filter → gain
+    noise.connect(filter);
+    filter.connect(gain);
+
+    // LFO on filter frequency
     if (config.lfo) {
-      lfoOsc = ctx.createOscillator();
-      lfoOsc.type = config.lfo.waveform;
-      lfoOsc.frequency.value = config.lfo.rate;
-      const lfoGainNode = ctx.createGain();
-      lfoGainNode.gain.value = config.lfo.depth;
+      lfo = new Tone.LFO({
+        frequency: config.lfo.rate,
+        type: config.lfo.waveform as any,
+        min: config.filter.frequency - config.lfo.depth,
+        max: config.filter.frequency + config.lfo.depth,
+      });
 
-      lfoOsc.connect(lfoGainNode);
       if (config.lfo.target === "filterFreq") {
-        lfoGainNode.connect(filter.frequency);
+        lfo.connect(filter.frequency);
       } else if (config.lfo.target === "detune") {
-        lfoGainNode.connect(filter.detune);
+        lfo.connect(filter.detune);
+      } else if (config.lfo.target === "gain") {
+        lfo.connect(gain.gain);
       }
+
+      lfo.start();
     }
 
-    // --- Harmonics ---
+    // Harmonics
     for (const h of config.harmonics ?? []) {
-      const osc = ctx.createOscillator();
-      osc.type = h.type;
-      osc.frequency.value = h.frequency;
-      const hGain = ctx.createGain();
-      hGain.gain.value = h.gain;
+      const osc = new Tone.Oscillator(h.frequency, h.type as any).start();
+      const hGain = new Tone.Gain(h.gain);
       osc.connect(hGain);
-      hGain.connect(filterOutput);
-      harmonicOscs.push(osc);
+      hGain.connect(filter);
+      harmonics.push(osc);
+      harmonicGains.push(hGain);
     }
-
-    // Filter → master gain
-    filterOutput.connect(gain);
-
-    return ctx;
   }
 
   return {
     play() {
-      const c = init();
-      if (c.state === "suspended") c.resume();
+      // Ensure Tone.js context is started
+      if (Tone.context.state !== "running") {
+        Tone.start();
+      }
 
-      for (const s of sources) {
-        try {
-          s.start(0);
-        } catch {
-          // already started — ignore
-        }
+      if (!noise) {
+        init();
       }
-      if (lfoOsc) {
-        try {
-          lfoOsc.start(0);
-        } catch {
-          // ignore
-        }
-      }
-      for (const osc of harmonicOscs) {
-        try {
-          osc.start(0);
-        } catch {
-          // ignore
-        }
+
+      // Noise is already started in init(), just make sure it's running
+      noise?.start();
+      lfo?.start();
+      for (const osc of harmonics) {
+        osc.start();
       }
     },
 
     stop() {
-      for (const s of sources) {
-        try {
-          s.stop();
-        } catch {
-          // already stopped
-        }
+      try { noise?.stop(); } catch { /* already stopped */ }
+      try { lfo?.stop(); } catch { /* already stopped */ }
+      for (const osc of harmonics) {
+        try { osc.stop(); } catch { /* already stopped */ }
       }
-      if (lfoOsc) {
-        try {
-          lfoOsc.stop();
-        } catch {
-          // already stopped
-        }
-      }
-      for (const osc of harmonicOscs) {
-        try {
-          osc.stop();
-        } catch {
-          // already stopped
-        }
-      }
-      sources = [];
-      harmonicOscs = [];
-      lfoOsc = null;
     },
 
     setVolume(v: number) {
-      if (gain) gain.gain.value = v;
+      if (gain) {
+        // Convert linear 0-1 to dB for Tone.js Gain
+        gain.gain.value = Tone.gainToDb(v);
+      }
     },
 
     dispose() {
       this.stop();
-      ctx?.close();
-      ctx = null;
+      noise?.dispose();
+      filter?.dispose();
+      gain?.dispose();
+      lfo?.dispose();
+      for (const osc of harmonics) osc.dispose();
+      for (const hg of harmonicGains) hg.dispose();
+      noise = null;
+      filter = null;
       gain = null;
+      lfo = null;
+      harmonics.length = 0;
+      harmonicGains.length = 0;
     },
   };
-}
-
-// ---------------------------------------------------------------------------
-// Return types
-// ---------------------------------------------------------------------------
-
-/** Handle returned by {@link createAmbient}. */
-export interface AmbientSound {
-  /** Start (or resume) the ambient loop */
-  play(): void;
-  /** Stop all sources — call play() again to restart */
-  stop(): void;
-  /** Set master volume (0 – 1) */
-  setVolume(v: number): void;
-  /** Stop + close the AudioContext. Dispose when permanently done. */
-  dispose(): void;
-}
-
-/** Handle returned by {@link createSfx}. */
-export interface SoundEffect {
-  /** Play the sound effect (once) */
-  play(): void;
-  /** Release resources */
-  dispose(): void;
 }
 
 // ---------------------------------------------------------------------------
@@ -732,7 +625,7 @@ export const SFX_PRESETS: Record<string, SynthConfig> = {
     gain: 0.4,
   },
 
-  /** Sword swing: noise burst + saw sweep, filtered. */
+  /** Sword swing: saw sweep, filtered. */
   sword: {
     oscillators: [
       {
