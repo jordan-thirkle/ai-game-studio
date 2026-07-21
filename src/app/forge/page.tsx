@@ -186,8 +186,43 @@ const ROOMS: Room[] = [
       { name: "Level Scaling", desc: "Filter drops by player level, guaranteed drops for legendaries" },
     ],
   },
+  {
+    name: "Physics Lab",
+    description: "Rapier.js physics — rigid bodies, colliders, raycasting",
+    color: 0x0a1a2a,
+    accent: 0x4488cc,
+    position: [234, 0, 0],
+    assets: [
+      { name: "Rigid Bodies", desc: "Dynamic, static, and kinematic bodies with damping", code: 'import { createPhysics, PLATFORMER_CONFIG } from "@/lib/game-assets/physics"' },
+      { name: "Colliders", desc: "Ball, cuboid, capsule, and trimesh collision shapes" },
+      { name: "Raycasting", desc: "Ray-cast against physics world for hit detection" },
+    ],
+  },
+  {
+    name: "Particle Forge",
+    description: "GPU-accelerated particles — 10K+ at 60fps",
+    color: 0x2a0a1a,
+    accent: 0xcc4488,
+    position: [252, 0, 0],
+    assets: [
+      { name: "GPU Particles", desc: "Shader-based particle system with burst mode", code: 'import { createGPUParticles, FIRE_GPU } from "@/lib/game-assets/particles/GPUParticles"' },
+      { name: "4 Presets", desc: "Fire, magic, smoke, sparkle — each with unique physics" },
+      { name: "Burst Mode", desc: "Spawn N particles at once for explosions and impacts" },
+    ],
+  },
+  {
+    name: "PBR Workshop",
+    description: "Procedural PBR textures — albedo, normal, roughness, AO",
+    color: 0x1a2a0a,
+    accent: 0x88cc44,
+    position: [270, 0, 0],
+    assets: [
+      { name: "PBR Textures", desc: "Generate complete texture sets for 5 material types", code: 'import { generateStonePBR, generateWoodPBR } from "@/lib/game-assets/materials/PBRTextures"' },
+      { name: "5 Materials", desc: "Stone, wood, metal, fabric, grass — each with 4 maps" },
+      { name: "Normal Maps", desc: "Procedurally generated surface bump details" },
+    ],
+  },
 ];
-
 // ── Pointer-lock first-person controls ─────────────────────
 
 function useForgeControls(cameraRef: React.RefObject<THREE.PerspectiveCamera | null>, container: HTMLElement | null) {
@@ -849,6 +884,136 @@ function buildLootVaultDemo(group: THREE.Group): void {
   group.add(lootParticles);
 }
 
+function buildPhysicsLabDemo(group: THREE.Group): void {
+  // Static floor slab
+  const floor = new THREE.Mesh(
+    new THREE.BoxGeometry(4, 0.2, 4),
+    new THREE.MeshStandardMaterial({ color: 0x1a2a3a, roughness: 0.9 }),
+  );
+  floor.position.y = 0.3;
+  floor.receiveShadow = true;
+  floor.castShadow = true;
+  group.add(floor);
+
+  // Falling cubes (simulating physics objects)
+  const cubeMat = new THREE.MeshStandardMaterial({ color: 0x4488cc, roughness: 0.5, metalness: 0.3 });
+  const cubePositions = [
+    [-1.0, 2.0, -0.5], [0.5, 3.0, 0.8], [1.0, 1.5, -0.3],
+    [-0.5, 3.5, 0.3], [0.0, 2.5, -0.8], [0.8, 4.0, 0.0],
+  ];
+  cubePositions.forEach((pos, i) => {
+    const size = 0.3 + (i % 3) * 0.1;
+    const cube = new THREE.Mesh(
+      new THREE.BoxGeometry(size, size, size),
+      cubeMat,
+    );
+    cube.position.set(pos[0], pos[1], pos[2]);
+    cube.rotation.set(Math.random() * 0.5, Math.random() * 0.5, Math.random() * 0.5);
+    cube.castShadow = true;
+    cube.userData.roomName = "Physics Lab";
+    cube.userData.isOrb = true;
+    cube.userData.isFallingCube = true;
+    group.add(cube);
+  });
+
+  // Collider sphere (static)
+  const collider = new THREE.Mesh(
+    new THREE.SphereGeometry(0.3, 12, 8),
+    new THREE.MeshStandardMaterial({
+      color: 0x4488cc, emissive: 0x224466, emissiveIntensity: 0.3,
+      wireframe: true, transparent: true, opacity: 0.6,
+    }),
+  );
+  collider.position.set(2, 2, 0);
+  group.add(collider);
+}
+
+function buildParticleForgeDemo(group: THREE.Group): void {
+  // GPU particle bursts — three colored clouds
+  const presets = [
+    { color: 0xff6622, label: "Fire", center: [-2, 2, 0] as [number, number, number] },
+    { color: 0xaa44ff, label: "Magic", center: [0, 2.5, 0] as [number, number, number] },
+    { color: 0x888888, label: "Smoke", center: [2, 1.8, 0] as [number, number, number] },
+  ];
+
+  presets.forEach((preset) => {
+    const count = 120;
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const r = Math.random() * 0.8;
+      positions[i * 3] = preset.center[0] + Math.cos(angle) * r;
+      positions[i * 3 + 1] = preset.center[1] + Math.random() * 1.5;
+      positions[i * 3 + 2] = preset.center[2] + Math.sin(angle) * r;
+      sizes[i] = 0.05 + Math.random() * 0.1;
+    }
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    const points = new THREE.Points(geom, new THREE.PointsMaterial({
+      color: preset.color, size: 0.12, transparent: true, opacity: 0.7,
+    }));
+    points.userData.roomName = "Particle Forge";
+    points.userData.isOrb = true;
+    points.userData.isParticles = true;
+    group.add(points);
+  });
+
+  // Burst ring (visual indicator)
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(1.8, 2.0, 24),
+    new THREE.MeshStandardMaterial({
+      color: 0xcc4488, emissive: 0xcc4488, emissiveIntensity: 0.3,
+      transparent: true, opacity: 0.25, side: THREE.DoubleSide,
+    }),
+  );
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.3;
+  group.add(ring);
+}
+
+function buildPBRWorkshopDemo(group: THREE.Group): void {
+  // Spheres with different PBR materials
+  const materials = [
+    { color: 0x6a6a6a, rough: 0.95, metal: 0.0, label: "Stone" },
+    { color: 0x6b4226, rough: 0.85, metal: 0.0, label: "Wood" },
+    { color: 0x889999, rough: 0.3, metal: 0.9, label: "Metal" },
+    { color: 0x8b7d6b, rough: 0.7, metal: 0.0, label: "Fabric" },
+    { color: 0x3a6b2a, rough: 0.9, metal: 0.0, label: "Grass" },
+  ];
+
+  materials.forEach((m, i) => {
+    const angle = (i / materials.length) * Math.PI * 2;
+    const sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(0.35, 16, 16),
+      new THREE.MeshStandardMaterial({
+        color: m.color,
+        roughness: m.rough,
+        metalness: m.metal,
+      }),
+    );
+    sphere.position.set(Math.cos(angle) * 2, 1.8, Math.sin(angle) * 2);
+    sphere.castShadow = true;
+    sphere.userData.roomName = "PBR Workshop";
+    sphere.userData.isOrb = true;
+    group.add(sphere);
+  });
+
+  // Normal map preview plane
+  const normalPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.5, 1.5, 1, 1),
+    new THREE.MeshStandardMaterial({
+      color: 0x5a5a7a, roughness: 0.5, metalness: 0.2,
+      emissive: 0x222244, emissiveIntensity: 0.2,
+    }),
+  );
+  normalPlane.position.set(0, 2.8, -1);
+  normalPlane.castShadow = true;
+  group.add(normalPlane);
+}
+
+
 function buildEffectDemo(group: THREE.Group): void {
   // Static death burst particles frozen in time
   const count = 12;
@@ -1020,6 +1185,9 @@ function buildRoom(room: Room, scene: THREE.Scene): THREE.Group {
     case "Shader Lab": buildShaderLabDemo(group); break;
     case "Dungeon Forge": buildDungeonDemo(group); break;
     case "Loot Vault": buildLootVaultDemo(group); break;
+    case "Physics Lab": buildPhysicsLabDemo(group); break;
+    case "Particle Forge": buildParticleForgeDemo(group); break;
+    case "PBR Workshop": buildPBRWorkshopDemo(group); break;
     default: {
       // Fallback orb
       const orb = new THREE.Mesh(
@@ -1168,11 +1336,11 @@ export default function ForgePage() {
 
     // Floor
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(280, 30),
+      new THREE.PlaneGeometry(340, 30),
       new THREE.MeshStandardMaterial({ color: 0x080e0a, roughness: 1 }),
     );
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(81, -0.2, 0);
+    floor.position.set(141, -0.2, 0);
     floor.receiveShadow = true;
     scene.add(floor);
 
