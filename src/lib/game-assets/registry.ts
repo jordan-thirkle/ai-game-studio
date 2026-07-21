@@ -771,6 +771,152 @@ export const assetRegistry: AssetEntry[] = [
       { version: 1, date: "2026-07-21", changes: "Initial release — boss loot preset with guaranteed legendary", ratingBefore: 0, ratingAfter: 75 },
     ],
   },
+
+  // ── Tier 3: Physics ──
+  {
+    id: "system-physics",
+    name: "Physics Engine",
+    category: "effects",
+    description: "Rapier.js WASM physics with rigid bodies, colliders, raycasting, and preset configurations",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 88,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/physics",
+    tags: ["physics", "rapier", "wasm", "rigid-body", "raycast"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — Rapier.js WASM with rigid bodies, colliders, raycasting", ratingBefore: 0, ratingAfter: 88 },
+    ],
+  },
+  {
+    id: "preset-physics-platformer",
+    name: "Platformer Physics",
+    category: "effects",
+    description: "Heavy gravity config for platformer games",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 75,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/physics",
+    tags: ["physics", "platformer", "preset"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — platformer physics preset", ratingBefore: 0, ratingAfter: 75 },
+    ],
+  },
+
+  // ── Tier 3: GPU Particles ──
+  {
+    id: "system-gpu-particles",
+    name: "GPU Particle System",
+    category: "effects",
+    description: "Shader-based particle system for 10K+ particles at 60fps with burst mode",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 85,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/particles/GPUParticles",
+    tags: ["particles", "gpu", "shader", "burst"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — shader-based GPU particle system with burst mode", ratingBefore: 0, ratingAfter: 85 },
+    ],
+  },
+  {
+    id: "preset-particles-fire",
+    name: "Fire GPU Particles",
+    category: "effects",
+    description: "Orange fire particles with upward gravity",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 78,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/particles/GPUParticles",
+    tags: ["particles", "fire", "preset"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — fire GPU particles preset", ratingBefore: 0, ratingAfter: 78 },
+    ],
+  },
+
+  // ── Tier 3: Sprite Animator ──
+  {
+    id: "system-sprite-animator",
+    name: "Sprite Animator",
+    category: "terrain",
+    description: "Frame-by-frame 2D sprite animation with looping and burst modes",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 80,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/sprites/SpriteAnimator",
+    tags: ["sprite", "animation", "2d", "frame"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — frame-by-frame sprite animation with looping and burst", ratingBefore: 0, ratingAfter: 80 },
+    ],
+  },
+
+  // ── Tier 3: Skeletal Animation ──
+  {
+    id: "system-skeletal-anim",
+    name: "Skeletal Animation",
+    category: "effects",
+    description: "Bone-based animation presets for walk, run, attack, cast, hurt",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 82,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/animations/SkeletalAnimation",
+    tags: ["skeletal", "bone", "walk", "attack"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — bone-based skeletal animation presets", ratingBefore: 0, ratingAfter: 82 },
+    ],
+  },
+
+  // ── Tier 3: PBR Textures ──
+  {
+    id: "system-pbr",
+    name: "PBR Texture Generator",
+    category: "terrain",
+    description: "Procedural PBR texture sets (albedo, normal, roughness, AO) for 5 material types",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 85,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/materials/PBRTextures",
+    tags: ["pbr", "texture", "normal-map", "roughness"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — procedural PBR texture sets for 5 material types", ratingBefore: 0, ratingAfter: 85 },
+    ],
+  },
+  {
+    id: "preset-pbr-stone",
+    name: "Stone PBR Set",
+    category: "terrain",
+    description: "Stone material with albedo, normal, roughness, AO maps",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 80,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/materials/PBRTextures",
+    tags: ["pbr", "stone", "preset"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — stone PBR material preset", ratingBefore: 0, ratingAfter: 80 },
+    ],
+  },
 ];
 
 // ── Query helpers ──
