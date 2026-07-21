@@ -917,6 +917,156 @@ export const assetRegistry: AssetEntry[] = [
       { version: 1, date: "2026-07-21", changes: "Initial release — stone PBR material preset", ratingBefore: 0, ratingAfter: 80 },
     ],
   },
+
+  // ── Tier 4: Dialogue System ──
+  {
+    id: "system-dialogue",
+    name: "Dialogue Tree",
+    category: "effects",
+    description: "Branching NPC conversations with conditions, effects, and DOM renderer",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 82,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/dialogue",
+    tags: ["dialogue", "npc", "conversations", "branching"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — branching dialogue tree with conditions, effects, DOM renderer", ratingBefore: 0, ratingAfter: 82 },
+    ],
+  },
+
+  // ── Tier 4: Wave Spawner ──
+  {
+    id: "system-waves",
+    name: "Wave Spawner",
+    category: "effects",
+    description: "Enemy wave management with escalating difficulty and callbacks",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 85,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/waves",
+    tags: ["waves", "spawning", "enemies", "difficulty"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — wave spawner with escalating difficulty and callbacks", ratingBefore: 0, ratingAfter: 85 },
+    ],
+  },
+
+  // ── Tier 4: Spatial Audio ──
+  {
+    id: "system-spatial-audio",
+    name: "Spatial Audio",
+    category: "audio",
+    description: "3D positional audio with listener, panning, and distance rolloff",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 80,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/audio/SpatialAudio",
+    tags: ["spatial", "3d-audio", "panning", "listener"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — 3D positional audio with listener, panning, distance rolloff", ratingBefore: 0, ratingAfter: 80 },
+    ],
+  },
+
+  // ── Tier 4: LOD Manager ──
+  {
+    id: "system-lod",
+    name: "LOD Manager",
+    category: "effects",
+    description: "Level of Detail management with distance-based mesh switching",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 78,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/lod",
+    tags: ["lod", "performance", "detail", "optimization"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — LOD manager with distance-based mesh switching", ratingBefore: 0, ratingAfter: 78 },
+    ],
+  },
+
+  // ── Tier 4: Asset Version CLI ──
+  {
+    id: "system-version-cli",
+    name: "Asset Version CLI",
+    category: "effects",
+    description: "CLI tool for asset version reports and consistency checks",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 75,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/cli/version-cli",
+    tags: ["cli", "versioning", "reporting"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — CLI tool for asset version reports and consistency checks", ratingBefore: 0, ratingAfter: 75 },
+    ],
+  },
+
+  // ── Tier 4: Wave Presets ──
+  {
+    id: "preset-wave-forest",
+    name: "Forest Waves",
+    category: "effects",
+    description: "5 escalating waves from 5 to 30 enemies",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 80,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/waves",
+    tags: ["waves", "forest", "preset"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — 5 escalating forest waves from 5 to 30 enemies", ratingBefore: 0, ratingAfter: 80 },
+    ],
+  },
+  {
+    id: "preset-wave-boss",
+    name: "Boss Rush",
+    category: "effects",
+    description: "3 heavy waves with boss on wave 3",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 78,
+    tier: "A",
+    status: "active",
+    importPath: "@/lib/game-assets/waves",
+    tags: ["waves", "boss", "preset"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — 3 heavy waves with boss on wave 3", ratingBefore: 0, ratingAfter: 78 },
+    ],
+  },
+
+  // ── Tier 4: Spatial Audio Preset ──
+  {
+    id: "preset-spatial-indoor",
+    name: "Indoor Spatial",
+    category: "audio",
+    description: "Small room spatial audio config",
+    usedBy: [],
+    created: "2026-07-21",
+    lastImproved: "2026-07-21",
+    rating: 72,
+    tier: "B",
+    status: "active",
+    importPath: "@/lib/game-assets/audio/SpatialAudio",
+    tags: ["spatial", "indoor", "preset"],
+    versions: [
+      { version: 1, date: "2026-07-21", changes: "Initial release — indoor spatial audio config preset", ratingBefore: 0, ratingAfter: 72 },
+    ],
+  },
 ];
 
 // ── Query helpers ──
