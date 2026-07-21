@@ -75,6 +75,16 @@ export interface FilterConfig {
   Q: number;
 }
 
+/** Reverb configuration for ambient sounds. */
+export interface ReverbConfig {
+  /** Reverb tail length in seconds (default: 2.5) */
+  decay?: number;
+  /** Pre-delay in seconds (default: 0.01) */
+  preDelay?: number;
+  /** Wet/dry mix 0–1 (default: 0.3) */
+  wet?: number;
+}
+
 /** Full synth configuration for {@link createSfx}. */
 export interface SynthConfig {
   /** One or more oscillators that form the sound */
@@ -103,6 +113,8 @@ export interface AmbientConfig {
   lfo?: LFOConfig;
   /** Optional harmonic oscillators layered on top of the noise */
   harmonics?: Array<{ frequency: number; gain: number; type: OscillatorType }>;
+  /** Optional reverb applied between filter and gain */
+  reverb?: ReverbConfig;
 }
 
 // ---------------------------------------------------------------------------
@@ -330,10 +342,11 @@ export function createAmbient(config: AmbientConfig): AmbientSound {
   let filter: Tone.Filter | null = null;
   let gain: Tone.Gain | null = null;
   let lfo: Tone.LFO | null = null;
+  let reverb: Tone.Reverb | null = null;
   const harmonics: Tone.Oscillator[] = [];
   const harmonicGains: Tone.Gain[] = [];
 
-  function init(): void {
+  async function init(): Promise<void> {
     // Create noise source
     noise = new Tone.Noise(mapNoiseType(config.noiseType)).start();
 
@@ -347,7 +360,19 @@ export function createAmbient(config: AmbientConfig): AmbientSound {
 
     // Connect noise → filter → gain
     noise.connect(filter);
-    filter.connect(gain);
+
+    // Insert reverb between filter and gain if configured
+    if (config.reverb) {
+      reverb = new Tone.Reverb({
+        decay: config.reverb.decay ?? 2.5,
+        preDelay: config.reverb.preDelay ?? 0.01,
+      });
+      await reverb.ready;
+      reverb.wet.value = config.reverb.wet ?? 0.3;
+      filter.chain(reverb, gain);
+    } else {
+      filter.connect(gain);
+    }
 
     // LFO on filter frequency
     if (config.lfo) {
@@ -420,12 +445,14 @@ export function createAmbient(config: AmbientConfig): AmbientSound {
       filter?.dispose();
       gain?.dispose();
       lfo?.dispose();
+      reverb?.dispose();
       for (const osc of harmonics) osc.dispose();
       for (const hg of harmonicGains) hg.dispose();
       noise = null;
       filter = null;
       gain = null;
       lfo = null;
+      reverb = null;
       harmonics.length = 0;
       harmonicGains.length = 0;
     },
@@ -452,6 +479,7 @@ export const AMBIENT_PRESETS: Record<string, AmbientConfig> = {
     filter: { type: "bandpass", frequency: 200, Q: 0.5 },
     volume: 0.15,
     lfo: { rate: 0.15, depth: 120, waveform: "sine", target: "filterFreq" },
+    reverb: { decay: 2.5, wet: 0.15 },
   },
 
   /** Distant forest ambience: pink noise, mid-range bandpass, gentle LFO. */
@@ -464,6 +492,7 @@ export const AMBIENT_PRESETS: Record<string, AmbientConfig> = {
       { frequency: 330, gain: 0.02, type: "sine" },
       { frequency: 660, gain: 0.01, type: "sine" },
     ],
+    reverb: { decay: 2, wet: 0.2 },
   },
 
   /** Deep cave reverb: brown noise through a low pass, sub-harmonics rumble. */
@@ -476,6 +505,7 @@ export const AMBIENT_PRESETS: Record<string, AmbientConfig> = {
       { frequency: 80, gain: 0.06, type: "sine" },
       { frequency: 120, gain: 0.03, type: "sine" },
     ],
+    reverb: { decay: 4, wet: 0.5 },
   },
 
   /** Rain: white noise through a high bandpass, fast LFO for patter. */
@@ -484,6 +514,7 @@ export const AMBIENT_PRESETS: Record<string, AmbientConfig> = {
     filter: { type: "bandpass", frequency: 800, Q: 0.3 },
     volume: 0.2,
     lfo: { rate: 4, depth: 200, waveform: "triangle", target: "filterFreq" },
+    reverb: { decay: 2, wet: 0.1 },
   },
 
   /** Crackling fire: brown noise + high bandpass, slow modulation. */
@@ -492,6 +523,7 @@ export const AMBIENT_PRESETS: Record<string, AmbientConfig> = {
     filter: { type: "bandpass", frequency: 600, Q: 0.4 },
     volume: 0.1,
     lfo: { rate: 3, depth: 300, waveform: "sawtooth", target: "filterFreq" },
+    reverb: { decay: 1.5, wet: 0.1 },
   },
 
   /** Ocean waves: brown noise through a very wide bandpass, slow LFO swell. */
@@ -504,6 +536,7 @@ export const AMBIENT_PRESETS: Record<string, AmbientConfig> = {
       { frequency: 60, gain: 0.04, type: "sine" },
       { frequency: 100, gain: 0.02, type: "triangle" },
     ],
+    reverb: { decay: 3, wet: 0.3 },
   },
 };
 
