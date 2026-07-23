@@ -1,0 +1,10 @@
+{
+  "headers": [
+    {
+      "source": "/games/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+      ]
+    }
+  ]
+}
